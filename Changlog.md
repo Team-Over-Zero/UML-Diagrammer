@@ -1,1 +1,7 @@
-# This is a Changelog
+# Changelog
+## [Unreleased]
+
+## [0.0.1] - 2021-02-20
+### Added
+### Changed
+### Removed
