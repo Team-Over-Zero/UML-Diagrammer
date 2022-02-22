@@ -4,15 +4,18 @@ import lombok.*;
 /**
  * This class should illustrate a basic Node object.
  */
+
+@Getter @Setter
 public abstract class AbstractNode implements Node{
-    int id;
-    String name;
-    String title;
-    String description;
-    int xCoord;
-    int yCoord;
-    int width;
-    int height;
+
+   private int id;
+   private String name;
+    private String title;
+    private String description;
+    private int xCoord;
+    private int yCoord;
+    private int width;
+    private int height;
 
     AbstractNode(){
         id = -1;
