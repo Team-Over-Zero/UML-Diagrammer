@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a652bbe7-62f4-4b37-ac58-15afba9528ad" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/AbstractNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/AbstractNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/UML/Diagrammer/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/UML/Diagrammer/AppTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +89,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1645504692058</updated>
-      <workItem from="1645504694923" duration="5772000" />
+      <workItem from="1645504694923" duration="6351000" />
     </task>
     <servers />
   </component>
