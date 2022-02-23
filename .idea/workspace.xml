@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a652bbe7-62f4-4b37-ac58-15afba9528ad" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/Graph.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/Page.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/Edge.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/Edge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/Node.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/AbstractNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/AbstractNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/DefaultNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/DefaultNode.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +92,7 @@
       <option name="presentableId" value="Default" />
       <updated>1645504692058</updated>
       <workItem from="1645504694923" duration="6351000" />
-      <workItem from="1645572002502" duration="3151000" />
+      <workItem from="1645572002502" duration="3277000" />
     </task>
     <servers />
   </component>
