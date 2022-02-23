@@ -8,7 +8,7 @@ import lombok.*;
 @Getter @Setter
 public abstract class AbstractNode implements Node{
 
-   private int id;
+   private int ID;
    private String name;
     private String title;
     private String description;
@@ -18,7 +18,7 @@ public abstract class AbstractNode implements Node{
     private int height;
 
     AbstractNode(){
-        id = -1;
+        ID = -1;
         name = "DEFAULT";
         title = "DEFAULT";
         description = "DEFAULT";

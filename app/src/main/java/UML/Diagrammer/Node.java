@@ -28,5 +28,6 @@ public interface Node {
      * Sets the x and y position on the page of the object.
      */
     void setCoords(int x, int y);
+    int getID();
 
 }
