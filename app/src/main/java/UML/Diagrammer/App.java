@@ -3,12 +3,28 @@
  */
 package UML.Diagrammer;
 
-public class App {
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class App extends Application{
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
+        System.out.println(new DefaultNode().getTitle());
+
+        launch(args);
+    }
+
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
+        primaryStage.setTitle("UML Diagrammer");
+        primaryStage.setScene(new Scene(root, 1000, 800));
+        primaryStage.show();
     }
 }
