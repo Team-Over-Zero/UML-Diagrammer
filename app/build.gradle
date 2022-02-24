@@ -15,6 +15,8 @@ plugins {
 
     //Javafx plugin for use of JavaFX and FXML
     id 'org.openjfx.javafxplugin' version '0.0.12'
+
+
 }
 
 repositories {
@@ -23,6 +25,10 @@ repositories {
 }
 
 dependencies {
+
+    // use javalin for front end web
+    implementation 'io.javalin:javalin:4.3.0'
+
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 
@@ -30,6 +36,7 @@ dependencies {
     implementation 'com.google.guava:guava:30.1.1-jre'
 
     implementation group: 'io.javalin', name: 'javalin', version: '4.3.0'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
 }
 
 application {

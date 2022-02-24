@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import webclient.Client;
 
 public class App extends Application{
     public String getGreeting() {
@@ -18,7 +19,12 @@ public class App extends Application{
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
 
+        //start the web client running
+        Client webClient = new Client();
+
         launch(args);
+
+        webClient.close();
     }
 
     public void start(Stage primaryStage) throws Exception {
