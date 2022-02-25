@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a652bbe7-62f4-4b37-ac58-15afba9528ad" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/App.java" afterDir="false" />
-    </list>
+    <list default="true" id="a652bbe7-62f4-4b37-ac58-15afba9528ad" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -108,7 +106,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/UML/Diagrammer/App.java</url>
-          <line>5</line>
+          <line>6</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
