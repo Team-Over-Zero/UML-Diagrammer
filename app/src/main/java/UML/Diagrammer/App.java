@@ -3,6 +3,9 @@
  */
 package UML.Diagrammer;
 
+import io.javalin.Javalin;
+
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +14,7 @@ import javafx.stage.Stage;
 import webclient.Client;
 
 public class App extends Application{
+
     public String getGreeting() {
         return "Hello World!";
     }
@@ -18,6 +22,10 @@ public class App extends Application{
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
+
+        Javalin app = Javalin.create().start(7070);
+        app.get("/", ctx -> ctx.result("Hello this is a test"));
+
 
         //start the web client running
         Client webClient = new Client();
@@ -32,5 +40,6 @@ public class App extends Application{
         primaryStage.setTitle("UML Diagrammer");
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
+
     }
 }
