@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLController">
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLController">
    <children>
-      <Button fx:id="testButton" mnemonicParsing="false" onAction="#testButtonAction" text="Press me" />
-      <Label fx:id="testLabel" layoutX="101.0" layoutY="6.0" />
+      <Button layoutX="-2.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Save" />
+      <MenuButton fx:id="loadMenuButton" layoutX="50.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Load">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Diagram 1" />
+          <MenuItem mnemonicParsing="false" text="Diagram 2" />
+            <MenuItem mnemonicParsing="false" text="Diagram 3" />
+        </items>
+      </MenuButton>
+      <MenuButton fx:id="loadMenuButton1" layoutX="120.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Export">
+         <items>
+            <MenuItem mnemonicParsing="false" text="PNG" />
+            <MenuItem mnemonicParsing="false" text="SVG" />
+         </items>
+      </MenuButton>
+      <HBox layoutX="-2.0" layoutY="31.0" prefHeight="95.0" prefWidth="1000.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#squareButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Square" />
+            <Button fx:id="circleObject" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#circleButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Circle" />
+            <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#lineButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
+         </children></HBox>
+      <Label fx:id="testLabel" layoutX="30.0" layoutY="150.0">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <Separator layoutY="121.0" prefHeight="10.0" prefWidth="1000.0">
+         <effect>
+            <Blend />
+         </effect></Separator>
+      <Separator layoutY="26.0" prefHeight="10.0" prefWidth="1000.0">
+         <effect>
+            <Blend />
+         </effect>
+      </Separator>
    </children>
 </AnchorPane>
