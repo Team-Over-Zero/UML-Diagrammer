@@ -20,7 +20,7 @@ public class App extends Application{
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
-
+        App.launch();
 //        Javalin app = Javalin.create().start(7070);
 //        app.get("/", ctx -> ctx.result("Hello this is a test"));
 
