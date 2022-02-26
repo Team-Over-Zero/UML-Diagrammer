@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import webclient.Client;
+import 
 
 public class App extends Application{
 
@@ -22,6 +23,7 @@ public class App extends Application{
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
+        System.out.println()
 
 //        Javalin app = Javalin.create().start(7070);
 //        app.get("/", ctx -> ctx.result("Hello this is a test"));

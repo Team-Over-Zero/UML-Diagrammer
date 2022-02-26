@@ -1,12 +1,13 @@
 //Page.java
-package UML.Diagrammer;
+package UML.Diagrammer.backend.helperObjects;
+
 import java.util.*;
 
 /**
  * This class should act as a web "page" that holds nodes and edges. Front ends
  * should be able to get all information that they need from this.
  */
-public class Page implements Graph{
+public class Page implements Graph {
     private HashMap nodeDict; //keys are node ids, values are node objects.
     private HashMap edgeDict; //keys are edge ids, values are edge objects.
     public Page(){

@@ -1,5 +1,5 @@
 //Node.java
-package UML.Diagrammer;
+package UML2.Diagrammer.backend.objects;
 
 /**
  * This interface should define what methods every single UML "object" (not including edges) should have.
