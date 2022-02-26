@@ -1,13 +1,11 @@
-package UML.Diagrammer;
+package UML.Diagrammer.desktop;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 // I probably want this class to be the observer, so that it watches for any changes in the backend.
 

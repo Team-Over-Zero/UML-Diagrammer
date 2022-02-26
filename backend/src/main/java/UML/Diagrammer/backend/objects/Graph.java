@@ -1,4 +1,4 @@
-package UML.Diagrammer;
+package UML.Diagrammer.backend.objects;
 
 public interface Graph {
 

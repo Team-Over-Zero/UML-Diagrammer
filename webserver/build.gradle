@@ -45,7 +45,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'UML.Diagrammer.desktop.App'
+    mainClass = 'UML.Diagrammer.webserver.App'
 }
 
 tasks.named('test') {
