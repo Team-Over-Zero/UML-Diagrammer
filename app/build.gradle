@@ -17,6 +17,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.12'
 
 
+
 }
 
 repositories {
@@ -37,11 +38,14 @@ dependencies {
 
     implementation group: 'io.javalin', name: 'javalin', version: '4.3.0'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
+
+    implementation project(":backend") //Lets us use our backend objects.
+
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'UML.Diagrammer.App'
+    mainClass = 'UML.Diagrammer.desktop.App'
 }
 
 tasks.named('test') {

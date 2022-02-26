@@ -1,5 +1,5 @@
 //AbstractNode.java
-package UML2.Diagrammer.backend.objects;
+package UML.Diagrammer.backend.objects;
 import lombok.*;
 /**
  * This class should illustrate a basic Node object.

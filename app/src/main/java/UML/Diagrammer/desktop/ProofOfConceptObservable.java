@@ -1,4 +1,4 @@
-package UML.Diagrammer;
+package UML.Diagrammer.desktop;
 
 
 import java.beans.PropertyChangeEvent;

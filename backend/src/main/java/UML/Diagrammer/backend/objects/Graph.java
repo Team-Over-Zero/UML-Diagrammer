@@ -1,4 +1,4 @@
-package UML2.Diagrammer.backend.objects;
+package UML.Diagrammer.backend.objects;
 
 public interface Graph {
 
@@ -6,13 +6,13 @@ public interface Graph {
      *
      * @param n1 Node to add.
      */
-    void addNode(UML2.Diagrammer.backend.objects.Node n1);
+    void addNode(Node n1);
 
     /**
      *
      * @param n1 Node to remove. Should also remove attached edges from graph
      */
-    void removeNode(UML2.Diagrammer.backend.objects.Node n1);
+    void removeNode(Node n1);
 
     /**
      *

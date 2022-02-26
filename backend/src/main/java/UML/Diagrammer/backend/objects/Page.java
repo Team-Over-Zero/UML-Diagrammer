@@ -1,6 +1,5 @@
 //Page.java
-package UML.Diagrammer.backend.helperObjects;
-
+package UML.Diagrammer.backend.objects;
 import java.util.*;
 
 /**
@@ -14,6 +13,7 @@ public class Page implements Graph {
         nodeDict = new HashMap();
         edgeDict = new HashMap();
     }
+
     public void addNode(Node n1){
         nodeDict.put(n1.getID(),n1);
     }
@@ -23,6 +23,7 @@ public class Page implements Graph {
         //IMPLEMENT: for edge in edge dictionary, if key or value contains n1, remove.
 
     }
+
     public void addEdge(Edge e1){
         edgeDict.put(e1.getID(),e1);
     }
