@@ -1,5 +1,5 @@
 //Edge.java
-package UML.Diagrammer;
+package UML.Diagrammer.backend.objects;
 
 /**
  * This is an interface for UML edge "objects". Edge objects should point to two nodes, and have a type.

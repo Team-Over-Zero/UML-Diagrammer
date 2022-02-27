@@ -1,4 +1,4 @@
-package webclient;
+package UML.Diagrammer.webserver;
 
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.vue.VueComponent;

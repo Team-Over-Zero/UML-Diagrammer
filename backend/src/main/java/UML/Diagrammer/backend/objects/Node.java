@@ -1,5 +1,5 @@
 //Node.java
-package UML.Diagrammer;
+package UML.Diagrammer.backend.objects;
 
 /**
  * This interface should define what methods every single UML "object" (not including edges) should have.
@@ -29,5 +29,7 @@ public interface Node {
      */
     void setCoords(int x, int y);
     int getID();
+    String getDescription();
+    int hashCode();
 
 }
