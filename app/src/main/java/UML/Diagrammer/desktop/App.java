@@ -23,8 +23,8 @@ public class App extends Application{
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
         Factory factory = new Factory();
-        Type nodeType =DefaultNode.class;
-        Node factoryNode = factory.createSmallNode(nodeType,"smallFactoryNode",1,2);
+        DefaultNode factoryNode = factory.createSmallDefaultNode("smallFactoryNode",1,2);
+        factoryNode.testFunc();
         System.out.println(factoryNode.getDescription());
         App.launch();
 //        Javalin app = Javalin.create().start(7070);

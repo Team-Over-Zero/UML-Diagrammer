@@ -26,6 +26,10 @@ public class DefaultNode extends AbstractNode{
 
     }
 
+    public void testFunc(){
+        System.out.println("HELLO");
+    }
+
 
 
 }
