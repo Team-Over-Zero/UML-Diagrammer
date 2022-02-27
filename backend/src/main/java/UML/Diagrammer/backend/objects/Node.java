@@ -29,5 +29,7 @@ public interface Node {
      */
     void setCoords(int x, int y);
     int getID();
+    String getDescription();
+    int hashCode();
 
 }

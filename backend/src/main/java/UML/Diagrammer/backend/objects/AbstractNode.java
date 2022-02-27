@@ -1,6 +1,9 @@
 //AbstractNode.java
 package UML.Diagrammer.backend.objects;
 import lombok.*;
+
+import java.util.Objects;
+
 /**
  * This class should illustrate a basic Node object.
  */
@@ -8,25 +11,15 @@ import lombok.*;
 @Getter @Setter
 public abstract class AbstractNode implements Node{
 
-   private int ID;
-   private String name;
-    private String title;
-    private String description;
-    private int xCoord;
-    private int yCoord;
-    private int width;
-    private int height;
+   protected int ID;
+   protected String name;
+    protected String title;
+    protected String description;
+    protected int xCoord;
+    protected int yCoord;
+    protected int width;
+    protected int height;
 
-    AbstractNode(){
-        ID = -1;
-        name = "DEFAULT";
-        title = "DEFAULT";
-        description = "DEFAULT";
-        xCoord = 0;
-        yCoord = 0;
-        width = 1;
-        height = 1;
-    }
 
     public void setSize(int w, int h){
         width = w;
@@ -37,4 +30,16 @@ public abstract class AbstractNode implements Node{
         yCoord = y;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractNode that = (AbstractNode) o;
+        return xCoord == that.xCoord && yCoord == that.yCoord && name.equals(that.name) && title.equals(that.title) && description.equals(that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, title, description, xCoord, yCoord);
+    }
 }

@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import UML.Diagrammer.backend.objects.*;
 
+import java.lang.reflect.Type;
+
 public class App extends Application{
 
     public String getGreeting() {
@@ -20,6 +22,10 @@ public class App extends Application{
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
+        Factory factory = new Factory();
+        Type nodeType =DefaultNode.class;
+        Node factoryNode = factory.createSmallNode(nodeType,"smallFactoryNode",1,2);
+        System.out.println(factoryNode.getDescription());
         App.launch();
 //        Javalin app = Javalin.create().start(7070);
 //        app.get("/", ctx -> ctx.result("Hello this is a test"));
