@@ -23,8 +23,8 @@ public class App extends Application{
         System.out.println(new App().getGreeting());
         System.out.println(new DefaultNode().getTitle());
 
-        Javalin app = Javalin.create().start(7070);
-        app.get("/", ctx -> ctx.result("Hello this is a test"));
+        //Javalin app = Javalin.create().start(7070);
+        //app.get("/", ctx -> ctx.result("Hello this is a test"));
 
 
         //start the web client running
