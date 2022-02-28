@@ -41,6 +41,10 @@ dependencies {
 
     implementation project(":backend") //Lets us use our backend objects.
 
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
+    implementation group: 'org.webjars.npm', name: 'vue', version: '2.6.10'
+
+
 }
 
 application {

@@ -1,6 +1,7 @@
 package UML.Diagrammer.webserver;
 
 import io.javalin.Javalin;
+import io.javalin.plugin.rendering.vue.VueComponent;
 
 public class Client {
 
@@ -13,9 +14,12 @@ public class Client {
     private void init(){
 
         System.out.println("web client started");
-        client = Javalin.create().start(7777);
+        client = Javalin.create(config ->
+        {config.enableWebjars();}).start(7777);
 
-        client.get("/", ctx -> ctx.result("Hello World"));
+        //client.get("/", ctx -> ctx.result("Hello World"));
+
+        client.get("/", new VueComponent("hello-world"));
     }
 
     public void close(){
