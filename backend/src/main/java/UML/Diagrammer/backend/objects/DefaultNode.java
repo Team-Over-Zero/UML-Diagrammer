@@ -8,8 +8,8 @@ public class DefaultNode extends AbstractNode{
 
 
     public DefaultNode(){
-        Clock clock = Clock.systemDefaultZone();
-        long milliSeconds = clock.millis();
+        //Clock clock = Clock.systemDefaultZone();
+        // long milliSeconds = clock.millis();
         ID = -1;
         name = "DEFAULT";
         title = "DEFAULT";
@@ -18,7 +18,7 @@ public class DefaultNode extends AbstractNode{
         yCoord = 0;
         width = 1;
         height = 1;
-        int intExact = Math.toIntExact(milliSeconds);
+        int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
         ID = hashCode()+ intExact;
     }
     public DefaultNode(String nm,String desc,int x,int y,int w,int h){
