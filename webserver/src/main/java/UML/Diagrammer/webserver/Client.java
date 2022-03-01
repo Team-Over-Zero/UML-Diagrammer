@@ -19,7 +19,7 @@ public class Client {
 
         //client.get("/", ctx -> ctx.result("Hello World"));
 
-        client.get("/", new VueComponent("hello-world"));
+        client.get("/", new VueComponent("uml-editor"));
     }
 
     public void close(){
