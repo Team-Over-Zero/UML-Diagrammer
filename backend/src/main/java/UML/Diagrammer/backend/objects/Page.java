@@ -1,11 +1,16 @@
 //Page.java
 package UML.Diagrammer.backend.objects;
+import lombok.*;
+
 import java.util.*;
+
 
 /**
  * This class should act as a web "page" that holds nodes and edges. Front ends
  * should be able to get all information that they need from this.
  */
+    @Getter
+    @Setter
 public class Page implements Graph {
     private HashMap nodeDict; //keys are node ids, values are node objects.
     private HashMap edgeDict; //keys are edge ids, values are edge objects.
