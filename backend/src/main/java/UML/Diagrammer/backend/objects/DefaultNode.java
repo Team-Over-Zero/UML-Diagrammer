@@ -6,7 +6,6 @@ import java.time.Clock;
 @Getter @Setter
 public class DefaultNode extends AbstractNode{
 
-
     public DefaultNode(){
         //Clock clock = Clock.systemDefaultZone();
         // long milliSeconds = clock.millis();
@@ -29,7 +28,6 @@ public class DefaultNode extends AbstractNode{
         width = w;
         height = h;
         ID = hashCode();
-
     }
 
     public void testFunc(){
