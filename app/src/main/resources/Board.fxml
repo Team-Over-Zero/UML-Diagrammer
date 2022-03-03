@@ -23,7 +23,7 @@
       </MenuButton>
       <HBox layoutX="-2.0" layoutY="31.0" prefHeight="95.0" prefWidth="1000.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#squareButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Square" />
+            <Button mnemonicParsing="false" onAction="#squareButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Class" />
             <Button fx:id="circleObject" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#circleButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Circle" />
             <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#lineButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
          </children></HBox>

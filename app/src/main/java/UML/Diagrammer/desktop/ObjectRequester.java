@@ -18,7 +18,8 @@ public class ObjectRequester {
     /**
      * Global observable object to call updates to the UI.
      */
-    private PropertyChangeSupport support;
+    private final PropertyChangeSupport support;
+    private static final NodeFactory nodeFactory = new NodeFactory();
 
     /**
      * Constructor, needs to make the PropertyChangeSupport object for to notify listeners
@@ -49,21 +50,22 @@ public class ObjectRequester {
      * New node creation so the oldValue will be null
      */
     public void makeCircleRequest(){
-        DefaultNode newNode = new DefaultNode();
-        newNode.setName("UML-Object-2");
-        newNode.setDescription("circle");
-        newNode.setTitle("object");
+        AbstractNode newNode = nodeFactory.buildNode("OVAL", 0, 7, 7, 3);
+        //DefaultNode newNode = new DefaultNode();
+        //newNode.setName("UML-Object-2");
+        //newNode.setDescription("circle");
+        //newNode.setTitle("object");
         support.firePropertyChange("newCircleCreation", null, newNode);
     }
 
     /**
      * Exact same as makCircleRequest() for now.
      */
-    public void makeSquareRequest(){
-        DefaultNode newNode = new DefaultNode();
-        newNode.setName("UML-Object-1");
-        newNode.setDescription("square");
-        newNode.setTitle("class");
+    public void makeClassRequest(){
+        AbstractNode newNode = nodeFactory.buildNode("CLASS", 2, 4, 2, 1);
+        //newNode.setName("UML-Object-1");
+        //newNode.setDescription("square");
+        //newNode.setTitle("class");
         support.firePropertyChange("newSquareCreation", null, newNode);
     }
 

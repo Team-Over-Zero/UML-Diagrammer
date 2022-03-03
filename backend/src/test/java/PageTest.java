@@ -9,7 +9,8 @@ public class PageTest {
     @Test
     public void testPageAddNode(){
         Page page = new Page();
-        DefaultNode node = new DefaultNode();
+        NodeFactory factory = new NodeFactory();
+        AbstractNode node = factory.buildNode();
         page.addNode(node);
         assertNotNull(page);
     }

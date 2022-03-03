@@ -1,18 +1,12 @@
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.DefaultNode;
-import javafx.fxml.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
+import UML.Diagrammer.backend.objects.AbstractNode;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.BorderPane;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Objects;
-
-// I probably want this class to be the observer, so that it watches for any changes in the backend.
 
 /**
  * Controller for FXML that will control the logic for the UI.
@@ -39,10 +33,10 @@ public class FXMLController implements PropertyChangeListener{
      */
     public void propertyChange(PropertyChangeEvent event){
         if (Objects.equals(event.getPropertyName(), "newCircleCreation")){
-            this.updateUINewCircle((DefaultNode) event.getNewValue());
+            this.updateUINewCircle((AbstractNode) event.getNewValue());
         }
         else if(Objects.equals(event.getPropertyName(), "newSquareCreation")){
-            this.updateUINewSquare((DefaultNode) event.getNewValue());
+            this.updateUINewClass((AbstractNode) event.getNewValue());
         }
     }
 
@@ -62,7 +56,7 @@ public class FXMLController implements PropertyChangeListener{
     }
 
     @FXML private void squareButtonPressed() {
-        observable.makeSquareRequest();
+        observable.makeClassRequest();
     }
 
     @FXML
@@ -75,21 +69,21 @@ public class FXMLController implements PropertyChangeListener{
      * There is probably a way, so I can use 1 function to make any node object, gotta think about it.
      * @param newNode The newly create Node object that needs to be displayed
      */
-    private void updateUINewCircle(DefaultNode newNode){
+    private void updateUINewCircle(AbstractNode newNode){
         testLabel.setText("New node made: "+ "\n"+
                 "at: ("+ (int) newNode.getXCoord()+ ", "+ (int)newNode.getYCoord()+ ")" + "\n"+
                 "Name: "+ newNode.getName()+ "\n"+
-                "Title: "+ newNode.getTitle()+ "\n"+
+                "SVG: "+ newNode.getSVGImage()+ "\n"+
                 "Description: "+ newNode.getDescription()+ "\n"+
                 "ID: "+ (int) newNode.getID()+ "\n"+
                 "width/height: ("+ (int) newNode.getWidth()+ ", "+ (int) newNode.getHeight()+ ")");
     }
 
-    private void updateUINewSquare(DefaultNode newNode){
+    private void updateUINewClass(AbstractNode newNode){
         testLabel.setText("New node made: "+ "\n"+
                 "at: ("+ (int) newNode.getXCoord()+ ", "+ (int)newNode.getYCoord()+ ")" + "\n"+
                 "Name: "+ newNode.getName()+ "\n"+
-                "Title: "+ newNode.getTitle()+ "\n"+
+                "SVG: "+ newNode.getSVGImage()+ "\n"+
                 "Description: "+ newNode.getDescription()+ "\n"+
                 "ID: "+ (int) newNode.getID()+ "\n"+
                 "width/height: ("+ (int) newNode.getWidth()+ ", "+ (int) newNode.getHeight()+ ")");

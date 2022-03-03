@@ -21,11 +21,9 @@ public class App extends Application{
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
-        System.out.println(new DefaultNode().getTitle());
-        Factory factory = new Factory();
-        DefaultNode factoryNode = factory.createSmallDefaultNode("smallFactoryNode",1,2);
-        factoryNode.testFunc();
-        System.out.println(factoryNode.getDescription());
+        NodeFactory fac = new NodeFactory();
+        AbstractNode myNode = fac.buildNode("CLASS", 0, 0, 3,3);
+        System.out.println(myNode.getName());
         App.launch();
 //        Javalin app = Javalin.create().start(7070);
 //        app.get("/", ctx -> ctx.result("Hello this is a test"));
