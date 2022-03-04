@@ -1,5 +1,6 @@
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.AbstractEdge;
 import UML.Diagrammer.backend.objects.AbstractNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -29,6 +30,7 @@ public class FXMLController implements PropertyChangeListener{
 
     /**
      * This is the function that is called by ObjectRequester to update the UI
+     * Might want to change this to a switch statement in the future as it grows
      * @param event The event that was changed that needs to be reflected in the UI.
      */
     public void propertyChange(PropertyChangeEvent event){
@@ -37,6 +39,9 @@ public class FXMLController implements PropertyChangeListener{
         }
         else if(Objects.equals(event.getPropertyName(), "newSquareCreation")){
             this.updateUINewClass((AbstractNode) event.getNewValue());
+        }
+        else if(Objects.equals(event.getPropertyName(), "newEdgeCreation")){
+            this.updateUINewEdge((AbstractEdge) event.getNewValue());
         }
     }
 
@@ -61,7 +66,7 @@ public class FXMLController implements PropertyChangeListener{
 
     @FXML
     private void lineButtonPressed() {
-        testLabel.setText("Can't make a line yet, sorry ¯\\_(ツ)_/¯");
+        observable.makeEdgeRequest();
     }
 
     /**
@@ -70,24 +75,15 @@ public class FXMLController implements PropertyChangeListener{
      * @param newNode The newly create Node object that needs to be displayed
      */
     private void updateUINewCircle(AbstractNode newNode){
-        testLabel.setText("New node made: "+ "\n"+
-                "at: ("+ (int) newNode.getXCoord()+ ", "+ (int)newNode.getYCoord()+ ")" + "\n"+
-                "Name: "+ newNode.getName()+ "\n"+
-                "SVG: "+ newNode.getSVGImage()+ "\n"+
-                "Description: "+ newNode.getDescription()+ "\n"+
-                "GetSVG: " + newNode.getSVG()+ "\n" +
-                "ID: "+ (int) newNode.getID()+ "\n"+
-                "width/height: ("+ (int) newNode.getWidth()+ ", "+ (int) newNode.getHeight()+ ")");
+        testLabel.setText(newNode.toString());
     }
 
     private void updateUINewClass(AbstractNode newNode){
-        testLabel.setText("New node made: "+ "\n"+
-                "at: ("+ (int) newNode.getXCoord()+ ", "+ (int)newNode.getYCoord()+ ")" + "\n"+
-                "Name: "+ newNode.getName()+ "\n"+
-                "SVG: "+ newNode.getSVGImage()+ "\n"+
-                "Description: "+ newNode.getDescription()+ "\n"+
-                "ID: "+ (int) newNode.getID()+ "\n"+
-                "width/height: ("+ (int) newNode.getWidth()+ ", "+ (int) newNode.getHeight()+ ")");
+        testLabel.setText(newNode.toString());
+    }
+
+    private void updateUINewEdge(AbstractEdge newEdge){
+        testLabel.setText(newEdge.toString());
     }
 
 }

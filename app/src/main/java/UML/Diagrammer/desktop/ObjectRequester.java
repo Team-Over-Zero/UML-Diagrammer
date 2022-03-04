@@ -20,6 +20,7 @@ public class ObjectRequester {
      */
     private final PropertyChangeSupport support;
     private static final NodeFactory nodeFactory = new NodeFactory();
+    private static final EdgeFactory edgeFactory = new EdgeFactory();
 
     /**
      * Constructor, needs to make the PropertyChangeSupport object for to notify listeners
@@ -67,6 +68,11 @@ public class ObjectRequester {
         //newNode.setDescription("square");
         //newNode.setTitle("class");
         support.firePropertyChange("newSquareCreation", null, newNode);
+    }
+
+    public void makeEdgeRequest(){
+        AbstractEdge newEdge = edgeFactory.buildEdge();
+        support.firePropertyChange("newEdgeCreation", null, newEdge);
     }
 
 }

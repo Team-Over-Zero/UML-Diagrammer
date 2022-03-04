@@ -69,11 +69,11 @@ public abstract class AbstractNode implements Node{
      */
     @Override
     public String toString() {
-        return "Made a node with" + "\n" +
-                "Name: " + name +
-                "Description" + description +
-                "(x, y))" + "(" + xCoord + ", " + yCoord + ")" +
-                "(Width, Height)" + "(" + width + ", " + height + ")";
+        return "Made a node with:" + "\n" +
+                "Name: " + name + "\n" +
+                "Description: " + description + "\n" +
+                "(x, y): " + "(" + xCoord + ", " + yCoord + ")" + "\n" +
+                "(Width, Height): " + "(" + width + ", " + height + ")";
     }
 
     @Override

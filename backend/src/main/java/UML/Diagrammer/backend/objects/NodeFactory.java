@@ -8,6 +8,41 @@ package UML.Diagrammer.backend.objects;
  * Feel free to message me if this class is incomprehensible
  * @author Show
  */
+
+/**
+ * Here is the actual nodeFactory that will be used by the UI to request node objects.
+ * The UI simply needs to have a NodeFactory object and then call
+ * nodeFactory.buildNode(Sting of wanted node,xCoordinate, yCoordinate, width, height).
+ * Image is an enum for your specific node type
+ * @param SVGImage what type of object you want in a string and all caps. E.G: "CLASS", "LOOP", "TEXTBOX", "STICKFIGURE"
+ */
+public class NodeFactory{
+    public NodeFactory(){}
+    public AbstractNode buildNode(String SVGImage, int x, int y, int w, int h){
+        AbstractNode node = null;
+
+        switch(SVGImage){
+            case "CLASS" -> node = new ClassNode(x, y, w, h);
+            case "TEXTBOX" -> node = new TextBoxNode(x, y, w, h);
+            case "NOTE" -> node = new NoteNode(x, y, w, h);
+            case "FOLDER" -> node = new FolderNode(x, y, w, h);
+            case "SQUARE" -> node = new SquareNode(x, y, w, h);
+            case "STICKFIGURE" -> node = new StickFigureNode(x, y, w, h);
+            case "OVAL" -> node = new OvalNode(x, y, w, h);
+            case "LIFELINE" -> node = new LifeLineNode(x, y, w, h);
+            case "LOOP" -> node = new LoopNode(x, y, w, h);
+            default -> node = new DefaultNode();
+        }
+        return node;
+    }
+
+    /**
+     * Default constructor if no parameters are given
+     */
+    public AbstractNode buildNode(){
+        return new DefaultNode();
+    }
+
 /**
  * This makes a Class uml element.
  * This will need a name, description, and a TEXT_BOX_SVG image.
@@ -140,37 +175,5 @@ class DefaultNode extends AbstractNode{
     @Override public String getSVG() {return super.getSVGImage();}
 }
 
-/**
- * Here is the actual nodeFactory that will be used by the UI to request node objects.
- * The UI simply needs to have a NodeFactory object and then call
- * nodeFactory.buildNode(Sting of wanted node,xCoordinate, yCoordinate, width, height).
- * Image is an enum for your specific node type
- * @param SVGImage what type of object you want in a string and all caps. E.G: "CLASS", "LOOP", "TEXTBOX", "STICKFIGURE"
- */
-public class NodeFactory{
-    public NodeFactory(){}
-    public AbstractNode buildNode(String SVGImage, int x, int y, int w, int h){
-        AbstractNode node = null;
 
-        switch(SVGImage){
-            case "CLASS" -> node = new ClassNode(x, y, w, h);
-            case "TEXTBOX" -> node = new TextBoxNode(x, y, w, h);
-            case "NOTE" -> node = new NoteNode(x, y, w, h);
-            case "FOLDER" -> node = new FolderNode(x, y, w, h);
-            case "SQUARE" -> node = new SquareNode(x, y, w, h);
-            case "STICKFIGURE" -> node = new StickFigureNode(x, y, w, h);
-            case "OVAL" -> node = new OvalNode(x, y, w, h);
-            case "LIFELINE" -> node = new LifeLineNode(x, y, w, h);
-            case "LOOP" -> node = new LoopNode(x, y, w, h);
-            default -> node = new DefaultNode();
-        }
-        return node;
-    }
-
-    /**
-     * Default constructor if no parameters are given
-     */
-    public AbstractNode buildNode(){
-        return new DefaultNode();
-    }
 }

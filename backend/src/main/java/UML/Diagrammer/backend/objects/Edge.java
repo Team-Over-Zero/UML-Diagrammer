@@ -11,4 +11,6 @@ public interface Edge {
      */
     void setNodes(Node n1,Node n2);
     int getID();
+    Node getN1();
+    Node getN2();
 }
