@@ -35,5 +35,13 @@ public class Page implements Graph {
     public void removeEdge(Edge e1){
         edgeDict.remove(e1.getID());
     }
+    //needed this to test something
+    public int getNodeDictSize(){
+        return nodeDict.size();
+    }
+
+    public int getEdgeDictSize(){
+        return edgeDict.size();
+    }
 
 }
