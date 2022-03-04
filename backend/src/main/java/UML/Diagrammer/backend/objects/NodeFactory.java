@@ -18,6 +18,7 @@ package UML.Diagrammer.backend.objects;
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -30,6 +31,7 @@ class TextBoxNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -42,6 +44,7 @@ class NoteNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -54,6 +57,7 @@ class FolderNode extends AbstractNode{
      }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -66,6 +70,7 @@ class SquareNode extends  AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -78,6 +83,7 @@ class StickFigureNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -90,6 +96,7 @@ class OvalNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -103,6 +110,7 @@ class LifeLineNode extends AbstractNode{
 
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -116,6 +124,7 @@ class LoopNode extends AbstractNode{
 
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**
@@ -128,6 +137,7 @@ class DefaultNode extends AbstractNode{
 
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
+    @Override public String getSVG() {return super.getSVGImage();}
 }
 
 /**

@@ -75,6 +75,7 @@ public class FXMLController implements PropertyChangeListener{
                 "Name: "+ newNode.getName()+ "\n"+
                 "SVG: "+ newNode.getSVGImage()+ "\n"+
                 "Description: "+ newNode.getDescription()+ "\n"+
+                "GetSVG: " + newNode.getSVG()+ "\n" +
                 "ID: "+ (int) newNode.getID()+ "\n"+
                 "width/height: ("+ (int) newNode.getWidth()+ ", "+ (int) newNode.getHeight()+ ")");
     }
