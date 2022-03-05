@@ -31,7 +31,7 @@ public class NodeFactory{
             case "OVAL" -> node = new OvalNode(x, y, w, h);
             case "LIFELINE" -> node = new LifeLineNode(x, y, w, h);
             case "LOOP" -> node = new LoopNode(x, y, w, h);
-            case "Test_NODE" -> node = new TestNode(x,y,w,h);
+            case "Test_SVG" -> node = new TestNode(x,y,w,h);
             default -> node = new DefaultNode();
         }
         return node;

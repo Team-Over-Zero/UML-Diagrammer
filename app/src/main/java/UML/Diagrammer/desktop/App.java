@@ -23,8 +23,9 @@ public class App extends Application{
         System.out.println(new App().getGreeting());
         NodeFactory fac = new NodeFactory();
         AbstractNode myNode = fac.buildNode("CLASS", 0, 0, 3,3);
-        AbstractNode testNodeInheritance = fac.buildNode("Test_Node",1,1,2,2);
+        AbstractNode testNodeInheritance = fac.buildNode("Test_SVG",1,1,2,2);
         System.out.println(myNode.getName());
+        System.out.println(testNodeInheritance.getName()+ " " + testNodeInheritance.getDescription());
         App.launch();
 //        Javalin app = Javalin.create().start(7070);
 //        app.get("/", ctx -> ctx.result("Hello this is a test"));
