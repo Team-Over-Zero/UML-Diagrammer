@@ -31,6 +31,6 @@ public interface Node {
     int getID();
     String getDescription();
     int hashCode();
-    String getSVG();
+    String getSVGImage();
 
 }

@@ -31,6 +31,7 @@ public class NodeFactory{
             case "OVAL" -> node = new OvalNode(x, y, w, h);
             case "LIFELINE" -> node = new LifeLineNode(x, y, w, h);
             case "LOOP" -> node = new LoopNode(x, y, w, h);
+            case "Test_NODE" -> node = new TestNode(x,y,w,h);
             default -> node = new DefaultNode();
         }
         return node;
@@ -53,7 +54,7 @@ public class NodeFactory{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -66,7 +67,7 @@ class TextBoxNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -79,7 +80,7 @@ class NoteNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -92,7 +93,7 @@ class FolderNode extends AbstractNode{
      }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -105,7 +106,7 @@ class SquareNode extends  AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -118,7 +119,7 @@ class StickFigureNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -131,7 +132,7 @@ class OvalNode extends AbstractNode{
     }
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -145,7 +146,7 @@ class LifeLineNode extends AbstractNode{
 
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -159,7 +160,7 @@ class LoopNode extends AbstractNode{
 
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
 /**
@@ -172,8 +173,13 @@ class DefaultNode extends AbstractNode{
 
     @Override public int getID() {return super.getID();}
     @Override public String getDescription() {return super.getDescription();}
-    @Override public String getSVG() {return super.getSVGImage();}
+    @Override public String getSVGImage() {return super.getSVGImage();}
 }
 
+class TestNode extends AbstractNode{
+    TestNode(int x, int y, int w, int h){
+        super("TEST", "This is a TestNode", "Test_SVG", x, y, w, h);
+    }
+}
 
 }

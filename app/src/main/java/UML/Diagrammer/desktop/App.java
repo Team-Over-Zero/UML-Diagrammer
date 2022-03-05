@@ -23,6 +23,7 @@ public class App extends Application{
         System.out.println(new App().getGreeting());
         NodeFactory fac = new NodeFactory();
         AbstractNode myNode = fac.buildNode("CLASS", 0, 0, 3,3);
+        AbstractNode testNodeInheritance = fac.buildNode("Test_Node",1,1,2,2);
         System.out.println(myNode.getName());
         App.launch();
 //        Javalin app = Javalin.create().start(7070);
