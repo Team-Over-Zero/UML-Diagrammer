@@ -9,18 +9,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphTest {
 
+    /*Tests the Graph's addNode method in this function*/
     @Test
     public void addNode() {
     }
 
+    /*Tests the Graph's removeNode method in this function*/
     @Test
     public void removeNode() {
     }
 
+    /*Tests the Graph's addEdge method in this function*/
     @Test
     public void addEdge() {
     }
 
+    /*Tests the Graph's removeEdge method in this function*/
     @Test
     public void removeEdge() {
     }

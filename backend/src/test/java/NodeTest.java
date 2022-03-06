@@ -9,12 +9,14 @@ public class NodeTest {
 
     private AbstractNode node;
 
+    /*Testing the node setup method*/
     @BeforeEach
     public void setup(){
         factory = new NodeFactory();
         node = factory.buildNode();
     }
 
+    /*Node test for setCoords method*/
     @Test
     public void setCoords() {
         node.setCoords(1,1);
@@ -23,6 +25,7 @@ public class NodeTest {
         assertEquals(123,node.getYCoord());
     }
 
+    /*Test for the getID method*/
     @Test
     public void getID() {
         node.setID(9999);
@@ -30,6 +33,7 @@ public class NodeTest {
         assertEquals(1,node.getID());
     }
 
+    /*Testing for the getDescription method*/
     @Test
     public void getDescription() {
         node.setDescription("This should be gettable");
@@ -37,6 +41,7 @@ public class NodeTest {
         assertEquals("This should be gettable",s);
     }
 
+    /*HashCode testing method in node test*/
     @Test
     public void testHashCode() {
 
