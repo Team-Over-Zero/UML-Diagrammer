@@ -1,3 +1,13 @@
+/**
+ * FXMLController.java
+ *
+ * Controller for FXML that will control the logic for the UI.
+ * This class will be set up as an observer(PropertyChangeListener), so when there is a change in the backend
+ * the UI can update automatically.
+ * @author Show
+ */
+
+
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.AbstractEdge;
@@ -9,11 +19,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Objects;
 
-/**
- * Controller for FXML that will control the logic for the UI.
- * This class will be set up as an observer(PropertyChangeListener), so when there is a change in the backend
- * the UI can update automatically.
- */
+
 public class FXMLController implements PropertyChangeListener{
 
     /**

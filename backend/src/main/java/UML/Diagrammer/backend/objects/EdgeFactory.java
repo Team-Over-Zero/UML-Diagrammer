@@ -3,6 +3,7 @@ package UML.Diagrammer.backend.objects;
  * This is similar to NodeFactory just much fewer subclasses for now.
  * You can only really make 1 type of edge(normalEdge) and there is a default one for no parameters given.
  * This is formatted exactly the same as NodeFactory for consistency and to make it extendable in the future.
+ * @author Show
  */
 
 /**

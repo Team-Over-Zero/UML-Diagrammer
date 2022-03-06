@@ -1,13 +1,14 @@
-//AbstractNode.java
-package UML.Diagrammer.backend.objects;
-import lombok.*;
-
-import java.util.Objects;
-
 /**
+ * AbstractNode.java
+ *
  * This class should illustrate a basic Node object.
  * This class will be the superclass of the various subclasses found in NodeFactory.
+ * @author Alex
  */
+
+package UML.Diagrammer.backend.objects;
+import lombok.*;
+import java.util.Objects;
 
 @Getter @Setter
 public abstract class AbstractNode implements Node{
@@ -54,10 +55,22 @@ public abstract class AbstractNode implements Node{
         int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
         ID = hashCode()+ intExact;
     }
+
+    /**
+     * Sets the width and height of the node
+     * @param w width of node
+     * @param h height of node
+     */
     public void setSize(int w, int h){
         width = w;
         height = h;
     }
+
+    /**
+     * Sets the x y coordinates of the node
+     * @param x X coordinate
+     * @param y Y coordinate
+     */
     public void setCoords(int x, int y){
         xCoord = x;
         yCoord = y;

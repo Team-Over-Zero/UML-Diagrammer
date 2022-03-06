@@ -1,14 +1,17 @@
-package UML.Diagrammer.backend.objects;
-
-import lombok.Getter;
-import lombok.Setter;
-
 /**
+ * AbstractEdge.java
+ *
  * Similar to AbstractNode
  * Illustrates a basic Edge object.
  * This class is how the factory will make edges.
  * Able to be expanded in the future if we want to add different line and head types.
+ * @author Alex
  */
+
+package UML.Diagrammer.backend.objects;
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter @Setter
 public abstract class AbstractEdge implements Edge {
 
