@@ -135,7 +135,7 @@ public class HTTP_Client {
      * Should send a post or put request (still not sure) to the database with the current page state.
      * May want to change from void return to test errors and such.
      */
-    public void sendCurrentPageState(){}
+    public void sendCurrentPageState(String page){}
 
 
 }

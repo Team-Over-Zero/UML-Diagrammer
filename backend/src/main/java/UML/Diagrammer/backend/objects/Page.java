@@ -14,9 +14,16 @@ import java.util.*;
 public class Page implements Graph {
     private HashMap nodeDict; //keys are node ids, values are node objects.
     private HashMap edgeDict; //keys are edge ids, values are edge objects.
+    private String pageName;
     public Page(){
         nodeDict = new HashMap();
         edgeDict = new HashMap();
+        pageName = "DEFAULT";
+    }
+    public Page(HashMap nD,HashMap eD, String pN){
+        nodeDict = nD;
+        edgeDict = eD;
+        pageName = pN;
     }
 
     public void addNode(Node n1){
