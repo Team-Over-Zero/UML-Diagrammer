@@ -1,4 +1,9 @@
-//Node.java
+/**
+ * Node.java
+ *
+ * This interface specifies methods that every Node implementation needs to have.
+ *
+ **/
 package UML.Diagrammer.backend.objects;
 
 /**
@@ -7,22 +12,7 @@ package UML.Diagrammer.backend.objects;
  */
 public interface Node {
 
-//    /**
-//     *
-//     * @return name of object
-//     */
-//    String getName();
-//
-//    /**
-//     *
-//     * @return unique id of object
-//     */
-//    int getID(); //ID should be unique object value.
 
-//    /**
-//     * Sets the Size of the diagram. (width, height, radius etc.)
-//     */
-//    void setSize();
 
     /**
      * Sets the x and y position on the page of the object.

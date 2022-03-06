@@ -1,3 +1,11 @@
+/**
+ * ObjectRequester.java
+ * Class to create objects using the backend.
+ * The FXMLController will use these function to request object creation using the backend.
+ * This class is set up as an observable, so it can call support.firePropertyChange to update the UI.
+ * @author Show P
+ */
+
 package UML.Diagrammer.desktop;
 
 
@@ -7,12 +15,6 @@ import java.beans.PropertyChangeSupport;
 import UML.Diagrammer.backend.objects.*;
 
 
-/**
- * Class to create objects using the backend.
- * The FXMLController will use these function to request object creation using the backend.
- * This class is set up as an observable, so it can call support.firePropertyChange to update the UI.
- * @author Show P
- */
 public class ObjectRequester {
 
     /**

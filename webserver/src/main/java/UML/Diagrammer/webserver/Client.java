@@ -1,5 +1,12 @@
+/**
+ * Client.java
+ *
+ * Serves as the Javalin http server for Vue.js to run on. This class should be able to send strings and Pages back
+ * and forth between the database, and also be able to send strings to Vue for processing and process strings that
+ * Vue sends it. (According to my understanding, this will serve as an intermediary between the Database and Vue) -Alex
+ * @author Michael
+ */
 package UML.Diagrammer.webserver;
-
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.vue.VueComponent;
 

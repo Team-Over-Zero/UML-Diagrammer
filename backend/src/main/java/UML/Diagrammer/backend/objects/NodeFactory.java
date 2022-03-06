@@ -1,6 +1,7 @@
-package UML.Diagrammer.backend.objects;
 
 /**
+ * NodeFactory.java
+ *
  * This file will have many classes that are the various subtypes of nodes described by AbstractNode.
  * All will be slightly different because they all need different images associated with them.
  * And doing this way makes it so the default name/description(if needed) is different before the user edits it.
@@ -9,6 +10,8 @@ package UML.Diagrammer.backend.objects;
  * @author Show
  */
 
+
+
 /**
  * Here is the actual nodeFactory that will be used by the UI to request node objects.
  * The UI simply needs to have a NodeFactory object and then call
@@ -16,6 +19,8 @@ package UML.Diagrammer.backend.objects;
  * Image is an enum for your specific node type
  * @param SVGImage what type of object you want in a string and all caps. E.G: "CLASS", "LOOP", "TEXTBOX", "STICKFIGURE"
  */
+package UML.Diagrammer.backend.objects;
+
 public class NodeFactory{
     public NodeFactory(){}
     public AbstractNode buildNode(String SVGImage, int x, int y, int w, int h){

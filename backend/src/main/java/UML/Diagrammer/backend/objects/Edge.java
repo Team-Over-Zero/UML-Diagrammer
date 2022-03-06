@@ -1,9 +1,14 @@
-//Edge.java
+/**
+ * Edge.java
+ *
+ * This is an interface for UML edge "objects". Edge objects should point to two nodes, and have a type.
+ *
+ * @author Alex
+ */
+
 package UML.Diagrammer.backend.objects;
 
-/**
- * This is an interface for UML edge "objects". Edge objects should point to two nodes, and have a type.
- */
+
 public interface Edge {
 
     /**

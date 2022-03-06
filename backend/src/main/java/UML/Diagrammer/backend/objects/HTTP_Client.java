@@ -1,9 +1,9 @@
 /**
  * HTTP_CLient.java
- * @Author Alex Diviney Team OverZero
  *
  * This class offers helper methods for client applications to use. Since UML_Diagrammer only needs a few specific
- * HTTP requests, this will help clients easily build those requests, helping with separation of responsibilites.
+ * HTTP requests, this will help clients easily build those requests, helping with separation of responsibilities.
+ * @Author Alex
  */
 package UML.Diagrammer.backend.objects;
 import java.io.IOException;
