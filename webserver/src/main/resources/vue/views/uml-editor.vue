@@ -31,12 +31,17 @@
       <button>User</button>
       <button>Oval</button>
     </div>
+    <my-canvas style="width: 100%; height: 400px;">
+
+    </my-canvas>
   </div>
 </template>
-<script>
+<script type="module">
 
-Vue.component("uml-editor", {template: "#uml-editor"});
+  Vue.component("uml-editor", {template: "#uml-editor"});
+
 </script>
+
 <style>
 .uml-editor {
 
