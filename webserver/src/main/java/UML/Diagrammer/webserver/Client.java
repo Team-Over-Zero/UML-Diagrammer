@@ -17,7 +17,6 @@ public class Client {
         client = Javalin.create(config ->
         {config.enableWebjars();}).start(7777);
 
-        //client.get("/", ctx -> ctx.result("Hello World"));
 
         client.get("/", new VueComponent("uml-editor"));
     }

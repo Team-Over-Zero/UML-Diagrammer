@@ -43,6 +43,7 @@ dependencies {
 
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
     implementation group: 'org.webjars.npm', name: 'vue', version: '2.6.10'
+    implementation 'org.webjars.npm:snapsvg:0.5.1'
 
 
 }
