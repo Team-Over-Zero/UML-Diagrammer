@@ -41,7 +41,7 @@ public class NodeTest {
         assertEquals("This should be gettable",s);
     }
 
-    /*HashCode testing method in node test*/
+    /*Test Node's hashCode method*/
     @Test
     public void testHashCode() {
 
