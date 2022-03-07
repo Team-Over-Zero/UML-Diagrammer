@@ -11,7 +11,7 @@ import java.io.IOException;
 public class App {
 
     public static void main(String[] args){
-        Client client = new Client();
+        WebServer webServer = new WebServer();
         System.out.println("SERVER STARTED");
         HTTP_Client http_req_client = new HTTP_Client("jsonplaceholder.typicode.com/posts","80");
         try {
