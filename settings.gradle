@@ -8,4 +8,6 @@
  */
 
 rootProject.name = 'UML-Diagrammer'
-include('app')
+include 'app','backend'
+include 'webserver'
+

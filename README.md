@@ -10,6 +10,23 @@ This incudes functinality for:
  - Exporting diagrams in PNG and SVG formats.
  - Functinality for Web and Desktop UI.
 
+##Installation
+To use the project:
+
+First make sure that you have gradle installed on your machine
+
+1. Clone the github repository to a directory on your machine
+2. navigate to the directory and run "gradle build" to ensure it builds
+
+## Usage
+
+There are two main applications in the project currently, the first is
+a JavaFX client, and the other is a Vue webserver.
+
+To run the JavaFX, run the command: "gradle :app:run"
+
+To run the webserver run the command: "gradle :webserver:run"
+
 ## Credit
 This project is created by:
  - Alex Diviney
