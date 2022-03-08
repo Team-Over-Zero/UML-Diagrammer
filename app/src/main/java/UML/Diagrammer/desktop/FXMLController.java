@@ -10,8 +10,7 @@
 
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.AbstractEdge;
-import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 

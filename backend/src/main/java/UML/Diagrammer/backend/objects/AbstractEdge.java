@@ -9,6 +9,7 @@
  */
 
 package UML.Diagrammer.backend.objects;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,7 @@ public abstract class AbstractEdge implements Edge {
     protected Node n1;
     protected Node n2;
 
-    AbstractEdge(Node n1, Node n2){
+    public AbstractEdge(Node n1, Node n2){
             this.n1 = n1;
             this.n2 = n2;
             int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
@@ -29,7 +30,7 @@ public abstract class AbstractEdge implements Edge {
     /**
      * Default constructor, just makes 2 new default nodes and adds an edge between them.
      */
-    AbstractEdge(){
+    public AbstractEdge(){
         NodeFactory NFac = new NodeFactory();
         this.n1 = NFac.buildNode();
         this.n2 = NFac.buildNode();

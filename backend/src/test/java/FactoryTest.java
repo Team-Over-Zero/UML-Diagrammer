@@ -1,4 +1,5 @@
 import UML.Diagrammer.backend.objects.*;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -79,7 +80,7 @@ public class FactoryTest {
     /**
      * ClassNode subclass test
      * You can reference what type of classes there are in NodeFactory.java
-     * The only thing you really need to change is the first parameter of factory.buildNode(SVGImage)
+     * To make different node types simply call 'NODETYPE node = factory.buildNode(NODETYPE, rest of params)'
      * The switch block in NodeFactory class tells the different strings to call other subclasses.
      * @author Show
      */
@@ -87,7 +88,7 @@ public class FactoryTest {
     /*Tests the factory's classNodeSubclass method in this function*/
     @Test
     public void testClassNodeSubclass(){
-        AbstractNode node = factory.buildNode("CLASS", 0, 0, 3, 3);
+        ClassNode node = factory.buildNode("CLASS", 0, 0, 3, 3);
         assertEquals("Class Name", node.getName());
         assertEquals("Class Description", node.getDescription());
         assertEquals(0, node.getXCoord());
@@ -104,7 +105,7 @@ public class FactoryTest {
     /*Tests the factory's defaultNodeSubclass method in this function*/
     @Test
     public void testDefaultNodeSubclass(){
-        AbstractNode node = factory.buildNode();
+        DefaultNode node = factory.buildNode();
         assertEquals("DEFAULT NAME", node.getName());
         assertEquals("DEFAULT DESCRIPTION", node.getDescription());
         assertEquals(0, node.getXCoord());

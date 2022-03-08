@@ -1,5 +1,6 @@
 
 import UML.Diagrammer.backend.objects.*;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;

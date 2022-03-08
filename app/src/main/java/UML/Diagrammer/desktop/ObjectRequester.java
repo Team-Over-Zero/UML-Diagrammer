@@ -9,10 +9,11 @@
 package UML.Diagrammer.desktop;
 
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import UML.Diagrammer.backend.objects.*;
+import UML.Diagrammer.backend.objects.EdgeFactory.*;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
 
 
 public class ObjectRequester {
@@ -53,7 +54,7 @@ public class ObjectRequester {
      * New node creation so the oldValue will be null
      */
     public void makeCircleRequest(){
-        AbstractNode newNode = nodeFactory.buildNode("OVAL", 0, 7, 7, 3);
+        OvalNode newNode = nodeFactory.buildNode("OVAL", 0, 7, 7, 3);
         //DefaultNode newNode = new DefaultNode();
         //newNode.setName("UML-Object-2");
         //newNode.setDescription("circle");
@@ -65,7 +66,7 @@ public class ObjectRequester {
      * Exact same as makCircleRequest() for now.
      */
     public void makeClassRequest(){
-        AbstractNode newNode = nodeFactory.buildNode("CLASS", 2, 4, 2, 1);
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 2, 4, 2, 1);
         //newNode.setName("UML-Object-1");
         //newNode.setDescription("square");
         //newNode.setTitle("class");
@@ -73,7 +74,7 @@ public class ObjectRequester {
     }
 
     public void makeEdgeRequest(){
-        AbstractEdge newEdge = edgeFactory.buildEdge();
+        DefaultEdge newEdge = edgeFactory.buildEdge();
         support.firePropertyChange("newEdgeCreation", null, newEdge);
     }
 

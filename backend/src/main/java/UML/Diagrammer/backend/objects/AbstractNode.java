@@ -27,7 +27,7 @@ public abstract class AbstractNode implements Node{
      * Constructor for the NodeFactory class so this class can put together things from it's subclasses
      * @author Show
      */
-    AbstractNode(String name, String desc, String SVGImage, int x, int y, int w, int h) {
+    public AbstractNode(String name, String desc, String SVGImage, int x, int y, int w, int h) {
         this.name = name;
         // I didn't add a "Title" attribute here, not sure if we want that.
         this.description = desc;
@@ -44,7 +44,7 @@ public abstract class AbstractNode implements Node{
      * A default constructor with no parameters
      * @author Show
      */
-    AbstractNode(){
+    public AbstractNode(){
         this.name = "DEFAULT NAME";
         this.description = "DEFAULT DESCRIPTION";
         this.xCoord = 0;

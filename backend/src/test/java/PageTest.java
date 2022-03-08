@@ -1,8 +1,7 @@
 import UML.Diagrammer.backend.objects.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PageTest {

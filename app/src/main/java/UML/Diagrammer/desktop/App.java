@@ -10,14 +10,13 @@
 package UML.Diagrammer.desktop;
 
 
+import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import UML.Diagrammer.backend.objects.*;
-
-import java.lang.reflect.Type;
 
 public class App extends Application{
 
@@ -28,13 +27,10 @@ public class App extends Application{
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         NodeFactory fac = new NodeFactory();
-        AbstractNode myNode = fac.buildNode("CLASS", 0, 0, 3,3);
-        AbstractNode testNodeInheritance = fac.buildNode("Test_SVG",1,1,2,2);
+        ClassNode myNode = fac.buildNode("CLASS", 0, 0, 3,3);
+        myNode.testFunc();
         System.out.println(myNode.getName());
-        System.out.println(testNodeInheritance.getName()+ " " + testNodeInheritance.getDescription());
         App.launch();
-//        Javalin app = Javalin.create().start(7070);
-//        app.get("/", ctx -> ctx.result("Hello this is a test"));
 
 
     }
