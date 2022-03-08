@@ -16,7 +16,9 @@ plugins {
     //Javafx plugin for use of JavaFX and FXML
     id 'org.openjfx.javafxplugin' version '0.0.12'
 
-
+    // ActiveJDBC
+    id "java"
+    id "de.schablinski.activejdbc-gradle-plugin" version "2.0"
 
 }
 

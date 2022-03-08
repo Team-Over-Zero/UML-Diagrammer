@@ -13,6 +13,11 @@ plugins {
     id "com.github.hierynomus.license-base" version "0.16.1"
 
     id 'jacoco'
+
+    // ActiveJDBC
+    id "java"
+    id "de.schablinski.activejdbc-gradle-plugin" version "2.0"
+
 }
 
 repositories {
