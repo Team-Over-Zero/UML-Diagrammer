@@ -21,6 +21,8 @@
  */
 package UML.Diagrammer.backend.objects.NodeFactory;
 import UML.Diagrammer.backend.objects.AbstractNode;
+import org.javalite.activejdbc.Model;
+//import activejdbc.*;
 
 /**
  * NodeFactory that any class will need if they want to create various node objects.
@@ -38,7 +40,8 @@ public class NodeFactory{
      * @param SVGImage The type of node you want, CLASS, TEXTBOX, NOTE, FOLDER, SQUARE, STICKFIGURE, OVAL, LIFELINE, and LOOP
      * @return A subtype of an AbstractNode, if the SVG text doesn't match one above (or empty params) returns a DefaultNode
      */
-    public <genericNode extends AbstractNode> genericNode
+    @SuppressWarnings("unchecked")
+	public <genericNode extends AbstractNode> genericNode
     buildNode(String SVGImage, int x, int y, int w, int h){
 
         switch(SVGImage){
@@ -58,7 +61,8 @@ public class NodeFactory{
     /**
      * Default constructor if no parameters are given
      */
-    public <genericNode extends AbstractNode> genericNode buildNode(){
+    @SuppressWarnings("unchecked")
+	public <genericNode extends AbstractNode> genericNode buildNode(){
         return (genericNode) new DefaultNode();
     }
 

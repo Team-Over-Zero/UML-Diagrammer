@@ -11,12 +11,14 @@ import UML.Diagrammer.backend.objects.Node;
 public class EdgeFactory {
     public EdgeFactory(){}
 
-    public <genericEdge extends AbstractEdge> genericEdge
+    @SuppressWarnings("unchecked")
+	public <genericEdge extends AbstractEdge> genericEdge
     buildEdge(Node n1, Node n2){
         return (genericEdge) new NormalEdge(n1, n2);
     }
 
-    public <genericEdge extends AbstractEdge> genericEdge buildEdge(){
+    @SuppressWarnings("unchecked")
+	public <genericEdge extends AbstractEdge> genericEdge buildEdge(){
         return (genericEdge) new DefaultEdge();
     }
 }

@@ -14,6 +14,7 @@ import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -31,8 +32,6 @@ public class App extends Application{
         myNode.testFunc();
         System.out.println(myNode.getName());
         App.launch();
-
-
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -40,6 +39,6 @@ public class App extends Application{
         primaryStage.setTitle("UML Diagrammer");
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
-
     }
+
 }

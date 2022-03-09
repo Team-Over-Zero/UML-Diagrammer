@@ -20,6 +20,8 @@ plugins {
 
 }
 
+//activejdbc.toolVersion = '2.3'
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -39,6 +41,9 @@ dependencies {
     // project lombok test processor
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    
+    implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+    
 }
 
 tasks.named('test') {

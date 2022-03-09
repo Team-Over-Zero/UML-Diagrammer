@@ -14,6 +14,9 @@ import java.beans.PropertyChangeSupport;
 import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.EdgeFactory.*;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
+import javafx.scene.Cursor;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 
 public class ObjectRequester {
@@ -24,6 +27,7 @@ public class ObjectRequester {
     private final PropertyChangeSupport support;
     private static final NodeFactory nodeFactory = new NodeFactory();
     private static final EdgeFactory edgeFactory = new EdgeFactory();
+    private static final Canvas canvas = new Canvas();
 
     /**
      * Constructor, needs to make the PropertyChangeSupport object for to notify listeners
@@ -49,8 +53,7 @@ public class ObjectRequester {
     }
 
     /**
-     * These create the object right here for now.
-     * In the future we will want to have a factory in the backend, so we don't make new objects in the UI itself.
+     * Calls the backend to make the object.
      * New node creation so the oldValue will be null
      */
     public void makeCircleRequest(){
@@ -73,9 +76,20 @@ public class ObjectRequester {
         support.firePropertyChange("newSquareCreation", null, newNode);
     }
 
+    /**
+     * Creates 
+     */
     public void makeEdgeRequest(){
-        DefaultEdge newEdge = edgeFactory.buildEdge();
-        support.firePropertyChange("newEdgeCreation", null, newEdge);
+    	Circle red_circle = new Circle(50.0f, Color.RED);
+    	red_circle.setCenterX(200);
+    	red_circle.setCenterY(200);
+    	red_circle.setCursor(Cursor.HAND);
+    	red_circle.setOnMousePressed(canvas.circleOnMousePressedEventHandler);
+    	red_circle.setOnMouseDragged(canvas.circleOnMouseDraggedEventHandler);
+    	
+    	
+        //DefaultEdge newEdge = edgeFactory.buildEdge();
+        support.firePropertyChange("newEdgeCreation", null, red_circle);
     }
 
 }
