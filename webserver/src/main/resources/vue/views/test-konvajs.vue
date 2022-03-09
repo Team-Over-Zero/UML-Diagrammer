@@ -1,5 +1,6 @@
 <template id="test-konvajs">
   <div>
+    <button v-on:click="addBox">add box</button>
     <v-stage
         ref="stage"
         :config="configKonva"
@@ -7,7 +8,7 @@
         @dragend="handleDragend"
     >
       <v-layer ref="layer">
-        <v-star
+        <v-rect
             v-for="item in list"
             :key="item.id"
             :config="{
@@ -15,20 +16,32 @@
             y: item.y,
             rotation: item.rotation,
             id: item.id,
-            numPoints: 5,
+            /*numPoints: 5,
             innerRadius: 30,
             outerRadius: 50, fill: '#89b717',
-            opacity: 0.8,
+            opacity: 0.8,*/
             draggable: true,
-            scaleX: dragItemId === item.id ? item.scale * 1.2 : item.scale,
-            scaleY: dragItemId === item.id ? item.scale * 1.2 : item.scale,
+            /*scaleX: dragItemId === item.id ? item.scale * 1.2 : item.scale,
+            scaleY: dragItemId === item.id ? item.scale * 1.2 : item.scale,*/
             shadowColor: 'black',
             shadowBlur: 10,
-            shadowOffsetX: dragItemId === item.id ? 15 : 5,
-            shadowOffsetY: dragItemId === item.id ? 15 : 5,
+            /*shadowOffsetX: dragItemId === item.id ? 15 : 5,
+            shadowOffsetY: dragItemId === item.id ? 15 : 5,*/
             shadowOpacity: 0.6
           }"
-        ></v-star>
+        ></v-rect>
+        <v-rect
+            v-for="item in list"
+            :config="{
+            x: item.x,
+            y: item.y,
+            width: 40,
+            height: 30,
+            fill: 'black',
+            draggable: true
+          }"
+
+        ></v-rect>
       </v-layer>
     </v-stage>
   </div>
@@ -55,21 +68,7 @@ Vue.component("test-konvajs", {
     };
   },
   methods: {
-    handleDragstart(e) {
-      // save drag element:
-      this.dragItemId = e.target.id();
-      // move current element to the top:
-      const item = this.list.find(i => i.id === this.dragItemId);
-      const index = this.list.indexOf(item);
-      this.list.splice(index, 1);
-      this.list.push(item);
-    },
-    handleDragend(e) {
-      this.dragItemId = null;
-    }
-  },
-  mounted() {
-    for (let n = 0; n < 30; n++) {
+    addBox: function(event){
       this.list.push({
         id: Math.round(Math.random() * 10000).toString(),
         x: Math.random() * width,
@@ -77,7 +76,30 @@ Vue.component("test-konvajs", {
         rotation: Math.random() * 180,
         scale: Math.random()
       });
+    },
+    handleDragstart(e) {
+      // save drag element:
+      //this.dragItemId = e.target.id();
+      // move current element to the top:
+      //const item = this.list.find(i => i.id === this.dragItemId);
+      //const index = this.list.indexOf(item);
+      //this.list.splice(index, 1);
+      //this.list.push(item);
+    },
+    handleDragend(e) {
+      //this.dragItemId = null;
     }
+  },
+  mounted() {
+    /*for (let n = 0; n < 30; n++) {
+      this.list.push({
+        id: Math.round(Math.random() * 10000).toString(),
+        x: Math.random() * width,
+        y: Math.random() * height,
+        rotation: Math.random() * 180,
+        scale: Math.random()
+      });
+    }*/
   },
 });
 
