@@ -31,9 +31,10 @@
       <button>User</button>
       <button>Oval</button>
     </div>
-    <my-canvas style="width: 100%; height: 400px;">
+    <!--<my-canvas style="width: 100%; height: 400px;">
 
-    </my-canvas>
+    </my-canvas>-->
+    <test-konvajs></test-konvajs>
   </div>
 </template>
 <script type="module">
