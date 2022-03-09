@@ -1,6 +1,14 @@
 <template id='my-canvas'>
   <div class="my-canvas-wrapper">
-    <canvas ref="my-canvas"></canvas>
+    <canvas ref="my-canvas">
+
+      <uml-node
+          :x="100"
+          :y="50"
+      >
+      </uml-node>
+
+    </canvas>
     <slot></slot>
   </div>
 </template>
