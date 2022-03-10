@@ -24,7 +24,7 @@
       </MenuButton>
       <HBox layoutX="-2.0" layoutY="31.0" prefHeight="95.0" prefWidth="1000.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#classButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Class" />
+            <Button contentDisplay="CENTER" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#classButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/PngTestClass.png); -fx-background-color: white; -fx-content-display: CENTER; -fx-background-size: cover, auto; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Class" />
             <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ovalButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Oval" />
             <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#edgeButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
          </children></HBox>
