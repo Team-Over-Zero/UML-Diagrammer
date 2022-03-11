@@ -18,6 +18,7 @@ public class App {
             //System.out.print(http_req_client.exampleGetRequest()); //commented this out to to avoid log spam. Get request does work.
             System.out.println(http_req_client.examplePutRequest());
             System.out.println(http_req_client.examplePostRequest());
+            //webServer.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

@@ -17,8 +17,10 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.12'
 
     // ActiveJDBC
-    // Current version is 2.0.1, downgraded for now to stop comipler vomit while we find the issue with activejdbc imports
-    id "de.schablinski.activejdbc-gradle-plugin" version "1.3"
+    id "java"
+    //Griffith ActiveJDBC plugin
+    id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
+
 
 
 }
@@ -48,12 +50,23 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+<<<<<<< HEAD
     
     compileOnly 'org.javalite:activejdbc:1.4.1'
     compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
     
    // implementation ''
     
+=======
+
+    //Active JDBC
+    implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+
+    //Active JDBC Mysql
+    runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+
+
+>>>>>>> feature/activeJDBC
 }
 
 application {
