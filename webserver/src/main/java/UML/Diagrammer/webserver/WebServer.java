@@ -10,6 +10,8 @@ package UML.Diagrammer.webserver;
 import UML.Diagrammer.backend.objects.HTTP_Client;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.vue.VueComponent;
+import org.javalite.activejdbc.Base;
+
 
 public class WebServer {
 
@@ -21,6 +23,7 @@ public class WebServer {
     }
 
     private void init(){
+        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
 
         http_client = new HTTP_Client();
 
@@ -35,6 +38,7 @@ public class WebServer {
     }
 
     public void close(){
+        Base.close();
         client.close();
     }
 

@@ -9,9 +9,10 @@
 package UML.Diagrammer.backend.objects;
 import lombok.*;
 import java.util.Objects;
+import org.javalite.activejdbc.Model;
 
 @Getter @Setter
-public abstract class AbstractNode implements Node{
+public abstract class AbstractNode extends Model implements Node{
 
     protected int ID;
     protected String name;

@@ -16,7 +16,7 @@ plugins {
 
     // ActiveJDBC
     id "java"
-    id "de.schablinski.activejdbc-gradle-plugin" version "2.0"
+    id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
 
 }
 
@@ -41,8 +41,14 @@ dependencies {
     // project lombok test processor
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-    
-    implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+
+   // implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+    //mysql connector
+    implementation 'mysql:mysql-connector-java:8.0.15'
+    //activejdbc and javalite
+    implementation "org.javalite:activejdbc:3.0-j11"
+    implementation "org.javalite:javalite-common:3.0-j11"
+
     
 }
 
@@ -78,4 +84,7 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+}
+activejdbc {
+    toolVersion = '3.0-j11'
 }
