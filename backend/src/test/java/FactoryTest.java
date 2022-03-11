@@ -1,26 +1,58 @@
 import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
+import org.javalite.activejdbc.DB;
+import org.javalite.activejdbc.InitException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.javalite.activejdbc.Base;
+//import org.javalite.activejdbc.test.DBSpec;
+import org.javalite.activejdbc.DB;
+
+
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class FactoryTest {
+public class FactoryTest{
 
     NodeFactory factory;
     @BeforeEach
     public void makeFactory(){
+        //NOTE: Griffith uses com.mysql.cj.jdbc.Driver NOT com.mysql.jdbc.Driver
         factory = new NodeFactory();
     }
 
+    /**
+     * This method opens a connection to our test database. Note that you need to be running MYSQL on your local machine
+     * Your mysql must have the username "root" (which is docker's default) and the password "secret".
+     * You should also use the sql command "create schema test;" to create your schema. (database).
+     * @author Alex
+     */
+    @BeforeEach
+    public void openConnection(){
+
+        //DB testDB = new DB("default"); Alex Note: Need to add a database.configuration file at some point to do it the "right" way.
+        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+
+    }
+
+    @AfterEach
+    public void closeConnection(){
+        //new DB("default").rollbackTransaction();
+        Base.close();
+    }
+
     /*Testing factory for testFactory method*/
+
     @Test
     public void testFactory(){
-        AbstractNode node = factory.buildNode();
-        assertEquals("DEFAULT NAME",node.getName());
-        assertEquals(0,node.getXCoord());
-        assertEquals(0,node.getYCoord());
+
+            //assertTrue(testDB.hasConnection());
+            AbstractNode node = factory.buildNode();
+            assertEquals("DEFAULT NAME",node.getName());
+            assertEquals(0,node.getXCoord());
+            assertEquals(0,node.getYCoord());
+
     }
 
     /*Test factory's sizeNotBroken method*/

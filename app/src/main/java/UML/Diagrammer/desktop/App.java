@@ -14,6 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.javalite.activejdbc.Base;
+
 
 public class App extends Application{
 
@@ -24,6 +26,15 @@ public class App extends Application{
     public static void main(String[] args) {
     	//SvgImageLoaderFactory.install();
     	App.launch();
+        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+
+        System.out.println(new App().getGreeting());
+        NodeFactory fac = new NodeFactory();
+        ClassNode myNode = fac.buildNode("CLASS", 0, 0, 3,3);
+        myNode.testFunc();
+        System.out.println(myNode.getName());
+        App.launch();
+        Base.close();
     }
 
     public void start(Stage primaryStage) throws Exception {
