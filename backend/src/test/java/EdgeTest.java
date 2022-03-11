@@ -4,6 +4,7 @@ import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
+import org.javalite.activejdbc.Base;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,8 +21,11 @@ public class EdgeTest {
     public void setup(){
         factory = new NodeFactory();
         edgey = new EdgeFactory();
-
-
+        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+    }
+    @AfterEach
+    public void takeDown(){
+        Base.close();
     }
 
     /*Testing for setNode method*/
