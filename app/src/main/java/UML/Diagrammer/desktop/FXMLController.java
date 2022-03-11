@@ -37,15 +37,15 @@ public class FXMLController implements PropertyChangeListener{
     }
 
     /**
-     * This is the function that is called by ObjectRequester to update the UI
+     * This is the function that is called by ObjectRequester(or any observable) to update the UI
+     * newNodeCreation should deal with any of it's subtype of nodes.
+     * newNodeCreation will require the UI Object (Shape) because the shape has the data(node) associated with it already.
      * @param event The event that was changed that needs to be reflected in the UI.
      */
     public void propertyChange(PropertyChangeEvent event){
     	switch(event.getPropertyName()) {
-    	case "newOvalCreation" -> this.updateUINewOval((AbstractNode) event.getNewValue());
-    	case "newClassCreation" -> this.updateUINewClass((Shape) event.getNewValue());
+    	case "newNodeCreation" -> this.updateUINewNode((Shape) event.getNewValue());
     	case "newEdgeCreation" -> this.updateUINewEdge((AbstractEdge) event.getNewValue());
-    	case "classUpdate" -> {this.updateUIClassChange((String) event.getNewValue());System.out.print("working \n");}
     	}
     }
 
@@ -58,7 +58,7 @@ public class FXMLController implements PropertyChangeListener{
 
 
     /**
-     * These functions are what is executed on the press of the UML object button(Circle, square etc.).
+     * These functions are what is executed on the press of the UML object button(oval, class etc.).
      * Sends a request to ObjectRequester to make a UML object(Just a node right now).
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
@@ -75,31 +75,21 @@ public class FXMLController implements PropertyChangeListener{
         objectRequesterObservable.makeEdgeRequest();
     }
     
-
     /**
-     * These 2 function are the exact same right now, in the future it may be necessary for creation of different UML object.
-     * There is probably a way, so I can use 1 function to make any node object, gotta think about it.
-     * @param newNode The newly create Node object that needs to be displayed
+     * This function is called after a new node is created and updates the UI to display the new element.
+     * The shape required by the parameters will have a node associated with it, accessible via shape.getUserData().
+     * @param newNodeUIRepresentation this is the shape made by the ObjectRequester
      */
-    private void updateUINewOval(AbstractNode newNode){
-        testLabel.setText(newNode.toString());
-    }
 
-    private void updateUINewClass(Shape newNodeUIRepresentation){
+    private void updateUINewNode(Shape newNodeUIRepresentation){
         testLabel.setText(newNodeUIRepresentation.getUserData().toString());
         canvasPane.getChildren().add(newNodeUIRepresentation);
     }
     
-    private void updateUIClassChange(String node) {
-        System.out.print(node);
-        testLabel.setText(node);
-    }
-
     /**
-     * Just makes an edge object and displays it's info.
+     * Just displays the edge's info to the screen via a label for now.
      */
     private void updateUINewEdge(AbstractEdge newEdge){
-    	//canvasPane.getChildren().add(newEdge);
         testLabel.setText(newEdge.toString());
     }
 

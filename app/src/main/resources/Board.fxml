@@ -27,6 +27,13 @@
             <Button contentDisplay="CENTER" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#classButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/PngTestClass.png); -fx-background-color: white; -fx-content-display: CENTER; -fx-background-size: cover, auto; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Class" />
             <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ovalButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Oval" />
             <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#edgeButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
+            <Button layoutX="210.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Note" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Folder" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Square" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Stick Figure" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Text Box" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Life Line" />
+            <Button layoutX="810.0" layoutY="10.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Loop" />
          </children></HBox>
       <Label fx:id="testLabel" layoutX="30.0" layoutY="150.0">
          <font>

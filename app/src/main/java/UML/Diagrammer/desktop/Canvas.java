@@ -37,7 +37,7 @@ public class Canvas {
 	/**
 	 * These two function together allow for dragging of shapes across the canvas
 	 */
-    EventHandler<MouseEvent> circleOnMousePressedEventHandler = 
+    EventHandler<MouseEvent> nodeOnMousePressedEventHandler = 
     		new EventHandler<MouseEvent>() {
     	
             @Override
@@ -49,7 +49,7 @@ public class Canvas {
             }
      };
         
-    EventHandler<MouseEvent> circleOnMouseDraggedEventHandler = 
+    EventHandler<MouseEvent> nodeOnMouseDraggedEventHandler = 
         new EventHandler<MouseEvent>() {
 
     	/**
@@ -74,9 +74,9 @@ public class Canvas {
             Object nodeObject = t.getSource();
             if (nodeObject instanceof Rectangle) {
             	AbstractNode node = (AbstractNode) ((Rectangle) nodeObject).getUserData();
-            	//System.out.print("old coords are: " + node.getXCoord()+ ", " + node.getYCoord() + "\n");
-            	node.setCoords((int)newTranslateX, (int)newTranslateY);
+            	node.setCoords((int)newTranslateX, (int)newTranslateY); // Updates the object with the new coordinates
             	support.firePropertyChange("classUpdate", null, node);
+            	System.out.println("Moving node ID: " + node.getID());
             }
         }
     };

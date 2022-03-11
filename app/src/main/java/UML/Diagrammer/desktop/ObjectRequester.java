@@ -9,6 +9,7 @@
 package UML.Diagrammer.desktop;
 
 
+import java.awt.Shape;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import UML.Diagrammer.backend.objects.*;
@@ -58,29 +59,26 @@ public class ObjectRequester {
     }
 
     /**
-     * Calls the backend to make the object.
-     * New node creation so the oldValue will be null
+     * Creates a class object along with a rectangle and ties them together. 
+     * Then returns these objects to the UI via the support.firePropertyChange call.
+     * All makeXRequest function should look really similar to this function, the difference being the image and node type.
      */
     public void makeOvalRequest(){
-        OvalNode newNode = nodeFactory.buildNode("OVAL", 0, 7, 7, 3);
-        support.firePropertyChange("newOvalCreation", null, newNode);
+        OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3);
+        Image image = new Image("/Images/DefaultImage.png");
+    	Rectangle newUIShape = UIShapeRequest(image, (AbstractNode) newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     /**
-     * A wip of how we might create the UI object and backend object, then associate them to each other.
+     * Creates a class object along with a rectangle and ties them together. 
+     * Then returns these objects to the UI via the support.firePropertyChange call.
      */
     public void makeClassRequest(){
     	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
-    	Rectangle redRectange = new Rectangle(200.0f, 100.0f, Color.RED);
-    	Image image = new Image("/Images/PngTestClass.png");
-    	redRectange.setFill(new ImagePattern(image));
-    	redRectange.setX(200);
-    	redRectange.setY(200);
-    	redRectange.setCursor(Cursor.HAND);
-    	setMouseActions(redRectange, newNode);
-    	
-        //DefaultEdge newEdge = edgeFactory.buildEdge();
-        support.firePropertyChange("newClassCreation", null, redRectange);
+        Image image = new Image("/Images/PngTestClass.png");
+    	Rectangle newUIShape = UIShapeRequest(image, (AbstractNode) newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     /**
@@ -95,13 +93,31 @@ public class ObjectRequester {
      * Sets up the mouse actions for dragging and updating the associated node.
      * This should be called after any new creation of a node.
      * setUserData makes it so we can reference the data object from the UI object via UIElement.getUserData()
+     * This effectively ties together the UI object Rectangle and the given AbstractNode data object.
      * @param fxObject The UI element that is displayed to the screen.
      * @param node The actual backend object that is apart of the data.
      */
-    public void setMouseActions(Rectangle fxObject, ClassNode node) {
+    public void setMouseActions(Rectangle fxObject, AbstractNode node) {
     	fxObject.setUserData(node);
-    	fxObject.setOnMousePressed(canvas.circleOnMousePressedEventHandler);
-    	fxObject.setOnMouseDragged(canvas.circleOnMouseDraggedEventHandler);
+    	fxObject.setOnMousePressed(canvas.nodeOnMousePressedEventHandler);
+    	fxObject.setOnMouseDragged(canvas.nodeOnMouseDraggedEventHandler);
+    }
+    
+    /**
+     * Creates a new shape for the UI and sets up it's mouse actions
+     * This function ties together a UI Object (Rectangle) and node object (AbstractNode). 
+     * @param image the image that you would like to associate with the new UI element. (Will be a UML element)
+     * @param node The node that connects to the data side of things
+     * @return the shape you requested with it's data node linked and actions set up.
+     */
+    public Rectangle UIShapeRequest(Image image, AbstractNode node) {
+    	Rectangle rectangle = new Rectangle(200.0f, 100.0f, Color.RED);
+    	rectangle.setFill(new ImagePattern(image));
+    	rectangle.setX(200);
+    	rectangle.setY(200);
+    	rectangle.setCursor(Cursor.HAND);
+    	setMouseActions(rectangle, node);
+        return rectangle;
     }
 
 }
