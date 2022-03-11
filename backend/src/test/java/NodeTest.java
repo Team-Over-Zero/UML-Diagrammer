@@ -29,9 +29,9 @@ public class NodeTest {
     /*Test for the getID method*/
     @Test
     public void getID() {
-        node.setID(9999);
-        node.setID(1);
-        assertEquals(1,node.getID());
+        node.setId(9999);
+        node.setId(1);
+        assertEquals(1,node.getId());
     }
 
     /*Testing for the getDescription method*/

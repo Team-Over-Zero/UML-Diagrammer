@@ -34,7 +34,10 @@ public class EdgeTest {
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
         DefaultEdge edgar = edgey.buildEdge();
+       // assertTrue(edgar.exists());
         edgar.setNodes(nodeOne,nodeTwo);
+        edgar.saveIt();
+        assertTrue(edgar.exists());
         assertEquals(nodeOne,edgar.getN1());
         assertEquals(nodeTwo,edgar.getN2());
 
@@ -46,8 +49,8 @@ public class EdgeTest {
     public void testGetID() {
 
         DefaultEdge edge = edgey.buildEdge();
-        edge.setID(0);
-        assertEquals(0,edge.getID());
+        edge.setId(0);
+        assertEquals(0,edge.getId());
     }
 
     @Test
@@ -67,12 +70,12 @@ public class EdgeTest {
     @Test
     public void testToString(){
         DefaultNode nodeOne = factory.buildNode();
-        nodeOne.setID(0);
+        nodeOne.setId(0);
         DefaultNode nodeTwo = factory.buildNode();
-        nodeTwo.setID(1);
+        nodeTwo.setId(1);
         DefaultEdge edgar = edgey.buildEdge();
         edgar.setNodes(nodeOne,nodeTwo);
-        String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getID() + "\n" + "Node 1: " + nodeOne.getID() + "\n" + "Node 2: " + nodeTwo.getID();
+        String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1: " + nodeOne.getId() + "\n" + "Node 2: " + nodeTwo.getId();
         assertEquals(string,edgar.toString());
     }
 }

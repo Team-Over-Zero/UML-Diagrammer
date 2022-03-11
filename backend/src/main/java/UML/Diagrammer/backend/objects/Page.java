@@ -42,16 +42,16 @@ public class Page implements Graph {
          *
          * @param n1 Node to add.
          */
-    public void addNode(Node n1){
-        nodeDict.put(n1.getID(),n1);
+    public void addNode(AbstractNode n1){
+        nodeDict.put(n1.getId(),n1);
     }
 
         /**
          *
          * @param n1 Node to remove. Should also remove attached edges from graph
          */
-    public void removeNode(Node n1){
-        nodeDict.remove(n1.getID());
+    public void removeNode(AbstractNode n1){
+        nodeDict.remove(n1.getId());
         //IMPLEMENT: for edge in edge dictionary, if key or value contains n1, remove.
     }
 
@@ -59,8 +59,8 @@ public class Page implements Graph {
          *
          * @param e1 Edge to add.
          */
-    public void addEdge(Edge e1){
-        edgeDict.put(e1.getID(),e1);
+    public void addEdge(AbstractEdge e1){
+        edgeDict.put(e1.getId(),e1);
     }
 
 
@@ -68,8 +68,8 @@ public class Page implements Graph {
          *
          * @param e1 Edge to remove.
          */
-    public void removeEdge(Edge e1){
-        edgeDict.remove(e1.getID());
+    public void removeEdge(AbstractEdge e1){
+        edgeDict.remove(e1.getId());
     }
     //needed this to test something
 
