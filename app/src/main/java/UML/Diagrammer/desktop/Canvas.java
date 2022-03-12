@@ -1,8 +1,12 @@
 package UML.Diagrammer.desktop;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+import UML.Diagrammer.backend.objects.AbstractNode;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Class to handle the actual vector tooling in the App.
@@ -10,10 +14,26 @@ import javafx.scene.shape.Circle;
  */
 public class Canvas {
 	
+    private final PropertyChangeSupport support;
 	double orgSceneX, orgSceneY;
 	double orgTranslateX, orgTranslateY;
-	Circle red_circle;
+	Rectangle red_Rectangle;
+	
+    /**
+     * Observer functions, see ObjectRequester for more information. The same implementation is there.
+     */
+    Canvas(){
+        support = new PropertyChangeSupport(this);
+    }
+    public void addPropertyChangeListener(PropertyChangeListener listener){
+        support.addPropertyChangeListener(listener);
+    }
+    public void removePropertyChangeListener(PropertyChangeListener listener){
+        support.removePropertyChangeListener(listener);
+    }
 
+	
+		
 	/**
 	 * These two function together allow for dragging of shapes across the canvas
 	 */
@@ -24,24 +44,41 @@ public class Canvas {
             public void handle(MouseEvent t) {
                 orgSceneX = t.getSceneX();
                 orgSceneY = t.getSceneY();
-                orgTranslateX = ((Circle)(t.getSource())).getTranslateX();
-                orgTranslateY = ((Circle)(t.getSource())).getTranslateY();
+                orgTranslateX = ((Rectangle)(t.getSource())).getTranslateX();
+                orgTranslateY = ((Rectangle)(t.getSource())).getTranslateY();
             }
-        };
+     };
         
-        EventHandler<MouseEvent> circleOnMouseDraggedEventHandler = 
-            new EventHandler<MouseEvent>() {
+    EventHandler<MouseEvent> circleOnMouseDraggedEventHandler = 
+        new EventHandler<MouseEvent>() {
 
-            @Override
-            public void handle(MouseEvent t) {
-                double offsetX = t.getSceneX() - orgSceneX;
-                double offsetY = t.getSceneY() - orgSceneY;
-                double newTranslateX = orgTranslateX + offsetX;
-                double newTranslateY = orgTranslateY + offsetY;
-                
-                ((Circle)(t.getSource())).setTranslateX(newTranslateX);
-                ((Circle)(t.getSource())).setTranslateY(newTranslateY);
+    	/**
+    	 * With this method we are not "physically" moving the object. We actually have 2 different objects. The shape(javaFX) and the actual node.
+    	 * We move the shape across the screen and that in turn updates it's associated node object. 
+    	 * This way we have 2 object "linked", one is for front end, the other is for backend.
+    	 * The caveat with this method is we must be very careful to update the backed object whenever we change the frontend one, or else we will get desync.
+    	 * Use Shape.getUserData() to get the node object that we associated with the UI element
+    	 */
+        @Override
+        public void handle(MouseEvent t) {
+        	// This deals with the visual movement on the UI.
+            double offsetX = t.getSceneX() - orgSceneX;
+            double offsetY = t.getSceneY() - orgSceneY;
+            double newTranslateX = orgTranslateX + offsetX;
+            double newTranslateY = orgTranslateY + offsetY;
+            
+        	((Rectangle)(t.getSource())).setTranslateX(newTranslateX);
+            ((Rectangle)(t.getSource())).setTranslateY(newTranslateY);
+            
+            // Sets the new coordinates of the that we moved.
+            Object nodeObject = t.getSource();
+            if (nodeObject instanceof Rectangle) {
+            	AbstractNode node = (AbstractNode) ((Rectangle) nodeObject).getUserData();
+            	//System.out.print("old coords are: " + node.getXCoord()+ ", " + node.getYCoord() + "\n");
+            	node.setCoords((int)newTranslateX, (int)newTranslateY);
+            	support.firePropertyChange("classUpdate", null, node);
             }
-        };
-        
+        }
+    };
+                    
 }

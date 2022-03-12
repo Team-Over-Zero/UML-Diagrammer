@@ -14,9 +14,14 @@ import java.beans.PropertyChangeSupport;
 import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.EdgeFactory.*;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 
 public class ObjectRequester {
@@ -56,40 +61,47 @@ public class ObjectRequester {
      * Calls the backend to make the object.
      * New node creation so the oldValue will be null
      */
-    public void makeCircleRequest(){
+    public void makeOvalRequest(){
         OvalNode newNode = nodeFactory.buildNode("OVAL", 0, 7, 7, 3);
-        //DefaultNode newNode = new DefaultNode();
-        //newNode.setName("UML-Object-2");
-        //newNode.setDescription("circle");
-        //newNode.setTitle("object");
-        support.firePropertyChange("newCircleCreation", null, newNode);
+        support.firePropertyChange("newOvalCreation", null, newNode);
     }
 
     /**
-     * Exact same as makCircleRequest() for now.
+     * A wip of how we might create the UI object and backend object, then associate them to each other.
      */
     public void makeClassRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 2, 4, 2, 1);
-        //newNode.setName("UML-Object-1");
-        //newNode.setDescription("square");
-        //newNode.setTitle("class");
-        support.firePropertyChange("newSquareCreation", null, newNode);
+    	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+    	Rectangle redRectange = new Rectangle(200.0f, 100.0f, Color.RED);
+    	Image image = new Image("/Images/PngTestClass.png");
+    	redRectange.setFill(new ImagePattern(image));
+    	redRectange.setX(200);
+    	redRectange.setY(200);
+    	redRectange.setCursor(Cursor.HAND);
+    	setMouseActions(redRectange, newNode);
+    	
+        //DefaultEdge newEdge = edgeFactory.buildEdge();
+        support.firePropertyChange("newClassCreation", null, redRectange);
     }
 
     /**
-     * Creates 
+     * Creates a default edge for now and displays and lets the controller know.
      */
     public void makeEdgeRequest(){
-    	Circle red_circle = new Circle(50.0f, Color.RED);
-    	red_circle.setCenterX(200);
-    	red_circle.setCenterY(200);
-    	red_circle.setCursor(Cursor.HAND);
-    	red_circle.setOnMousePressed(canvas.circleOnMousePressedEventHandler);
-    	red_circle.setOnMouseDragged(canvas.circleOnMouseDraggedEventHandler);
-    	
-    	
-        //DefaultEdge newEdge = edgeFactory.buildEdge();
-        support.firePropertyChange("newEdgeCreation", null, red_circle);
+        DefaultEdge newEdge = edgeFactory.buildEdge();
+        support.firePropertyChange("newEdgeCreation", null, newEdge);
+    }
+    
+    /**
+     * Sets up the mouse actions for dragging and updating the associated node.
+     * This should be called after any new creation of a node.
+     * setUserData makes it so we can reference the data object from the UI object via UIElement.getUserData()
+     * @param fxObject The UI element that is displayed to the screen.
+     * @param node The actual backend object that is apart of the data.
+     */
+    public void setMouseActions(Rectangle fxObject, ClassNode node) {
+    	fxObject.setUserData(node);
+    	fxObject.setOnMousePressed(canvas.circleOnMousePressedEventHandler);
+    	fxObject.setOnMouseDragged(canvas.circleOnMouseDraggedEventHandler);
     }
 
 }

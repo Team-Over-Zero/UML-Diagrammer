@@ -9,11 +9,12 @@
 package UML.Diagrammer.backend.objects;
 import lombok.*;
 import java.util.Objects;
+import org.javalite.activejdbc.Model;
 
 @Getter @Setter
-public abstract class AbstractNode implements Node{
+public abstract class AbstractNode extends Model implements Node{
 
-    protected int ID;
+    //protected int id;
     protected String name;
     protected String title;
     protected String description;
@@ -36,8 +37,7 @@ public abstract class AbstractNode implements Node{
         this.width = w;
         this.height = h;
         this.SVGImage = SVGImage;
-        int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-        ID = hashCode()+ intExact;
+        //int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
     }
 
     /**
@@ -52,8 +52,8 @@ public abstract class AbstractNode implements Node{
         this.width = 3;
         this.height = 3;
         this.SVGImage = "DEFAULT IMAGE LOCATION";
-        int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-        ID = hashCode()+ intExact;
+       // int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
+       // id = -1;
     }
 
     /**

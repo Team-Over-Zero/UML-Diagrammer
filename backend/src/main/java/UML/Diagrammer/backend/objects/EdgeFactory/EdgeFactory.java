@@ -1,5 +1,6 @@
 package UML.Diagrammer.backend.objects.EdgeFactory;
 import UML.Diagrammer.backend.objects.AbstractEdge;
+import UML.Diagrammer.backend.objects.AbstractNode;
 import UML.Diagrammer.backend.objects.Node;
 
 /**
@@ -13,7 +14,7 @@ public class EdgeFactory {
 
     @SuppressWarnings("unchecked")
 	public <genericEdge extends AbstractEdge> genericEdge
-    buildEdge(Node n1, Node n2){
+    buildEdge(AbstractNode n1, AbstractNode n2){
         return (genericEdge) new NormalEdge(n1, n2);
     }
 

@@ -7,6 +7,15 @@
  * in the user manual at https://docs.gradle.org/7.2/userguide/multi_project_builds.html
  */
 
+
+
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'UML-Diagrammer'
 include 'app','backend'
 include 'webserver'

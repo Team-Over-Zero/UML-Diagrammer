@@ -18,7 +18,9 @@ plugins {
 
     // ActiveJDBC
     id "java"
-    id "de.schablinski.activejdbc-gradle-plugin" version "2.0"
+
+    //Griffith ActiveJDBC plugin
+    id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
 
 }
 
@@ -46,7 +48,17 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.4'
     implementation group: 'org.webjars.npm', name: 'vue', version: '2.6.10'
     implementation 'org.webjars.npm:snapsvg:0.5.1'
+    
+    compileOnly 'org.javalite:activejdbc:1.4.1'
+    compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
 
+
+    // implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+    //mysql connector
+    implementation 'mysql:mysql-connector-java:8.0.15'
+    //activejdbc and javalite
+    implementation "org.javalite:activejdbc:3.0-j11"
+    implementation "org.javalite:javalite-common:3.0-j11"
 
 }
 
@@ -65,4 +77,7 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml']
 }
 
+activejdbc {
+    toolVersion = '3.0-j11'
+}
 

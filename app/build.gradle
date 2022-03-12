@@ -18,7 +18,9 @@ plugins {
 
     // ActiveJDBC
     id "java"
-    id "de.schablinski.activejdbc-gradle-plugin" version "2.0"
+    //Griffith ActiveJDBC plugin
+    id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
+
 
 
 }
@@ -48,6 +50,20 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+    
+    compileOnly 'org.javalite:activejdbc:1.4.1'
+    compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
+    
+   // implementation ''
+
+    //Active JDBC javalite
+    implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+
+    //Active JDBC Mysql
+    runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+
+
 }
 
 application {

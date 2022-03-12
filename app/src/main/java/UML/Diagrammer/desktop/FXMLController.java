@@ -13,7 +13,7 @@ import UML.Diagrammer.backend.objects.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -25,13 +25,15 @@ public class FXMLController implements PropertyChangeListener{
     /**
      * Observer object for references
      */
-    private static final ObjectRequester observable = new ObjectRequester();
+    private static final ObjectRequester objectRequesterObservable = new ObjectRequester();
+    private static final Canvas canvasObservable = new Canvas();
 
     /**
      * Constructor to set this class as the observer for the observable objects
      */
     public FXMLController(){
-        observable.addPropertyChangeListener(this);
+        objectRequesterObservable.addPropertyChangeListener(this);
+        canvasObservable.addPropertyChangeListener(this);
     }
 
     /**
@@ -40,9 +42,10 @@ public class FXMLController implements PropertyChangeListener{
      */
     public void propertyChange(PropertyChangeEvent event){
     	switch(event.getPropertyName()) {
-    	case "newCircleCreation" -> this.updateUINewCircle((AbstractNode) event.getNewValue());
-    	case "newSquareCreation" -> this.updateUINewClass((AbstractNode) event.getNewValue());
-    	case "newEdgeCreation" -> this.updateUINewEdge((Circle) event.getNewValue());
+    	case "newOvalCreation" -> this.updateUINewOval((AbstractNode) event.getNewValue());
+    	case "newClassCreation" -> this.updateUINewClass((Shape) event.getNewValue());
+    	case "newEdgeCreation" -> this.updateUINewEdge((AbstractEdge) event.getNewValue());
+    	case "classUpdate" -> {this.updateUIClassChange((String) event.getNewValue());System.out.print("working \n");}
     	}
     }
 
@@ -60,16 +63,16 @@ public class FXMLController implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() {
-        observable.makeCircleRequest();
+        objectRequesterObservable.makeOvalRequest();
     }
 
     @FXML private void classButtonPressed() {
-        observable.makeClassRequest();
+        objectRequesterObservable.makeClassRequest();
     }
 
     @FXML
     private void edgeButtonPressed() {
-        observable.makeEdgeRequest();
+        objectRequesterObservable.makeEdgeRequest();
     }
     
 
@@ -78,20 +81,25 @@ public class FXMLController implements PropertyChangeListener{
      * There is probably a way, so I can use 1 function to make any node object, gotta think about it.
      * @param newNode The newly create Node object that needs to be displayed
      */
-    private void updateUINewCircle(AbstractNode newNode){
+    private void updateUINewOval(AbstractNode newNode){
         testLabel.setText(newNode.toString());
     }
 
-    private void updateUINewClass(AbstractNode newNode){
-        testLabel.setText(newNode.toString());
+    private void updateUINewClass(Shape newNodeUIRepresentation){
+        testLabel.setText(newNodeUIRepresentation.getUserData().toString());
+        canvasPane.getChildren().add(newNodeUIRepresentation);
+    }
+    
+    private void updateUIClassChange(String node) {
+        System.out.print(node);
+        testLabel.setText(node);
     }
 
     /**
-     * Currently being used as a test for moving objects around the canvas.
-     * @param newEdge The object that is created (just a circle for now)
+     * Just makes an edge object and displays it's info.
      */
-    private void updateUINewEdge(Circle newEdge){
-    	canvasPane.getChildren().add(newEdge);
+    private void updateUINewEdge(AbstractEdge newEdge){
+    	//canvasPane.getChildren().add(newEdge);
         testLabel.setText(newEdge.toString());
     }
 

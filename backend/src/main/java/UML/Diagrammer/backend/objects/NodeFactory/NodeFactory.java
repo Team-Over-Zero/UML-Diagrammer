@@ -1,24 +1,3 @@
-
-/**
- * NodeFactory.java
- *
- * This file will have many classes that are the various subtypes of nodes described by AbstractNode.
- * All will be slightly different because they all need different images associated with them.
- * And doing this way makes it so the default name/description(if needed) is different before the user edits it.
- * E.G The user makes a new Class, and it's default text says "Class Name" and "Class Description"
- * Feel free to message me if this class is incomprehensible
- * @author Show
- */
-
-
-
-/**
- * Here is the actual nodeFactory that will be used by the UI to request node objects.
- * The UI simply needs to have a NodeFactory object and then call
- * nodeFactory.buildNode(Sting of wanted node,xCoordinate, yCoordinate, width, height).
- * Image is an enum for your specific node type
- * @param SVGImage what type of object you want in a string and all caps. E.G: "CLASS", "LOOP", "TEXTBOX", "STICKFIGURE"
- */
 package UML.Diagrammer.backend.objects.NodeFactory;
 import UML.Diagrammer.backend.objects.AbstractNode;
 import org.javalite.activejdbc.Model;
