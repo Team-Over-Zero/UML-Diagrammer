@@ -21,7 +21,12 @@ public class EdgeTest {
     public void setup(){
         factory = new NodeFactory();
         edgey = new EdgeFactory();
-        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
+        String databaseUser = "root";
+        String databasePassword = "TeamOverZero";
+        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+
     }
     @AfterEach
     public void takeDown(){
@@ -55,8 +60,9 @@ public class EdgeTest {
     public void testGetID() {
 
         DefaultEdge edge = edgey.buildEdge();
-        edge.setId(0);
-        assertEquals(0,edge.getId());
+        edge.saveIt();
+        edge.setId(100);
+        assertEquals(100,edge.getId());
     }
 
     @Test
@@ -76,11 +82,14 @@ public class EdgeTest {
     @Test
     public void testToString(){
         DefaultNode nodeOne = factory.buildNode();
-        nodeOne.setId(0);
+        nodeOne.saveIt();
+        //nodeOne.setId(0);
         DefaultNode nodeTwo = factory.buildNode();
-        nodeTwo.setId(1);
+        nodeTwo.saveIt();
+        //nodeTwo.setId(1);
         DefaultEdge edgar = edgey.buildEdge();
         edgar.setNodes(nodeOne,nodeTwo);
+        edgar.saveIt();
         String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1: " + nodeOne.getId() + "\n" + "Node 2: " + nodeTwo.getId();
         assertEquals(string,edgar.toString());
     }
