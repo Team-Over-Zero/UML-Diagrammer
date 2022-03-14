@@ -28,7 +28,7 @@ public class App extends Application{
     	//App.launch();
     	//NodeFactory factory = new NodeFactory();
     	//factory.buildNode();
-        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
         String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
         String databaseUser = "root";
         String databasePassword = "TeamOverZero";
