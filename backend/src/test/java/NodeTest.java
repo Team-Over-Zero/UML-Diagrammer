@@ -16,11 +16,12 @@ public class NodeTest {
     public void setup(){
         factory = new NodeFactory();
         node = factory.buildNode();
-
         String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
         String databaseUser = "root";
         String databasePassword = "TeamOverZero";
         Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+
+
     }
 
     @AfterEach
