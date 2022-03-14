@@ -12,9 +12,10 @@ package UML.Diagrammer.backend.objects;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import lombok.Getter;
 import lombok.Setter;
+import org.javalite.activejdbc.Model;
 
 @Getter @Setter
-public abstract class AbstractEdge implements Edge {
+public abstract class AbstractEdge extends Model implements Edge {
 
     protected int ID;
     protected Node n1;

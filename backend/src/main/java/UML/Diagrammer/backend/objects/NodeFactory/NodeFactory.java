@@ -3,6 +3,12 @@ import UML.Diagrammer.backend.objects.AbstractNode;
 import org.javalite.activejdbc.Model;
 //import activejdbc.*;
 
+
+/*NODE/EDGE CREATION NOTE:
+ * Since the factories are currently being made to implement the Model for database stuff, they currently break the build on creation.
+ * Until we have this fixed I have commeted out all object creations and linking. This is denoted by the Node creation ********* comments
+ * for easy decommeting when we get this fixed. Most UI stuff should still work largely the same, just be sure not to make any node/edge objects for now.*/
+
 /**
  * NodeFactory that any class will need if they want to create various node objects.
  * Syntax for creating a node object could be for example:
