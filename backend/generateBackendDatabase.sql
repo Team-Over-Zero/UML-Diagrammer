@@ -30,10 +30,10 @@ CREATE TABLE default_nodes (
 
 CREATE TABLE class_nodes (
                         id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                        name            VARCHAR(30)     NOT NULL,
-                        title           VARCHAR(30)     NOT NULL,
+                        name            VARCHAR(30)     ,
+                        title           VARCHAR(30)     ,
                         description     VARCHAR(500),
-                        svg_image       VARCHAR(100)    NOT NULL,
+                        svg_image       VARCHAR(100)    ,
                         x_coord         VARCHAR(5),
                         y_coord         VARCHAR(5),
                         width           VARCHAR(5),

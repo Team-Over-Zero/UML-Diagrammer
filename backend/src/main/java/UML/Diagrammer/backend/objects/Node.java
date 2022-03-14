@@ -21,6 +21,5 @@ public interface Node {
     //int getId();
     String getDescription();
     int hashCode();
-    String getSVGImage();
 
 }
