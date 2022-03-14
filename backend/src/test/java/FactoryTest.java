@@ -52,7 +52,11 @@ public class FactoryTest{
 
             //assertTrue(testDB.hasConnection());
             AbstractNode node = factory.buildNode();
+            ClassNode node2 = factory.buildNode("CLASS",2,2,2,2);
+            node2.setName("TESTFACTORY CLASSNODE");
+            node2.saveIt();
             assertEquals("DEFAULT NAME",node.getName());
+            assertEquals("TESTFACTORY CLASSNODE",node2.getName());
             assertEquals(0,node.getXCoord());
             assertEquals(0,node.getYCoord());
 
