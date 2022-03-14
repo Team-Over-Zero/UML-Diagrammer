@@ -32,9 +32,15 @@ public class EdgeTest {
     @Test
     public void testBasicEdge() {
         DefaultNode nodeOne = factory.buildNode();
+        nodeOne.set("name","TESTONE");
+        nodeOne.saveIt();
         DefaultNode nodeTwo = factory.buildNode();
+        nodeTwo.set("name","TESTONE");
+        nodeTwo.saveIt();
         DefaultEdge edgar = edgey.buildEdge();
        // assertTrue(edgar.exists());
+        nodeOne.saveIt();
+        nodeTwo.saveIt();
         edgar.setNodes(nodeOne,nodeTwo);
         edgar.saveIt();
         assertTrue(edgar.exists());
