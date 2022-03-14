@@ -73,16 +73,25 @@ public class FXMLController implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
-        objectRequesterObservable.makeOvalRequest();
-    }
-
+        objectRequesterObservable.makeOvalRequest();}
     @FXML private void classButtonPressed() {
-        objectRequesterObservable.makeClassRequest();
-    }
-
+        objectRequesterObservable.makeClassRequest();}
     @FXML private void edgeButtonPressed() {
-        objectRequesterObservable.makeEdgeRequest();
-    }
+        objectRequesterObservable.makeEdgeRequest();}
+    @FXML private void folderButtonPressed() {
+        objectRequesterObservable.makeFolderRequest();}
+    @FXML private void lifeLineButtonPressed() {
+        objectRequesterObservable.makeLifeLineRequest();}
+    @FXML private void loopButtonPressed() {
+        objectRequesterObservable.makeLoopRequest();}
+    @FXML private void noteButtonPressed() {
+        objectRequesterObservable.makeNoteRequest();}
+    @FXML private void stickFigureButtonPressed() {
+        objectRequesterObservable.makeStickFigureRequest();}
+    @FXML private void TextBoxButtonPressed() {
+        objectRequesterObservable.makeTextBoxRequest();}
+    @FXML private void SquareButtonPressed() {
+        objectRequesterObservable.makeSquareRequest();}
 
     /**
      * This function is called after a new node is created and updates the UI to display the new element.

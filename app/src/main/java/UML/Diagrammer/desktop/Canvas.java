@@ -90,6 +90,7 @@ public class Canvas {
     /**
      * Double click event handler for editing text on a node.
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
+     * Moved to FXController for now
      */
     /*EventHandler<MouseEvent> nodeOnMouseClickedEventHandler =
             new EventHandler<>() {
@@ -112,6 +113,7 @@ public class Canvas {
 
     /**
      * What happens when the user hits enter after entering a new text for the UML object.
+     * Not implemented yet.
      */
     EventHandler<Event> enterIsPressedOnTextBoxName =
             new EventHandler<Event>() {

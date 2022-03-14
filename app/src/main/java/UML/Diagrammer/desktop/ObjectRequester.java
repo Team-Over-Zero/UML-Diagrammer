@@ -99,7 +99,7 @@ public class ObjectRequester {
      */
     public void makeOvalRequest() throws TranscoderException, IOException {
         //OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3); // Node required ***************
-        Image image = new Image("/Images/DefaultImage.png");/*ByteArrayOutputStream stuff = convertSVG("src/main/resources/Images/DefaultImage.svg");*/
+        Image image = new Image("/Images/Oval_UseCase.png");/*ByteArrayOutputStream stuff = convertSVG("src/main/resources/Images/DefaultImage.svg");*/
         StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // // Node required ***************
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
@@ -110,8 +110,57 @@ public class ObjectRequester {
      */
     public void makeClassRequest(){
     	//ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
-        Image image = new Image("/Images/PngTestClass.png");
+        Image image = new Image("/Images/Class.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
     	StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeFolderRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/Folder.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeLifeLineRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/LifeLine.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeLoopRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/Loop.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeNoteRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/Note.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeStickFigureRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/StickFigure.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeTextBoxRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeSquareRequest(){
+        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
