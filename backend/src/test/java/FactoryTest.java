@@ -54,6 +54,7 @@ public class FactoryTest{
             AbstractNode node = factory.buildNode();
             ClassNode node2 = factory.buildNode("CLASS",2,2,2,2);
             node2.setName("TESTFACTORY CLASSNODE");
+            node2.set("name",node2.getName());
             node2.saveIt();
             assertEquals("DEFAULT NAME",node.getName());
             assertEquals("TESTFACTORY CLASSNODE",node2.getName());
