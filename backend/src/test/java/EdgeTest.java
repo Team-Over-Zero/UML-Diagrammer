@@ -5,9 +5,12 @@ import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.DB;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.javalite.activejdbc.connection_config.DBConfiguration;
+
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,13 +23,15 @@ public class EdgeTest {
     @BeforeEach
     public void setup(){
 
-        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-        String databaseUser = "root";
-        String databasePassword = "TeamOverZero";
-        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+//        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
+//        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
+//        String databaseUser = "root";
+//        String databasePassword = "TeamOverZero";
+//        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
         factory = new NodeFactory();
         edgey = new EdgeFactory();
+        DBConfiguration.loadConfiguration("/database.properties");
+        Base.open();
     }
     @AfterEach
     public void takeDown(){
