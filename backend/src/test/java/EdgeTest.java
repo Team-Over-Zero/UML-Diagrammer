@@ -30,8 +30,6 @@ public class EdgeTest {
 //        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
         factory = new NodeFactory();
         edgey = new EdgeFactory();
-
-
         DBConfiguration.loadConfiguration("/database.properties");
         Base.open();
     }

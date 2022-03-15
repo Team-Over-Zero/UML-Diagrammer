@@ -3,6 +3,7 @@ import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.connection_config.DBConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,9 @@ public class PageTest {
     @BeforeEach
     public void setup(){
 
-        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test?useSSL=false";
-        String databaseUser = "root";
-        String databasePassword = "TeamOverZero";
-        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+
+        DBConfiguration.loadConfiguration("/database.properties");
+        Base.open();
         factory = new NodeFactory();
         node = factory.buildNode();
 

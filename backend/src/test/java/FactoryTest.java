@@ -7,43 +7,26 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.javalite.activejdbc.Base;
-//import org.javalite.activejdbc.test.DBSpec;
 import org.javalite.activejdbc.DB;
-
-
-
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
+/**
+ * This test class utilizes DBSpec. This means that every test method essentially opens a "transaction", which is a set of
+ * mysql commands. A transaction allows you to test the placing of items in a database, then the calling of those items, while
+ * not having to actually store the items there between tests. After a test method ends, the transaction is "reverted" automatically thanks to DBSpec.
+ * You can read the DBSpec documentation for additional information.
+ *
+ * Note that DBspec searches the database.properties file for its connection information.
+ *
+ * @Author Mixed, DBSpec Implemented by Alex.
+ */
 public class FactoryTest extends DBSpec {
 
     NodeFactory factory;
     @BeforeEach
     public void makeFactory(){
-        //NOTE: Griffith uses com.mysql.cj.jdbc.Driver NOT com.mysql.jdbc.Driver
         factory = new NodeFactory();
-    }
-
-    /**
-     * This method opens a connection to our test database. Note that you need to be running MYSQL on your local machine
-     * Your mysql must have the username "root" (which is docker's default) and the password "secret".
-     * You should also use the sql command "create schema test;" to create your schema. (database).
-     * @author Alex
-     */
-    @BeforeEach
-    public void openConnection(){
-
-        //DB testDB = new DB("default"); Alex Note: Need to add a database.configuration file at some point to do it the "right" way.
-//        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-//        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-//        String databaseUser = "root";
-//        String databasePassword = "TeamOverZero";
-//        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
-    }
-
-    @AfterEach
-    public void closeConnection(){
-        //new DB("default").rollbackTransaction();
-//        Base.close();
     }
 
     /*Testing factory for testFactory method*/
