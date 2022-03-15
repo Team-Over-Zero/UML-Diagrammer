@@ -110,7 +110,7 @@ public class ObjectRequester {
      * Then returns these objects to the UI via the support.firePropertyChange call.
      */
     public void makeClassRequest(){
-    	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+    	//ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
         Image image = new Image("/Images/Class.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
     	StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
         support.firePropertyChange("newNodeCreation", null, newUIShape);

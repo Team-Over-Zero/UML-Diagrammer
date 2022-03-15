@@ -9,6 +9,8 @@
  **/
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,8 +28,6 @@ public class App extends Application{
     public static void main(String[] args) {
     	//SvgImageLoaderFactory.install();
     	//App.launch();
-    	//NodeFactory factory = new NodeFactory();
-    	//factory.buildNode();
         //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
         String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
         String databaseUser = "root";
