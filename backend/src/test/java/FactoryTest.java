@@ -2,6 +2,7 @@ import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
 import org.javalite.activejdbc.DB;
 import org.javalite.activejdbc.InitException;
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -13,7 +14,7 @@ import org.javalite.activejdbc.DB;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class FactoryTest{
+public class FactoryTest extends DBSpec {
 
     NodeFactory factory;
     @BeforeEach
@@ -33,16 +34,16 @@ public class FactoryTest{
 
         //DB testDB = new DB("default"); Alex Note: Need to add a database.configuration file at some point to do it the "right" way.
 //        Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-        String databaseUser = "root";
-        String databasePassword = "TeamOverZero";
-        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+//        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
+//        String databaseUser = "root";
+//        String databasePassword = "TeamOverZero";
+//        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
     }
 
     @AfterEach
     public void closeConnection(){
         //new DB("default").rollbackTransaction();
-        Base.close();
+//        Base.close();
     }
 
     /*Testing factory for testFactory method*/
