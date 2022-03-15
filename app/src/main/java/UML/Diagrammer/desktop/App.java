@@ -29,20 +29,18 @@ public class App extends Application{
     	//NodeFactory factory = new NodeFactory();
     	//factory.buildNode();
         //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-        String databaseUser = "root";
-        String databasePassword = "TeamOverZero";
-        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+
 
         App.launch();
-        Base.close();
     }
 
     public void start(Stage primaryStage) throws Exception {
+
         Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
         primaryStage.setTitle("UML Diagrammer");
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
+
     }
 
 }

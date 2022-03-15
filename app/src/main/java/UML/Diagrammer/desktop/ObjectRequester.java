@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
 
 
 public class ObjectRequester {
@@ -44,6 +45,7 @@ public class ObjectRequester {
     private static final EdgeFactory edgeFactory = new EdgeFactory();
     private static final Canvas canvas = new Canvas();
     private static final BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
+
 
     /**
      * Constructor, needs to make the PropertyChangeSupport object for to notify listeners
@@ -99,7 +101,7 @@ public class ObjectRequester {
      * All makeXRequest function should look really similar to this function, the difference being the image and node type.
      */
     public void makeOvalRequest() throws TranscoderException, IOException {
-        //OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3); // Node required ***************
+        OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3); // Node required ***************
         Image image = new Image("/Images/Oval_UseCase.png");/*ByteArrayOutputStream stuff = convertSVG("src/main/resources/Images/DefaultImage.svg");*/
         StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // // Node required ***************
         support.firePropertyChange("newNodeCreation", null, newUIShape);

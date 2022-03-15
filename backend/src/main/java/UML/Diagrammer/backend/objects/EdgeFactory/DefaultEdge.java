@@ -1,7 +1,6 @@
 package UML.Diagrammer.backend.objects.EdgeFactory;
 
 import UML.Diagrammer.backend.objects.AbstractEdge;
-import UML.Diagrammer.backend.objects.Node;
 
 /**
  * Default edge given no parameter

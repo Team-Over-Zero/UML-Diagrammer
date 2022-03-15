@@ -1,7 +1,6 @@
 package UML.Diagrammer.backend.objects.EdgeFactory;
 import UML.Diagrammer.backend.objects.AbstractEdge;
 import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.Node;
 
 /**
  * This is similar to NodeFactory just much fewer subclasses for now.
