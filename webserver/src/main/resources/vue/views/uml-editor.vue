@@ -37,15 +37,22 @@
         v-on:click="handleCanvasClick"
     >
       <v-layer ref="layer">
-        <v-rect
-            v-for="item in nodes"
-            :config="getConfig(item)"
-            @click="toggleSelect"
-        ></v-rect>
+        <v-group v-for="node in nodes"
+                 :config="getConfig(node)"
+                 @click="toggleSelect">
+          <v-rect :config="getConfig(node.shape)"></v-rect>
+          <v-text :config="{
+            text: textToEdit,
+            fontSize: 15,
+            fill: 'black',
+          }"></v-text>
+        </v-group>
+        <v-rect :config="getConfig(testTextBox)"></v-rect>
         <v-text
           :config="{
             text: textToEdit,
-            fontSize: 15
+            fontSize: 12,
+            fill: 'white',
           }"
         ></v-text>
       </v-layer>
@@ -57,11 +64,27 @@
 <!--2. Link VueKonva Javascript (Plugin automatically installed)-->
 <script src="https://unpkg.com/vue-konva/umd/vue-konva.min.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script type="module">
 
 const width = window.innerWidth * 0.5;
 const height = window.innerHeight * 0.5;
 
+//to make shaped dynamically fit their text
+String.prototype.area = function(font) {
+  var f = font || '12px arial',
+      o = $('<div></div>')
+          .text(this)
+          .css({'position': 'absolute', 'float': 'left', 'white-space': 'pre-wrap', 'visibility': 'hidden', 'font': f})
+          .appendTo($('body')),
+      w = o.width(),
+      h = o.height();
+
+  o.remove();
+
+  return [w, h];
+}
 
   Vue.component("uml-editor", {
     template: "#uml-editor",
@@ -75,6 +98,13 @@ const height = window.innerHeight * 0.5;
         nodes: [],
         mode: 'select',
         textToEdit: 'test text',
+        testTextBox:{
+          x: 0,
+          y: 0,
+          w: 30,
+          h: 30,
+          fill: 'black',
+        }
       };
     },
 
@@ -97,6 +127,18 @@ const height = window.innerHeight * 0.5;
             x: pos.x,
             y: pos.y,
             fill: 'black',
+            shape: {
+              x: 0,
+              y: 0,
+              w: 30,
+              h: 30,
+              fill: 'black',
+            },
+            words: {
+              x: 0,
+              y: 0,
+              text: 'testText is really long',
+            }
           });
         }
         this.mode = 'select';
@@ -110,13 +152,15 @@ const height = window.innerHeight * 0.5;
         this.mode = newMode;
       },
 
-      getConfig: function(node){
+      getConfig: function(item){
         return {
-          x: node.x,
-          y: node.y,
-          width: 40,
-          height: 30,
-          fill: node.fill,
+          x: item.x,
+          y: item.y,
+          width: item.w,
+          height: item.h,
+          fill: item.fill,
+          text: item.text,
+          fontSize: 15,
           draggable: true,
         }
       },
@@ -128,11 +172,16 @@ const height = window.innerHeight * 0.5;
 
       onKeyPress: function(event){
         let keyCode = event.keyCode;
-        if(keyCode >= 65 && keyCode <= 90 || keyCode >= 48 && keyCode <= 57) {
+        if(keyCode >= 65 && keyCode <= 90 || keyCode >= 48 && keyCode <= 57 || keyCode === 32) {
           this.textToEdit = this.textToEdit.concat(event.key.toString());
+        }else if(keyCode === 13){
+          this.textToEdit = this.textToEdit.concat('\n');
         }else if(keyCode === 8){
           this.textToEdit = this.textToEdit.slice(0, -1);
         }
+        let textArea = this.textToEdit.area();
+        this.testTextBox.w = textArea[0];
+        this.testTextBox.h = textArea[1];
       }
 
 

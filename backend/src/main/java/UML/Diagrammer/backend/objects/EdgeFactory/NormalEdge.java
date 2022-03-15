@@ -2,8 +2,6 @@ package UML.Diagrammer.backend.objects.EdgeFactory;
 
 import UML.Diagrammer.backend.objects.AbstractEdge;
 import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.Node;
-
 /**
  * Basic solid edge that is between two nodes
  */

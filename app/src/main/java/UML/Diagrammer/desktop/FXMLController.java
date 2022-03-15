@@ -22,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import lombok.Getter;
 import org.apache.batik.transcoder.TranscoderException;
+import org.javalite.activejdbc.Base;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -73,7 +74,10 @@ public class FXMLController implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
-        objectRequesterObservable.makeOvalRequest();}
+        openConnection();
+        objectRequesterObservable.makeOvalRequest();
+        closeConnection();
+    }
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest();}
     @FXML private void edgeButtonPressed() {
@@ -152,4 +156,18 @@ public class FXMLController implements PropertyChangeListener{
         editTextField.setLayoutY(UIElement.getLayoutY() - (UIElement.getHeight() / 2) + 30); // Set the textbox just above the UI element
         return editTextField;
     }
+
+    public void openConnection(){
+        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test?useSSL=false";
+        String databaseUser = "root";
+        String databasePassword = "TeamOverZero";
+
+        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+    }
+
+
+    public void closeConnection(){
+        Base.close();
+    }
+
 }

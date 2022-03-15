@@ -53,12 +53,14 @@ public class FactoryTest{
             //assertTrue(testDB.hasConnection());
             AbstractNode node = factory.buildNode();
             ClassNode node2 = factory.buildNode("CLASS",2,2,2,2);
-            node2.setName("TESTFACTORY CLASSNODE");
+            String nameSet = "TESTFACTORY CLASSNODE";
+            node2.set("name",nameSet);
+            node.saveIt();
             node2.saveIt();
-            assertEquals("DEFAULT NAME",node.getName());
-            assertEquals("TESTFACTORY CLASSNODE",node2.getName());
-            assertEquals(0,node.getXCoord());
-            assertEquals(0,node.getYCoord());
+            assertEquals("DEFAULT NAME",node.get("name"));
+            assertEquals("TESTFACTORY CLASSNODE",node2.get("name"));
+            assertEquals(0,node.get("x_coord"));
+            assertEquals(0,node.get("y_coord"));
 
     }
 
@@ -66,26 +68,28 @@ public class FactoryTest{
     @Test
     public void testSizeNotBroken(){
         AbstractNode node = factory.buildNode();
-        assertNotNull(node.getHeight());
-        assertNotNull(node.getWidth());
+        assertEquals(3,node.get("height"));
+        assertEquals(3,node.get("width"));
     }
 
     /*Tests factory's setHeight*/
     @Test
     public void testSetHeight(){
         AbstractNode node = factory.buildNode();
-        node.setHeight(3);
-        assertEquals(3,node.getHeight());
+        node.set("height",3);
+        node.saveIt();
+        assertEquals(3,node.get("height"));
     }
 
     /*Tests factory's multipleSetHeights*/
     @Test
     public void multipleSetHeights(){
         AbstractNode node = factory.buildNode();
-        node.setHeight(2);
-        node.setHeight(3);
-        node.setHeight(1);
-        assertEquals(1,node.getHeight());
+        node.set("height",2);
+        node.set("height",3);
+        node.set("height",1);
+        node.saveIt();
+        assertEquals(1,node.get("height"));
     }
 
     /*Tests the factory's setCoords method in this function*/
@@ -93,18 +97,21 @@ public class FactoryTest{
     public void testSetCoords(){
         AbstractNode node = factory.buildNode();
         node.setCoords(90,1234);
-        assertEquals(90,node.getXCoord());
-        assertEquals(1234,node.getYCoord());
+        node.saveIt();
+        assertEquals(90,node.get("x_coord"));
+        assertEquals(1234,node.get("y_coord"));
 
     }
 
     /*Tests the factory's negativeCoords method in this function*/
     @Test
     public void testNegativeCoords(){
+
         AbstractNode node = factory.buildNode();
         node.setCoords(-1,-1);
-        assertEquals(-1,node.getXCoord());
-        assertEquals(-1,node.getYCoord());
+        node.saveIt();
+        assertEquals(-1,node.get("x_coord"));
+        assertEquals(-1,node.get("y_coord"));
     }
 
     /*Tests the factory's setSize method in this function*/
@@ -112,8 +119,8 @@ public class FactoryTest{
     public void setSize(){
         AbstractNode node = factory.buildNode();
         node.setSize(20,20);
-        assertEquals(20,node.getWidth());
-        assertEquals(20,node.getHeight());
+        assertEquals(20,node.get("width"));
+        assertEquals(20,node.get("height"));
     }
 
     /**
@@ -128,12 +135,12 @@ public class FactoryTest{
     @Test
     public void testClassNodeSubclass(){
         ClassNode node = factory.buildNode("CLASS", 0, 0, 3, 3);
-        assertEquals("Class Name", node.getName());
-        assertEquals("Class Description", node.getDescription());
-        assertEquals(0, node.getXCoord());
-        assertEquals(0, node.getYCoord());
-        assertEquals(3, node.getWidth());
-        assertEquals(3, node.getHeight());
+        assertEquals("Class Name", node.get("name"));
+        assertEquals("Class Description", node.get("description"));
+        assertEquals(0, node.get("x_coord"));
+        assertEquals(0, node.get("y_coord"));
+        assertEquals(3, node.get("width"));
+        assertEquals(3, node.get("height"));
     }
 
     /**
@@ -145,12 +152,12 @@ public class FactoryTest{
     @Test
     public void testDefaultNodeSubclass(){
         DefaultNode node = factory.buildNode();
-        assertEquals("DEFAULT NAME", node.getName());
-        assertEquals("DEFAULT DESCRIPTION", node.getDescription());
-        assertEquals(0, node.getXCoord());
-        assertEquals(0, node.getYCoord());
-        assertEquals(3, node.getWidth());
-        assertEquals(3, node.getHeight());
+        assertEquals("DEFAULT NAME", node.get("name"));
+        assertEquals("DEFAULT DESCRIPTION", node.get("description"));
+        assertEquals(0, node.get("x_coord"));
+        assertEquals(0, node.get("y_coord"));
+        assertEquals(3, node.get("width"));
+        assertEquals(3, node.get("height"));
     }
 
 }

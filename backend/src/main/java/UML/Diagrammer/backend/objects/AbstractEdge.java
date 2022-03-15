@@ -15,7 +15,7 @@ import lombok.Setter;
 import org.javalite.activejdbc.Model;
 
 @Getter @Setter
-public abstract class AbstractEdge extends Model implements Edge {
+public abstract class AbstractEdge extends Model {
 
    // protected int ID;
     protected AbstractNode n1;
