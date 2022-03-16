@@ -9,6 +9,7 @@
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
@@ -16,7 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -43,7 +44,7 @@ public class ObjectRequester {
     private final PropertyChangeSupport support;
     private static final NodeFactory nodeFactory = new NodeFactory();
     private static final EdgeFactory edgeFactory = new EdgeFactory();
-    private static final Canvas canvas = new Canvas();
+    //private static final Canvas canvas = new Canvas();
     private static final BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
 
 
@@ -101,9 +102,9 @@ public class ObjectRequester {
      * All makeXRequest function should look really similar to this function, the difference being the image and node type.
      */
     public void makeOvalRequest() throws TranscoderException, IOException {
-        OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3); // Node required ***************
+        OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3);
         Image image = new Image("/Images/Oval_UseCase.png");/*ByteArrayOutputStream stuff = convertSVG("src/main/resources/Images/DefaultImage.svg");*/
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
@@ -112,58 +113,58 @@ public class ObjectRequester {
      * Then returns these objects to the UI via the support.firePropertyChange call.
      */
     public void makeClassRequest(){
-    	//ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+    	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/Class.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-    	StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+    	StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeFolderRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/Folder.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLifeLineRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/LifeLine.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLoopRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/Loop.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/Note.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/StickFigure.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest(){
-        //ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3); // Node required ***************
+        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
-        StackPane newUIShape = UIShapeRequest(image/*, (AbstractNode) newNode*/); // Node required ***************
+        StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
@@ -171,8 +172,8 @@ public class ObjectRequester {
      * Creates a default edge for now and displays and lets the controller know.
      */
     public void makeEdgeRequest(){ // Edge required ***************
-        //DefaultEdge newEdge = edgeFactory.buildEdge();
-        //support.firePropertyChange("newEdgeCreation", null, newEdge);
+        DefaultEdge newEdge = edgeFactory.buildEdge();
+        support.firePropertyChange("newEdgeCreation", null, newEdge);
     }
     
     /**
@@ -183,11 +184,9 @@ public class ObjectRequester {
      * @param fxObject The UI element that is displayed to the screen.
      * @param node The actual backend object that is apart of the data.
      */
-    public void setMouseActions(StackPane fxObject/*, AbstractNode node*/) { // Node required ***************
-    	//fxObject.setUserData(node); Node required ****************************
-    	fxObject.setOnMousePressed(canvas.nodeOnMousePressedEventHandler);
-    	fxObject.setOnMouseDragged(canvas.nodeOnMouseDraggedEventHandler);
-    	support.firePropertyChange("doubleMouseClick", null, fxObject);
+    public void setMouseActions(StackPane fxObject, AbstractNode node) {
+    	fxObject.setUserData(node);
+    	support.firePropertyChange("setMouseActions", null, fxObject);
     }
     
     /**
@@ -197,19 +196,23 @@ public class ObjectRequester {
      * @param node The node that connects to the data side of things
      * @return the shape you requested with it's data node linked and actions set up.
      */
-    public StackPane UIShapeRequest(Image image/*, AbstractNode node*/) { // Node required ****************
+    public StackPane UIShapeRequest(Image image, AbstractNode node) {
     	//SVGImage img = SVGLoader.load("/Images/DefaultNode.svg");
     	//svgContainer.load("/Images/DefaultNode.svg");
-    	
-    	Rectangle rectangle = new Rectangle(200.0f, 100.0f, Color.RED);
-    	rectangle.setFill(new ImagePattern(image));
-    	rectangle.setX(200);
-    	rectangle.setY(200);
-    	rectangle.setCursor(Cursor.HAND);
+
+        BackgroundImage BImage = new BackgroundImage(image,
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background background = new Background(BImage);
         StackPane stack = new StackPane();
-        Text text = new Text("Text box is working"); // Should be node.gettext when we get the objects working again
-        stack.getChildren().addAll(rectangle, text);
-        setMouseActions(stack/*, node*/); // Node creation ********************************
+        stack.setPrefWidth(image.getWidth());
+        stack.setPrefHeight(image.getHeight());
+        stack.setBackground(background);
+        stack.setCursor(Cursor.HAND);
+        Text text = new Text( (String) node.get("Name"));
+        //If I want to make the data object I should make it here and insert the stuff
+        stack.getChildren().addAll(text);
+        setMouseActions(stack, node);
         return stack;
     }
 

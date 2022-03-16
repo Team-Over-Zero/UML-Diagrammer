@@ -23,30 +23,31 @@
       </MenuButton>
       <HBox layoutX="-2.0" layoutY="31.0" prefHeight="95.0" prefWidth="1000.0">
          <children>
-            <Button contentDisplay="CENTER" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#classButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/PngTestClass.png); -fx-background-color: white; -fx-content-display: CENTER; -fx-background-size: cover, auto; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Class" />
-            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ovalButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Oval" />
+            <Button contentDisplay="CENTER" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#classButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Class.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Class" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ovalButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Oval_UseCase.png); -fx-background-repeat: no-repeat; -fx-background-position: center; -fx-background-size: 100, 100;" text="Oval" />
             <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#edgeButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
-            <Button layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#noteButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Note" />
-            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#folderButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Folder" />
-            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#SquareButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Square" />
-            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#stickFigureButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Stick Figure" />
-            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#TextBoxButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Text Box" />
-            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#lifeLineButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Life Line" />
-            <Button layoutX="810.0" layoutY="10.0" mnemonicParsing="false" onAction="#loopButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Loop" />
+            <Button layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#noteButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Note.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Note" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#folderButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Folder.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Folder" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#SquareButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/TextBox_Square_Interface.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Square" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#stickFigureButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/StickFigure.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Stick Figure" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#TextBoxButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/TextBox_Square_Interface.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Text Box" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#lifeLineButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/LifeLine.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Life Line" />
+            <Button layoutX="810.0" layoutY="10.0" mnemonicParsing="false" onAction="#loopButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Loop.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Loop" />
          </children></HBox>
       <Label fx:id="testLabel" layoutX="30.0" layoutY="150.0">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Separator layoutY="121.0" prefHeight="10.0" prefWidth="1000.0">
-         <effect>
-            <Blend />
-         </effect></Separator>
       <Separator layoutY="26.0" prefHeight="10.0" prefWidth="1000.0">
          <effect>
             <Blend />
          </effect>
       </Separator>
+      <Separator layoutY="130.0" prefHeight="10.0" prefWidth="1000.0">
+         <effect>
+            <Blend />
+         </effect></Separator>
       <Pane fx:id="canvasPane" layoutY="126.0" prefHeight="675.0" prefWidth="1000.0" />
+      <Label layoutY="150.0" text="Double click a made node to edit the text" />
    </children>
 </AnchorPane>
