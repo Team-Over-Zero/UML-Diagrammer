@@ -39,9 +39,9 @@ CREATE TABLE class_nodes (
 
 CREATE TABLE folder_nodes(
                              id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                             name            VARCHAR(30)     NOT NULL,
+                             name            VARCHAR(30)     ,
                              description     VARCHAR(500),
-                             svg_image       VARCHAR(100)    NOT NULL,
+                             svg_image       VARCHAR(100)    ,
                              x_coord         VARCHAR(5),
                              y_coord         VARCHAR(5),
                              width           VARCHAR(5),
@@ -50,9 +50,9 @@ CREATE TABLE folder_nodes(
 
 CREATE TABLE life_line_nodes(
                                 id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                                name            VARCHAR(30)     NOT NULL,
+                                name            VARCHAR(30)     ,
                                 description     VARCHAR(500),
-                                svg_image       VARCHAR(100)    NOT NULL,
+                                svg_image       VARCHAR(100)    ,
                                 x_coord         VARCHAR(5),
                                 y_coord         VARCHAR(5),
                                 width           VARCHAR(5),
@@ -61,9 +61,9 @@ CREATE TABLE life_line_nodes(
 
 CREATE TABLE loop_nodes(
                            id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                           name            VARCHAR(30)     NOT NULL,
+                           name            VARCHAR(30)     ,
                            description     VARCHAR(500),
-                           svg_image       VARCHAR(100)    NOT NULL,
+                           svg_image       VARCHAR(100)    ,
                            x_coord         VARCHAR(5),
                            y_coord         VARCHAR(5),
                            width           VARCHAR(5),
@@ -73,9 +73,9 @@ CREATE TABLE loop_nodes(
 
 CREATE TABLE note_nodes(
                            id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                           name            VARCHAR(30)     NOT NULL,
+                           name            VARCHAR(30)     ,
                            description     VARCHAR(500),
-                           svg_image       VARCHAR(100)    NOT NULL,
+                           svg_image       VARCHAR(100)    ,
                            x_coord         VARCHAR(5),
                            y_coord         VARCHAR(5),
                            width           VARCHAR(5),
@@ -84,9 +84,9 @@ CREATE TABLE note_nodes(
 
 CREATE TABLE oval_nodes(
                            id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                           name            VARCHAR(30)     NOT NULL,
+                           name            VARCHAR(30)     ,
                            description     VARCHAR(500),
-                           svg_image       VARCHAR(100)    NOT NULL,
+                           svg_image       VARCHAR(100)    ,
                            x_coord         VARCHAR(5),
                            y_coord         VARCHAR(5),
                            width           VARCHAR(5),
@@ -95,9 +95,9 @@ CREATE TABLE oval_nodes(
 
 CREATE TABLE square_nodes(
                              id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                             name            VARCHAR(30)     NOT NULL,
+                             name            VARCHAR(30)     ,
                              description     VARCHAR(500),
-                             svg_image       VARCHAR(100)    NOT NULL,
+                             svg_image       VARCHAR(100)    ,
                              x_coord         VARCHAR(5),
                              y_coord         VARCHAR(5),
                              width           VARCHAR(5),
@@ -106,9 +106,9 @@ CREATE TABLE square_nodes(
 
 CREATE TABLE stick_figure_nodes(
                                    id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                                   name            VARCHAR(30)     NOT NULL,
+                                   name            VARCHAR(30)     ,
                                    description     VARCHAR(500),
-                                   svg_image       VARCHAR(100)    NOT NULL,
+                                   svg_image       VARCHAR(100)    ,
                                    x_coord         VARCHAR(5),
                                    y_coord         VARCHAR(5),
                                    width           VARCHAR(5),
@@ -117,9 +117,9 @@ CREATE TABLE stick_figure_nodes(
 
 CREATE TABLE text_box_nodes(
                                id              INTEGER NOT NULL PRIMARY KEY Auto_Increment,
-                               name            VARCHAR(30)     NOT NULL,
+                               name            VARCHAR(30)     ,
                                description     VARCHAR(500),
-                               svg_image       VARCHAR(100)    NOT NULL,
+                               svg_image       VARCHAR(100)    ,
                                x_coord         VARCHAR(5),
                                y_coord         VARCHAR(5),
                                width           VARCHAR(5),
