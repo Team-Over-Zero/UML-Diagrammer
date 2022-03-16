@@ -6,6 +6,7 @@ import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.DB;
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,7 +16,7 @@ import org.javalite.activejdbc.connection_config.DBConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class EdgeTest {
+public class EdgeTest extends DBSpec{
     private NodeFactory factory;
     private EdgeFactory edgey;
 
@@ -30,13 +31,13 @@ public class EdgeTest {
 //        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
         factory = new NodeFactory();
         edgey = new EdgeFactory();
-        DBConfiguration.loadConfiguration("/database.properties");
-        Base.open();
+        //DBConfiguration.loadConfiguration("/database.properties");
+        //Base.open();
     }
-    @AfterEach
+    /*@AfterEach
     public void takeDown(){
         Base.close();
-    }
+    }*/
 
     /*Testing for setNode method*/
     @Test
@@ -48,7 +49,7 @@ public class EdgeTest {
         nodeTwo.set("name","TESTONE");
         nodeTwo.saveIt();
         DefaultEdge edgar = edgey.buildEdge();
-       // assertTrue(edgar.exists());
+
         nodeOne.saveIt();
         nodeTwo.saveIt();
         edgar.setNodes(nodeOne,nodeTwo);
@@ -78,6 +79,7 @@ public class EdgeTest {
 
         edge.setN1(nodeOne);
         edge.setN2(nodeTwo);
+        edge.saveIt();
 
         assertEquals(nodeOne,edge.getN1());
         assertEquals(nodeTwo,edge.getN2());
@@ -97,5 +99,14 @@ public class EdgeTest {
         edgar.saveIt();
         String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1: " + nodeOne.getId() + "\n" + "Node 2: " + nodeTwo.getId();
         assertEquals(string,edgar.toString());
+    }
+
+    @Test
+    public void testEquals(){
+        DefaultEdge nullEdge = null;
+        DefaultEdge nonNullEdge = edgey.buildEdge();
+        assertEquals(false,nonNullEdge.equals(nullEdge));
+        assertEquals(true,nonNullEdge.equals(nonNullEdge));
+
     }
 }

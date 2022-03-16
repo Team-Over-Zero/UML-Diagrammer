@@ -9,10 +9,11 @@ import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.connection_config.DBConfiguration;
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-public class NodeTest {
+public class NodeTest extends DBSpec {
 
     private NodeFactory factory;
 
@@ -28,8 +29,8 @@ public class NodeTest {
     @BeforeEach
     public void setup(){
 
-        DBConfiguration.loadConfiguration("/database.properties"); //Loads our default development configuration. NOT our test configuration.
-        Base.open();
+        //DBConfiguration.loadConfiguration("/database.properties"); //Loads our default development configuration. NOT our test configuration.
+        //Base.open();
         factory = new NodeFactory();
         node = factory.buildNode();
 
@@ -38,10 +39,10 @@ public class NodeTest {
     /**
      * @author Alex
      */
-    @AfterEach
+    /*@AfterEach
     public void tearDown(){
         Base.close();
-    }
+    }*/
     /*Node test for setCoords method*/
     @Test
     public void setCoords() {
