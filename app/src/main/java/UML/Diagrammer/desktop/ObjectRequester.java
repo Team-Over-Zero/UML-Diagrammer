@@ -44,7 +44,6 @@ public class ObjectRequester {
     private final PropertyChangeSupport support;
     private static final NodeFactory nodeFactory = new NodeFactory();
     private static final EdgeFactory edgeFactory = new EdgeFactory();
-    //private static final Canvas canvas = new Canvas();
     private static final BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
 
 
@@ -116,53 +115,54 @@ public class ObjectRequester {
     	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
         Image image = new Image("/Images/Class.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
     	StackPane newUIShape = UIShapeRequest(image,newNode);
+    	newNode.set("x_coord", 250);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeFolderRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        FolderNode newNode = nodeFactory.buildNode("FOLDER", 3, 3, 3, 3);
         Image image = new Image("/Images/Folder.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLifeLineRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        LifeLineNode newNode = nodeFactory.buildNode("LIFELINE", 3, 3, 3, 3);
         Image image = new Image("/Images/LifeLine.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLoopRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        LoopNode newNode = nodeFactory.buildNode("LOOP", 3, 3, 3, 3);
         Image image = new Image("/Images/Loop.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        NoteNode newNode = nodeFactory.buildNode("NOTE", 3, 3, 3, 3);
         Image image = new Image("/Images/Note.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        StickFigureNode newNode = nodeFactory.buildNode("STICKFIGURE", 3, 3, 3, 3);
         Image image = new Image("/Images/StickFigure.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        TextBoxNode newNode = nodeFactory.buildNode("TEXTBOX", 3, 3, 3, 3);
         Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest(){
-        ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        SquareNode newNode = nodeFactory.buildNode("SQUARE", 3, 3, 3, 3);
         Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
@@ -205,12 +205,13 @@ public class ObjectRequester {
                 BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         Background background = new Background(BImage);
         StackPane stack = new StackPane();
+
         stack.setPrefWidth(image.getWidth());
         stack.setPrefHeight(image.getHeight());
         stack.setBackground(background);
         stack.setCursor(Cursor.HAND);
+
         Text text = new Text( (String) node.get("Name"));
-        //If I want to make the data object I should make it here and insert the stuff
         stack.getChildren().addAll(text);
         setMouseActions(stack, node);
         return stack;

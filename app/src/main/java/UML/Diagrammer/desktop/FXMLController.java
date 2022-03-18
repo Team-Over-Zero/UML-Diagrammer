@@ -31,6 +31,7 @@ import lombok.Getter;
 import org.apache.batik.transcoder.TranscoderException;
 import org.javalite.activejdbc.Base;
 import org.w3c.dom.Text;
+import org.w3c.dom.events.UIEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -43,7 +44,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * Observer object for references
      */
     @Getter private final ObjectRequester objectRequesterObservable = new ObjectRequester();
-    //@Getter private final Canvas canvasObservable = new Canvas();
+    private static ActionHandler action = new ActionHandler();
 
     /**
      * Constructor to set this class as the observer for the observable objects
@@ -72,7 +73,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      */
     @FXML private Label testLabel;
     @FXML private Label circleObject;
-    @FXML private Pane canvasPane;
+    @FXML public Pane canvasPane;
 
 
     /**
@@ -81,9 +82,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
-        //database.openConnection();
         objectRequesterObservable.makeOvalRequest();
-        //database.closeConnection();
     }
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest();}
@@ -126,130 +125,37 @@ public class FXMLController extends App implements PropertyChangeListener{
      * @param fxObject the StackPane associated with the object.
      */
     private void setMouseActions(StackPane fxObject) {
-        fxObject.setOnMouseClicked(doubleClickNodeEventHandler);
+        fxObject.setOnMouseClicked(clickNodeEventHandler);
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
+        fxObject.setOnContextMenuRequested(e -> // Right click
+                action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
 
-    /* Even handling for clicking on objects. Want to extract this all out into it's own class but the observer is
-    * not happy with it, look into it for further releases.*/
     /**
      * Double click event handler for editing text on a node.
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
 \     */
-    EventHandler<MouseEvent> doubleClickNodeEventHandler =
-            t -> {
+    EventHandler<MouseEvent> clickNodeEventHandler =
+            t -> { // Double click
+                StackPane uIElement = (StackPane) t.getSource();
                 if (t.getButton().equals(MouseButton.PRIMARY)) {
-                    if (t.getClickCount() == 2) {
-                        StackPane UIElement = (StackPane) t.getSource();
-                        makePopUpEditTextBox(UIElement);
+                    if (t.getClickCount() == 1) {
+                        action.setFocus(uIElement, canvasPane);
+                    }
+
+                    else if (t.getClickCount() == 2) {
+                        action.makePopUpEditTextBox(uIElement, (int)t.getScreenX(), (int)t.getSceneY());
                     }
                 }
             };
-
-
-    /**
-     * Creates a textbox for the user to input data and edit a node.
-     *
-     * @param UIElement The stack pane associated with the object
-     * @return A new text field at a position above the node.
-     */
-    public void makePopUpEditTextBox(StackPane UIElement) {
-        Popup popUp = new Popup();
-        popUp.setHeight(500);    // Might want to scale this to the size of the node in the future
-        popUp.setWidth(500);
-        popUp.setX(960);
-        popUp.setY(540);
-
-
-        Label label = new Label("Enter a new name");
-        //label.setAlignment(Pos.TOP_CENTER);
-
-        TextField textField = new TextField();
-        textField.setPrefWidth(200);
-        textField.setPrefHeight(50);
-        //textField.setAlignment(Pos.CENTER);
-
-        Button button = new Button("Confirm");
-        //button.setAlignment(Pos.BOTTOM_RIGHT);
-        button.setOnAction(event -> {
-            // Should be careful here, since I am completely clearing all labels and such in the UI element.
-            UIElement.getChildren().clear();
-            UIElement.getChildren().add(new Label(textField.getText()));
-            ((AbstractNode)UIElement.getUserData()).set("Name", textField.getText());
-            popUp.hide();
-        });
-
-        StackPane stackInPopUp = new StackPane();
-        StackPane.setAlignment(textField, Pos.CENTER);
-        StackPane.setAlignment(label, Pos.TOP_CENTER);
-        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
-
-        stackInPopUp.getChildren().addAll(textField, label, button);
-
-
-        popUp.getContent().add(stackInPopUp);
-
-        popUp.show(App.primaryStage);
-        popUp.setAutoHide(true);
-    }
-
-    /**
-     * What happens when the user hits enter after entering a new text for the UML object.
-     * Not implemented yet.
-     */
-    EventHandler<ActionEvent> confirmButtonIsPressedToEditText = event -> {
-        Object nodeObject = event.getSource();
-        AbstractNode associatedNode = (AbstractNode) ((StackPane) nodeObject).getUserData();
-
-    };
-
-
-    double orgSceneX, orgSceneY;
-    double orgTranslateX, orgTranslateY;
 
     /**
      * These two function together allow for dragging of shapes across the canvas
      */
     EventHandler<MouseEvent> nodeOnMouseGrabEventHandler =
-            new EventHandler<>() {
-
-                @Override
-                public void handle(MouseEvent t) {
-                    orgSceneX = t.getSceneX();
-                    orgSceneY = t.getSceneY();
-                    orgTranslateX = ((StackPane)(t.getSource())).getTranslateX();
-                    orgTranslateY = ((StackPane)(t.getSource())).getTranslateY();
-                }
-            };
+            t -> action.grabObject(t);
 
     EventHandler<MouseEvent> nodeOnMouseDragEventHandler =
-            new EventHandler<>() {
-
-                /**
-                 * With this method we are not "physically" moving the object. We actually have 2 different objects. The shape(javaFX) and the actual node.
-                 * We move the shape across the screen and that in turn updates it's associated node object.
-                 * This way we have 2 object "linked", one is for front end, the other is for backend.
-                 * The caveat with this method is we must be very careful to update the backed object whenever we change the frontend one, or else we will get desync.
-                 * Use Shape.getUserData() to get the node object that we associated with the UI element
-                 */
-                public void handle(MouseEvent t) {
-                    // This deals with the visual movement on the UI.
-                    double offsetX = t.getSceneX() - orgSceneX;
-                    double offsetY = t.getSceneY() - orgSceneY;
-                    double newTranslateX = orgTranslateX + offsetX;
-                    double newTranslateY = orgTranslateY + offsetY;
-
-                    ((StackPane)(t.getSource())).setTranslateX(newTranslateX);
-                    ((StackPane)(t.getSource())).setTranslateY(newTranslateY);
-
-                    // Sets the new coordinates of the that we moved.
-                    Object nodeObject = t.getSource();
-                    if (nodeObject instanceof StackPane) {
-                        AbstractNode node = (AbstractNode) ((StackPane) nodeObject).getUserData();
-                        node.set("x_coord", (int)newTranslateX);
-                        node.set("y_coord", (int)newTranslateY); // Updates the object with the new coordinates
-                    }
-                }
-            };
+            t -> action.moveObject(t);
 }
