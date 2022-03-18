@@ -6,13 +6,16 @@ import java.security.cert.X509Certificate;
 import UML.Diagrammer.backend.objects.AbstractNode;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -87,7 +90,7 @@ public class ActionHandler {
         textField.setPrefHeight(50);
 
         Button button = new Button("Confirm");
-        button.setOnAction(event -> {
+        button.setOnAction(e -> {
             // Should be careful here, since I am completely clearing all labels and such in the UI element.
             uIElement.getChildren().clear();
             uIElement.getChildren().add(new Label(textField.getText()));
@@ -101,24 +104,41 @@ public class ActionHandler {
         StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
 
         stackInPopUp.getChildren().addAll(textField, label, button);
-
         popUp.getContent().add(stackInPopUp);
 
         popUp.show(App.primaryStage);
+        button.setDefaultButton(true); // Lets you press enter to confirm
         popUp.setAutoHide(true);
     }
 
-    public void makeContextMenu(StackPane uIElement, int x, int y){
+    public void makeContextMenu(StackPane uIElement, Pane canvasPane, int x, int y){
         ContextMenu menu = new ContextMenu();
+        menu.setAutoHide(true);
+        MenuItem editItem = new MenuItem("Edit");
+        MenuItem deleteItem = new MenuItem("Delete");
 
-        MenuItem editItem = new MenuItem("Delete");
-        MenuItem deleteItem = new MenuItem("Edit");
-
-        //editItem.setOnAction(e -> makePopUpEditTextBox(uIElement, x, y));
+        editItem.setOnAction(e -> {
+            makePopUpEditTextBox(uIElement, x, y);
+        });
+        deleteItem.setOnAction(e -> {
+            deleteObject(uIElement, canvasPane);
+        });
 
         menu.getItems().addAll(editItem, deleteItem);
+        menu.setX(x); menu.setY(y);
         menu.show(App.primaryStage);
+    }
 
+    public void deleteObject(StackPane uIElement, Pane canvasPane){
+        canvasPane.getChildren().remove(uIElement);
+        // DATABASE DELETE REQUEST
+        // Or if we only save via sending the whole page to the database, then I can traslate the
+        // canvas pane to a Page before save.
+    }
+
+    public void setFocus(StackPane uIElement, Pane canvasPane) {
+        uIElement.requestFocus();
+        System.out.println();
     }
 
 }

@@ -205,12 +205,13 @@ public class ObjectRequester {
                 BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         Background background = new Background(BImage);
         StackPane stack = new StackPane();
+
         stack.setPrefWidth(image.getWidth());
         stack.setPrefHeight(image.getHeight());
         stack.setBackground(background);
         stack.setCursor(Cursor.HAND);
+
         Text text = new Text( (String) node.get("Name"));
-        //If I want to make the data object I should make it here and insert the stuff
         stack.getChildren().addAll(text);
         setMouseActions(stack, node);
         return stack;

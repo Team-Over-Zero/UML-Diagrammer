@@ -128,8 +128,8 @@ public class FXMLController extends App implements PropertyChangeListener{
         fxObject.setOnMouseClicked(clickNodeEventHandler);
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
-        fxObject.setOnContextMenuRequested(e ->
-                action.makeContextMenu(fxObject, (int)e.getSceneX(), (int)e.getSceneY()));
+        fxObject.setOnContextMenuRequested(e -> // Right click
+                action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
 
     /**
@@ -140,13 +140,13 @@ public class FXMLController extends App implements PropertyChangeListener{
             t -> { // Double click
                 StackPane uIElement = (StackPane) t.getSource();
                 if (t.getButton().equals(MouseButton.PRIMARY)) {
-                    if (t.getClickCount() == 2) {
+                    if (t.getClickCount() == 1) {
+                        action.setFocus(uIElement, canvasPane);
+                    }
+
+                    else if (t.getClickCount() == 2) {
                         action.makePopUpEditTextBox(uIElement, (int)t.getScreenX(), (int)t.getSceneY());
                     }
-                } // Right click
-                else if (t.getButton().equals(MouseButton.SECONDARY)) {
-                    action.makeContextMenu(uIElement, (int)t.getScreenX(), (int)t.getSceneY());
-                    System.out.println("right clicked");
                 }
             };
 
