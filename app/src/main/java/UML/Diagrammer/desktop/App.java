@@ -9,14 +9,11 @@
  **/
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
-import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.javalite.activejdbc.Base;
 
 
 public class App extends Application{
