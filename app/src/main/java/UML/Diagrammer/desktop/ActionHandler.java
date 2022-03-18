@@ -30,6 +30,7 @@ public class ActionHandler {
 
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
+    StackPane currentFocusedUIElement = null;
 
 
     /**
@@ -77,6 +78,7 @@ public class ActionHandler {
      * @param uIElement The stack pane associated with the object
      */
     public void makePopUpEditTextBox(StackPane uIElement, int x, int y) {
+        if (uIElement == null){ uIElement = currentFocusedUIElement;}
         Popup popUp = new Popup();
         popUp.setHeight(100);    // Might want to scale this to the size of the node in the future
         popUp.setWidth(100);
@@ -90,11 +92,12 @@ public class ActionHandler {
         textField.setPrefHeight(50);
 
         Button button = new Button("Confirm");
+        StackPane finalUIElement = uIElement;
         button.setOnAction(e -> {
             // Should be careful here, since I am completely clearing all labels and such in the UI element.
-            uIElement.getChildren().clear();
-            uIElement.getChildren().add(new Label(textField.getText()));
-            ((AbstractNode)uIElement.getUserData()).set("Name", textField.getText());
+            finalUIElement.getChildren().clear();
+            finalUIElement.getChildren().add(new Label(textField.getText()));
+            ((AbstractNode) finalUIElement.getUserData()).set("Name", textField.getText());
             popUp.hide();
         });
 
@@ -135,8 +138,21 @@ public class ActionHandler {
         // Or if we only save via sending the whole page to the database, then I can traslate the
         // canvas pane to a Page before save.
     }
+    public void deleteObject(Pane canvasPane){
+        canvasPane.getChildren().remove(currentFocusedUIElement);
+    }
 
-    public void setFocus(StackPane uIElement, Pane canvasPane) {
+    /**
+     * Makes a blue border around the currently selected object and sets as the currentFocusedUIElement for editing
+     * with buttons.
+     * @param uIElement
+     */
+    public void setFocus(StackPane uIElement) {
+        if (currentFocusedUIElement != null) { // Take the border off of the current selected object
+            currentFocusedUIElement.setStyle("-fx-border-color: ");
+        }
+        currentFocusedUIElement = uIElement;
+        currentFocusedUIElement.setStyle("-fx-border-color: blue");
         uIElement.requestFocus();
         System.out.println();
     }

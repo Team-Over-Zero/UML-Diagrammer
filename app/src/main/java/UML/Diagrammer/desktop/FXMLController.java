@@ -73,6 +73,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      */
     @FXML private Label testLabel;
     @FXML private Label circleObject;
+    @FXML @Getter public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
 
 
@@ -82,8 +83,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
-        objectRequesterObservable.makeOvalRequest();
-    }
+        objectRequesterObservable.makeOvalRequest();}
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest();}
     @FXML private void edgeButtonPressed() {
@@ -102,6 +102,13 @@ public class FXMLController extends App implements PropertyChangeListener{
         objectRequesterObservable.makeTextBoxRequest();}
     @FXML private void SquareButtonPressed() {
         objectRequesterObservable.makeSquareRequest();}
+
+    @FXML private void deleteButtonPressed(){
+        action.deleteObject(canvasPane);
+    }
+    @FXML private void editButtonPressed(){
+        action.makePopUpEditTextBox(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
+    }
 
     /**
      * This function is called after a new node is created and updates the UI to display the new element.
@@ -141,7 +148,7 @@ public class FXMLController extends App implements PropertyChangeListener{
                 StackPane uIElement = (StackPane) t.getSource();
                 if (t.getButton().equals(MouseButton.PRIMARY)) {
                     if (t.getClickCount() == 1) {
-                        action.setFocus(uIElement, canvasPane);
+                        action.setFocus(uIElement);
                     }
 
                     else if (t.getClickCount() == 2) {
