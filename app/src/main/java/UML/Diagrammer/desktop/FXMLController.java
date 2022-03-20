@@ -10,28 +10,15 @@
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.AbstractEdge;
-import UML.Diagrammer.backend.objects.AbstractNode;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Popup;
 import lombok.Getter;
 import org.apache.batik.transcoder.TranscoderException;
-import org.javalite.activejdbc.Base;
-import org.w3c.dom.Text;
-import org.w3c.dom.events.UIEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -51,7 +38,6 @@ public class FXMLController extends App implements PropertyChangeListener{
      */
     public FXMLController(){
         objectRequesterObservable.addPropertyChangeListener(this);
-        //canvasObservable.addPropertyChangeListener(this);
     }
 
     /**

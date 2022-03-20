@@ -1,25 +1,11 @@
 package UML.Diagrammer.desktop;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.security.cert.X509Certificate;
 
 import UML.Diagrammer.backend.objects.AbstractNode;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 
 /**
@@ -114,6 +100,13 @@ public class ActionHandler {
         popUp.setAutoHide(true);
     }
 
+    /**
+     * Creates a contextMenu on a right click of a UI element with options like delete and edit.
+     * @param uIElement The StackPane UI element that we are editing
+     * @param canvasPane The main pane that all the elements reside.
+     * @param x coordinate of the mouse
+     * @param y coordinate of the mouse
+     */
     public void makeContextMenu(StackPane uIElement, Pane canvasPane, int x, int y){
         ContextMenu menu = new ContextMenu();
         menu.setAutoHide(true);
@@ -132,12 +125,23 @@ public class ActionHandler {
         menu.show(App.primaryStage);
     }
 
+    /**
+     * Removes the UI Element from the UI(The main pane)
+     * @param uIElement The UI piece that we would like to remove
+     * @param canvasPane the main pane of the UI
+     */
     public void deleteObject(StackPane uIElement, Pane canvasPane){
         canvasPane.getChildren().remove(uIElement);
         // DATABASE DELETE REQUEST
-        // Or if we only save via sending the whole page to the database, then I can traslate the
+        // Or if we only save via sending the whole page to the database, then I can translate the
         // canvas pane to a Page before save.
     }
+
+    /**
+     * Overridden, if we use delete via the button rather than a right click.
+     * Deletes the currently focused UI element
+     * @param canvasPane The main pane of the UI
+     */
     public void deleteObject(Pane canvasPane){
         canvasPane.getChildren().remove(currentFocusedUIElement);
     }

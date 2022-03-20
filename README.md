@@ -10,7 +10,7 @@ This incudes functinality for:
  - Exporting diagrams in PNG and SVG formats.
  - Functinality for Web and Desktop UI.
 
-##Installation
+## Installation
 To use the project:
 
 First make sure that you have gradle installed on your machine

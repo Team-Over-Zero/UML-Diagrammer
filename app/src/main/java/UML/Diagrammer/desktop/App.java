@@ -33,6 +33,10 @@ public class App extends Application{
         App.launch();
     }
 
+    /**
+     * Starts the main UI. In the future this will launch a login window.
+     * @param stage current main stage of the application
+     */
     public void start(Stage stage) throws Exception {
         database.openConnection();
         Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));

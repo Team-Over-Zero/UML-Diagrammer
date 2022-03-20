@@ -70,8 +70,7 @@ public class ObjectRequester {
     }
 
     /**
-     * A WIP for the SVG converter, seriously got frustrated trying to implement this, so I started working on other thing.
-     * Will come back to complete later.
+     * A WIP for the SVG converter. Currently Does not work.
      */
     private ByteArrayOutputStream convertSVG(String fileLoc) throws IOException, TranscoderException {
         try {
@@ -108,7 +107,7 @@ public class ObjectRequester {
     }
 
     /**
-     * Creates a class object along with a rectangle and ties them together. 
+     * Creates a class object along with a stackpane and ties them together.
      * Then returns these objects to the UI via the support.firePropertyChange call.
      */
     public void makeClassRequest(){
@@ -191,10 +190,10 @@ public class ObjectRequester {
     
     /**
      * Creates a new shape for the UI and sets up it's mouse actions
-     * This function ties together a UI Object (Rectangle) and node object (AbstractNode). 
-     * @param image the image that you would like to associate with the new UI element. (Will be a UML element)
+     * This function ties together a UI Object (StackPane) and node object (AbstractNode).
+     * @param image the image that you would like to associate with the new UI element.
      * @param node The node that connects to the data side of things
-     * @return the shape you requested with it's data node linked and actions set up.
+     * @return the shape you requested with its data node linked and actions set up.
      */
     public StackPane UIShapeRequest(Image image, AbstractNode node) {
     	//SVGImage img = SVGLoader.load("/Images/DefaultNode.svg");
