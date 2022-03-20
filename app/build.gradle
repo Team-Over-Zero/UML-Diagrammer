@@ -21,6 +21,8 @@ plugins {
     //Griffith ActiveJDBC plugin
     id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
 
+    id 'jacoco'
+
 
 
 }
@@ -48,8 +50,10 @@ dependencies {
 
     implementation project(":backend") //Lets us use our backend objects.
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    //mockito
+    testImplementation "org.mockito:mockito-core:3.+"
 
     
     compileOnly 'org.javalite:activejdbc:1.4.1'
@@ -61,6 +65,22 @@ dependencies {
 
     //Active JDBC Mysql
     runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+
+    //testfx
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+
+    testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
+
+    testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.16-alpha'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+
+    testImplementation "org.testfx:testfx-core:4.0.16-alpha"
+
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+
+
 
 
 }
@@ -82,6 +102,15 @@ javafx {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
 
