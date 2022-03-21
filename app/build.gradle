@@ -16,10 +16,16 @@ plugins {
     //Javafx plugin for use of JavaFX and FXML
     id 'org.openjfx.javafxplugin' version '0.0.12'
 
+    // ActiveJDBC
+    id "java"
+    //Griffith ActiveJDBC plugin
+    id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
+
+    id 'jacoco'
+
 
 
 }
-
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -40,11 +46,43 @@ dependencies {
 
     implementation group: 'io.javalin', name: 'javalin', version: '4.3.0'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
+    
 
     implementation project(":backend") //Lets us use our backend objects.
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    //mockito
+    testImplementation "org.mockito:mockito-core:3.+"
+
+    
+    compileOnly 'org.javalite:activejdbc:1.4.1'
+    compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
+    // Batik for svg conversion
+    implementation "org.apache.xmlgraphics:batik-transcoder:1.14"
+    //Active JDBC javalite
+    implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+
+    //Active JDBC Mysql
+    runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+
+    //testfx
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+
+    testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
+
+    testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.16-alpha'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+
+    testImplementation "org.testfx:testfx-core:4.0.16-alpha"
+
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+
+
+
+
 }
 
 application {
@@ -59,11 +97,20 @@ tasks.named('test') {
 
 javafx {
     version = "17"
-    modules = [ 'javafx.controls', 'javafx.fxml']
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing', 'javafx.graphics', 'javafx.base']
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
 }
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
 

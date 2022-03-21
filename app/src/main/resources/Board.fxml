@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLController">
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLController">
    <children>
       <Button layoutX="-2.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Save" />
       <MenuButton fx:id="loadMenuButton" layoutX="50.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Load">
@@ -23,22 +29,36 @@
       </MenuButton>
       <HBox layoutX="-2.0" layoutY="31.0" prefHeight="95.0" prefWidth="1000.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#squareButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Class" />
-            <Button fx:id="circleObject" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#circleButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Circle" />
-            <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#lineButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
+            <Button contentDisplay="CENTER" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#classButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Class.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Class" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ovalButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Oval_UseCase.png); -fx-background-repeat: no-repeat; -fx-background-position: center; -fx-background-size: 100, 100;" text="Oval" />
+            <Button layoutX="110.0" layoutY="10.0" mnemonicParsing="false" onAction="#edgeButtonPressed" prefHeight="100.0" prefWidth="100.0" text="Line" />
+            <Button layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#noteButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Note.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Note" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#folderButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Folder.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Folder" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#SquareButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/TextBox_Square_Interface.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Square" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#stickFigureButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/StickFigure.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Stick Figure" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#TextBoxButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/TextBox_Square_Interface.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Text Box" />
+            <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#lifeLineButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/LifeLine.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Life Line" />
+            <Button layoutX="810.0" layoutY="10.0" mnemonicParsing="false" onAction="#loopButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Loop.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Loop" />
          </children></HBox>
       <Label fx:id="testLabel" layoutX="30.0" layoutY="150.0">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Separator layoutY="121.0" prefHeight="10.0" prefWidth="1000.0">
-         <effect>
-            <Blend />
-         </effect></Separator>
       <Separator layoutY="26.0" prefHeight="10.0" prefWidth="1000.0">
          <effect>
             <Blend />
          </effect>
       </Separator>
+      <Separator layoutY="130.0" prefHeight="10.0" prefWidth="1000.0">
+         <effect>
+            <Blend />
+         </effect></Separator>
+      <Pane fx:id="canvasPane" layoutY="126.0" prefHeight="675.0" prefWidth="1000.0">
+         <children>
+            <Label layoutX="288.0" layoutY="14.0" prefHeight="43.0" prefWidth="424.0" text="Double click a node/ right click a node to see some neat stuff" />
+         </children></Pane>
+      <Button layoutX="269.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
+      <Button layoutX="223.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
+      <Label fx:id="noElementSelectedErrorLabel" layoutX="338.0" layoutY="5.0" text="No item selected, select an item then press edit/delete" textFill="RED" visible="false" />
    </children>
 </AnchorPane>

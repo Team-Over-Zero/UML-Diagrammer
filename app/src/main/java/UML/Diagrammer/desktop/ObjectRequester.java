@@ -8,11 +8,32 @@
 
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
+import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
+import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.commons.io.FileUtils;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import UML.Diagrammer.backend.objects.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
 
 
 public class ObjectRequester {
@@ -23,6 +44,8 @@ public class ObjectRequester {
     private final PropertyChangeSupport support;
     private static final NodeFactory nodeFactory = new NodeFactory();
     private static final EdgeFactory edgeFactory = new EdgeFactory();
+    private static final BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
+
 
     /**
      * Constructor, needs to make the PropertyChangeSupport object for to notify listeners
@@ -33,12 +56,11 @@ public class ObjectRequester {
 
     /**
      * Adds a listener to notify when a change occurs
-     * @param listener who want's to know when this object changes(Probably javaFX UI)
+     * @param listener who wants to know when this object changes(Probably javaFX UI)
      */
     public void addPropertyChangeListener(PropertyChangeListener listener){
         support.addPropertyChangeListener(listener);
     }
-
     /**
      * Removes a listener so they no longer update on a change
      * @param listener the listener you'd like to remove
@@ -48,33 +70,150 @@ public class ObjectRequester {
     }
 
     /**
-     * These create the object right here for now.
-     * In the future we will want to have a factory in the backend, so we don't make new objects in the UI itself.
-     * New node creation so the oldValue will be null
+     * A WIP for the SVG converter. Currently Does not work.
      */
-    public void makeCircleRequest(){
-        AbstractNode newNode = nodeFactory.buildNode("OVAL", 0, 7, 7, 3);
-        //DefaultNode newNode = new DefaultNode();
-        //newNode.setName("UML-Object-2");
-        //newNode.setDescription("circle");
-        //newNode.setTitle("object");
-        support.firePropertyChange("newCircleCreation", null, newNode);
+    private ByteArrayOutputStream convertSVG(String fileLoc) throws IOException, TranscoderException {
+        try {
+            File svgFile = new File(fileLoc);
+            System.out.println(svgFile.exists());
+            byte[] streamBytes = FileUtils.readFileToByteArray(svgFile);
+
+            BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
+            TranscoderInput input = new TranscoderInput(new ByteArrayInputStream(streamBytes));
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            TranscoderOutput output = new TranscoderOutput(outStream);
+
+            System.out.println("OUT/IN NULL??? "+"\nout; "+output+"\nin; "+input);
+
+            transcoder.transcode(input, output);
+            System.out.println("NEW OUT: "+output);
+            //outStream.flush();
+            return outStream;
+        }
+        catch (Exception e){e.printStackTrace();}
+        return null;
     }
 
     /**
-     * Exact same as makCircleRequest() for now.
+     * Creates a class object along with a rectangle and ties them together.
+     * Then returns these objects to the UI via the support.firePropertyChange call.
+     * All makeXRequest function should look really similar to this function, the difference being the image and node type.
      */
-    public void makeClassRequest(){
-        AbstractNode newNode = nodeFactory.buildNode("CLASS", 2, 4, 2, 1);
-        //newNode.setName("UML-Object-1");
-        //newNode.setDescription("square");
-        //newNode.setTitle("class");
-        support.firePropertyChange("newSquareCreation", null, newNode);
+    public void makeOvalRequest() throws TranscoderException, IOException {
+        OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3);
+        Image image = new Image("/Images/Oval_UseCase.png");/*ByteArrayOutputStream stuff = convertSVG("src/main/resources/Images/DefaultImage.svg");*/
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    public void makeEdgeRequest(){
-        AbstractEdge newEdge = edgeFactory.buildEdge();
+    /**
+     * Creates a class object along with a stackpane and ties them together.
+     * Then returns these objects to the UI via the support.firePropertyChange call.
+     */
+    public void makeClassRequest(){
+    	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+        Image image = new Image("/Images/Class.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+    	StackPane newUIShape = UIShapeRequest(image,newNode);
+    	newNode.set("x_coord", 250);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeFolderRequest(){
+        FolderNode newNode = nodeFactory.buildNode("FOLDER", 3, 3, 3, 3);
+        Image image = new Image("/Images/Folder.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeLifeLineRequest(){
+        LifeLineNode newNode = nodeFactory.buildNode("LIFELINE", 3, 3, 3, 3);
+        Image image = new Image("/Images/LifeLine.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeLoopRequest(){
+        LoopNode newNode = nodeFactory.buildNode("LOOP", 3, 3, 3, 3);
+        Image image = new Image("/Images/Loop.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeNoteRequest(){
+        NoteNode newNode = nodeFactory.buildNode("NOTE", 3, 3, 3, 3);
+        Image image = new Image("/Images/Note.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeStickFigureRequest(){
+        StickFigureNode newNode = nodeFactory.buildNode("STICKFIGURE", 3, 3, 3, 3);
+        Image image = new Image("/Images/StickFigure.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeTextBoxRequest(){
+        TextBoxNode newNode = nodeFactory.buildNode("TEXTBOX", 3, 3, 3, 3);
+        Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    public void makeSquareRequest(){
+        SquareNode newNode = nodeFactory.buildNode("SQUARE", 3, 3, 3, 3);
+        Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        StackPane newUIShape = UIShapeRequest(image,newNode);
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
+    }
+
+    /**
+     * Creates a default edge for now and displays and lets the controller know.
+     */
+    public void makeEdgeRequest(){ // Edge required ***************
+        DefaultEdge newEdge = edgeFactory.buildEdge();
         support.firePropertyChange("newEdgeCreation", null, newEdge);
+    }
+    
+    /**
+     * Sets up the mouse actions for dragging and updating the associated node.
+     * This should be called after any new creation of a node.
+     * setUserData makes it so we can reference the data object from the UI object via UIElement.getUserData()
+     * This effectively ties together the UI object Rectangle and the given AbstractNode data object.
+     * @param fxObject The UI element that is displayed to the screen.
+     * @param node The actual backend object that is apart of the data.
+     */
+    public void setMouseActions(StackPane fxObject, AbstractNode node) {
+    	fxObject.setUserData(node);
+    	support.firePropertyChange("setMouseActions", null, fxObject);
+    }
+    
+    /**
+     * Creates a new shape for the UI and sets up it's mouse actions
+     * This function ties together a UI Object (StackPane) and node object (AbstractNode).
+     * @param image the image that you would like to associate with the new UI element.
+     * @param node The node that connects to the data side of things
+     * @return the shape you requested with its data node linked and actions set up.
+     */
+    public StackPane UIShapeRequest(Image image, AbstractNode node) {
+    	//SVGImage img = SVGLoader.load("/Images/DefaultNode.svg");
+    	//svgContainer.load("/Images/DefaultNode.svg");
+
+        BackgroundImage BImage = new BackgroundImage(image,
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background background = new Background(BImage);
+        StackPane stack = new StackPane();
+
+        stack.setPrefWidth(image.getWidth());
+        stack.setPrefHeight(image.getHeight());
+        stack.setBackground(background);
+        stack.setCursor(Cursor.HAND);
+
+        Text text = new Text( (String) node.get("Name"));
+        stack.getChildren().addAll(text);
+        setMouseActions(stack, node);
+        return stack;
     }
 
 }

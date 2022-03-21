@@ -1,5 +1,6 @@
 
 import UML.Diagrammer.backend.objects.*;
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GraphTest {
+public class GraphTest extends DBSpec {
 
     /*Tests the Graph's addNode method in this function*/
     @Test

@@ -1,11 +1,27 @@
 import UML.Diagrammer.backend.objects.*;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
+import org.javalite.activejdbc.DB;
+import org.javalite.activejdbc.InitException;
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
+import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.DB;
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class FactoryTest {
+
+/**
+ * This test class utilizes DBSpec. This means that every test method essentially opens a "transaction", which is a set of
+ * mysql commands. A transaction allows you to test the placing of items in a database, then the calling of those items, while
+ * not having to actually store the items there between tests. After a test method ends, the transaction is "reverted" automatically thanks to DBSpec.
+ * You can read the DBSpec documentation for additional information.
+ *
+ * Note that DBspec searches the database.properties file for its connection information.
+ *
+ * @Author Mixed, DBSpec Implemented by Alex.
+ */
+public class FactoryTest extends DBSpec {
 
     NodeFactory factory;
     @BeforeEach
@@ -14,38 +30,50 @@ public class FactoryTest {
     }
 
     /*Testing factory for testFactory method*/
+
     @Test
     public void testFactory(){
-        AbstractNode node = factory.buildNode();
-        assertEquals("DEFAULT NAME",node.getName());
-        assertEquals(0,node.getXCoord());
-        assertEquals(0,node.getYCoord());
+
+            //assertTrue(testDB.hasConnection());
+            AbstractNode node = factory.buildNode();
+            ClassNode node2 = factory.buildNode("CLASS",2,2,2,2);
+            String nameSet = "TESTFACTORY CLASSNODE";
+            node2.set("name",nameSet);
+            node.saveIt();
+            node2.saveIt();
+            assertEquals("DEFAULT NAME",node.get("name"));
+            assertEquals("TESTFACTORY CLASSNODE",node2.get("name"));
+            assertEquals(0,node.get("x_coord"));
+            assertEquals(0,node.get("y_coord"));
+
     }
 
     /*Test factory's sizeNotBroken method*/
     @Test
     public void testSizeNotBroken(){
         AbstractNode node = factory.buildNode();
-        assertNotNull(node.getHeight());
-        assertNotNull(node.getWidth());
+        assertEquals(3,node.get("height"));
+        assertEquals(3,node.get("width"));
     }
 
     /*Tests factory's setHeight*/
     @Test
     public void testSetHeight(){
         AbstractNode node = factory.buildNode();
-        node.setHeight(3);
-        assertEquals(3,node.getHeight());
+        node.set("height",3);
+        node.saveIt();
+        assertEquals(3,node.get("height"));
     }
 
     /*Tests factory's multipleSetHeights*/
     @Test
     public void multipleSetHeights(){
         AbstractNode node = factory.buildNode();
-        node.setHeight(2);
-        node.setHeight(3);
-        node.setHeight(1);
-        assertEquals(1,node.getHeight());
+        node.set("height",2);
+        node.set("height",3);
+        node.set("height",1);
+        node.saveIt();
+        assertEquals(1,node.get("height"));
     }
 
     /*Tests the factory's setCoords method in this function*/
@@ -53,18 +81,21 @@ public class FactoryTest {
     public void testSetCoords(){
         AbstractNode node = factory.buildNode();
         node.setCoords(90,1234);
-        assertEquals(90,node.getXCoord());
-        assertEquals(1234,node.getYCoord());
+        node.saveIt();
+        assertEquals(90,node.get("x_coord"));
+        assertEquals(1234,node.get("y_coord"));
 
     }
 
     /*Tests the factory's negativeCoords method in this function*/
     @Test
     public void testNegativeCoords(){
+
         AbstractNode node = factory.buildNode();
         node.setCoords(-1,-1);
-        assertEquals(-1,node.getXCoord());
-        assertEquals(-1,node.getYCoord());
+        node.saveIt();
+        assertEquals(-1,node.get("x_coord"));
+        assertEquals(-1,node.get("y_coord"));
     }
 
     /*Tests the factory's setSize method in this function*/
@@ -72,14 +103,14 @@ public class FactoryTest {
     public void setSize(){
         AbstractNode node = factory.buildNode();
         node.setSize(20,20);
-        assertEquals(20,node.getWidth());
-        assertEquals(20,node.getHeight());
+        assertEquals(20,node.get("width"));
+        assertEquals(20,node.get("height"));
     }
 
     /**
      * ClassNode subclass test
      * You can reference what type of classes there are in NodeFactory.java
-     * The only thing you really need to change is the first parameter of factory.buildNode(SVGImage)
+     * To make different node types simply call 'NODETYPE node = factory.buildNode(NODETYPE, rest of params)'
      * The switch block in NodeFactory class tells the different strings to call other subclasses.
      * @author Show
      */
@@ -87,13 +118,13 @@ public class FactoryTest {
     /*Tests the factory's classNodeSubclass method in this function*/
     @Test
     public void testClassNodeSubclass(){
-        AbstractNode node = factory.buildNode("CLASS", 0, 0, 3, 3);
-        assertEquals("Class Name", node.getName());
-        assertEquals("Class Description", node.getDescription());
-        assertEquals(0, node.getXCoord());
-        assertEquals(0, node.getYCoord());
-        assertEquals(3, node.getWidth());
-        assertEquals(3, node.getHeight());
+        ClassNode node = factory.buildNode("CLASS", 0, 0, 3, 3);
+        assertEquals("Class Name", node.get("name"));
+        assertEquals("Class Description", node.get("description"));
+        assertEquals(0, node.get("x_coord"));
+        assertEquals(0, node.get("y_coord"));
+        assertEquals(3, node.get("width"));
+        assertEquals(3, node.get("height"));
     }
 
     /**
@@ -104,13 +135,13 @@ public class FactoryTest {
     /*Tests the factory's defaultNodeSubclass method in this function*/
     @Test
     public void testDefaultNodeSubclass(){
-        AbstractNode node = factory.buildNode();
-        assertEquals("DEFAULT NAME", node.getName());
-        assertEquals("DEFAULT DESCRIPTION", node.getDescription());
-        assertEquals(0, node.getXCoord());
-        assertEquals(0, node.getYCoord());
-        assertEquals(3, node.getWidth());
-        assertEquals(3, node.getHeight());
+        DefaultNode node = factory.buildNode();
+        assertEquals("DEFAULT NAME", node.get("name"));
+        assertEquals("DEFAULT DESCRIPTION", node.get("description"));
+        assertEquals(0, node.get("x_coord"));
+        assertEquals(0, node.get("y_coord"));
+        assertEquals(3, node.get("width"));
+        assertEquals(3, node.get("height"));
     }
 
 }

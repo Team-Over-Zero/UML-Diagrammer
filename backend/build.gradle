@@ -13,7 +13,16 @@ plugins {
     id "com.github.hierynomus.license-base" version "0.16.1"
 
     id 'jacoco'
+
+    // ActiveJDBC
+    id "java"
+    //Griffith ActiveJDBC plugin
+    id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
+
+
 }
+
+//activejdbc.toolVersion = '2.3'
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -34,6 +43,18 @@ dependencies {
     // project lombok test processor
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+   // implementation group: 'org.javalite', name: 'activejdbc', version: '2.3.2-j8'
+    //mysql connector
+    implementation 'mysql:mysql-connector-java:8.0.15'
+    //activejdbc and javalite
+    implementation "org.javalite:activejdbc:3.0-j11"
+    implementation "org.javalite:javalite-common:3.0-j11"
+
+    
+    compileOnly 'org.javalite:activejdbc:1.4.1'
+    compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
+    
 }
 
 tasks.named('test') {
@@ -68,4 +89,7 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+}
+activejdbc {
+    toolVersion = '3.0-j11'
 }

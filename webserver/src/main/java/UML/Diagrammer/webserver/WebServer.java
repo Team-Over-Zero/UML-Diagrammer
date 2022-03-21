@@ -7,28 +7,42 @@
  * @author Michael
  */
 package UML.Diagrammer.webserver;
+import UML.Diagrammer.backend.objects.HTTP_Client;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.vue.VueComponent;
+import org.javalite.activejdbc.Base;
 
-public class Client {
+
+public class WebServer {
 
     Javalin client;
+    HTTP_Client http_client;
 
-    public Client(){
+    public WebServer(){
         init();
     }
 
     private void init(){
 
+
+        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
+        String databaseUser = "root";
+        String databasePassword = "TeamOverZero";
+        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+        http_client = new HTTP_Client();
+
         System.out.println("web client started");
         client = Javalin.create(config ->
         {config.enableWebjars();}).start(7777);
 
-
+        client.get("/testGetRequest", ctx -> {
+            ctx.result(http_client.exampleGetRequest());
+        });
         client.get("/", new VueComponent("uml-editor"));
     }
 
     public void close(){
+        Base.close();
         client.close();
     }
 
