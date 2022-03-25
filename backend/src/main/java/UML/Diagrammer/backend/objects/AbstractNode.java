@@ -94,12 +94,12 @@ public abstract class AbstractNode extends Model {
      */
 //    @Override
 //    public String toString() {
-//       //String table =  getTableName();
-////        return "Made a node with:" + "\n" +
-////                "Name: " + get(table, "name") + "\n" +
-////                "Description: " + description + "\n" +
-////                "(x, y): " + "(" + xCoord + ", " + yCoord + ")" + "\n" +
-////                "(Width, Height): " + "(" + width + ", " + height + ")";
+//       String table =  getTableName();
+//        return "Made a node with:" + "\n" +
+//                "Name: " + get(table, "name") + "\n" +
+//                "Description: " + description + "\n" +
+//                "(x, y): " + "(" + xCoord + ", " + yCoord + ")" + "\n" +
+//                "(Width, Height): " + "(" + width + ", " + height + ")";
 //
 //
 //    }

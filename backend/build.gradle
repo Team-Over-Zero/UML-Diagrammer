@@ -51,10 +51,18 @@ dependencies {
     implementation "org.javalite:activejdbc:3.0-j11"
     implementation "org.javalite:javalite-common:3.0-j11"
 
-    
+    //Javalin
+    implementation group: 'io.javalin', name: 'javalin', version: '4.3.0'
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+
+
     compileOnly 'org.javalite:activejdbc:1.4.1'
     compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
-    
+
+
 }
 
 tasks.named('test') {
