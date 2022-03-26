@@ -64,7 +64,7 @@ public class Database_Client {
     }
 
     /**
-     * This method initializes activeJDBC and our javalin server
+     * This method initializes activeJDBC and our javalin server.
      */
     public void spinUp(){
 
@@ -79,8 +79,11 @@ public class Database_Client {
          devGetNode();
          devPostStatusCodeInit();
          devTestCreateNode();
-         devGetTestNodeWithController();
+         devGetNodeNameWithId();
+         devGetObjectsAsMap();
 
+         //This handler will run before every single request handler. This will ensure
+        //that our database
         httpServer.before(ctx -> {
             // calls before("/*", handler)
             DBConfiguration.loadConfiguration("/database.properties");
@@ -111,7 +114,6 @@ public class Database_Client {
         httpServer.get("/paramtest/{name}", ctx ->
         { // the {} syntax does not allow slashes ('/') as part of the parameter
             ctx.result("Param Value is : " + ctx.pathParam("name")); //returns the value back to the client
-            ctx.status(403);
         });
         //retString = "Hello: "+ctx.pathParam("name");
 
@@ -125,12 +127,16 @@ public class Database_Client {
         httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
     }
 
-    void devGetTestNodeWithController(){
+    /**
+     * Adds a get request handler that takes a link in the form .../defaultnodenameid/{objectid} and returns the name
+     * of the node with that id if found in the database.
+     */
+    void devGetNodeNameWithId(){
         httpServer.get("/defaultnodenameid/{objectid}",RequestController::getNodeNameWithId);
     }
 
-    void devGetObject(){
-        httpServer.get("/getObject/",RequestController::getObjWithIdandTable);
+    void devGetObjectsAsMap(){
+        httpServer.get("/getobjectsasmap/",RequestController::getObjsAsMapWithIdandTable);
     }
 
     //Post Requests
@@ -148,7 +154,7 @@ public class Database_Client {
     }
 
     /**
-     * this will create a test node with the name being a user defined query parameter in the post request.
+     * this will create a test default node with the name being a user defined query parameter in the post request.
      */
     void devTestCreateNode(){
         httpServer.post("/testpostnode/",RequestController::createTestDefaultNodeWithPost);
