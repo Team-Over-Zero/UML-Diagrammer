@@ -9,6 +9,7 @@
  **/
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.apis.Database_Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,7 @@ public class App extends Application{
     public static final DatabaseConnection database = new DatabaseConnection();
     public static Stage primaryStage;
 
+
     public String getGreeting() {
         return "Hello World!";
     }
@@ -29,12 +31,18 @@ public class App extends Application{
     	//SvgImageLoaderFactory.install();
     	//App.launch();
         //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-
+        //testing database_client
+        Database_Client dbConnect = new Database_Client();
+        dbConnect.spinUp();
         App.launch();
     }
 
     public void start(Stage stage) throws Exception {
-        database.openConnection();
+//        database.openConnection(); //DEPRECATED BY ALEX
+//        database.closeConnection();
+
+
+
         Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
         stage.setTitle("UML Diagrammer");
         stage.setScene(new Scene(root, 1000, 800));
@@ -49,7 +57,7 @@ public class App extends Application{
     @Override
     public void stop(){
         System.out.println("Stage is closing");
-        database.closeConnection();
+       // database.closeConnection();
     }
 
 }
