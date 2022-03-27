@@ -8,6 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class LifeLineNode extends AbstractNode {
     LifeLineNode(int x, int y, int w, int h){
-        super(null, null, "LIFE_LINE_SVG", x, y, w, h);
+        super("LifeLine Name", null, "LIFE_LINE_SVG", x, y, w, h);
     }
 }

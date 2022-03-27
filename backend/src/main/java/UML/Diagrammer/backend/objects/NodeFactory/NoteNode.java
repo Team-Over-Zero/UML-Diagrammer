@@ -8,6 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class NoteNode extends AbstractNode {
     NoteNode(int x, int y, int w, int h){
-        super(null, "Note Description", "NOTE_SVG", x, y, w, h);
+        super("Oval Name", "Note Description", "NOTE_SVG", x, y, w, h);
     }
 }

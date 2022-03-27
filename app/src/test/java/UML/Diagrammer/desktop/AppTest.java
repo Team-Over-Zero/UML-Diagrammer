@@ -54,17 +54,20 @@ class AppTest {
         verifyThat(robo.lookup("Delete"), (Button b) -> b.isVisible());
         verifyThat("Load", org.testfx.matcher.control.LabeledMatchers.hasText("Load"));
 
-        robo.clickOn("Class");;
+        robo.clickOn("Class");
 
-        robo.clickOn("Class Name");
+        robo.doubleClickOn("Class Name");
+
+        robo.type(KeyCode.S);
+
+        robo.clickOn("Confirm");
 
         robo.clickOn("Delete");
 
         robo.clickOn("Oval");
 
-        robo.clickOn("Oval Name");
+        robo.doubleClickOn("Oval Name");
 
-        robo.clickOn("Oval Name");
 
         robo.type(KeyCode.E);
 
@@ -95,8 +98,6 @@ class AppTest {
         robo.clickOn("Export");
 
         robo.clickOn("SVG");
-
-
 
 
     }

@@ -21,6 +21,7 @@ public class App extends Application{
 
     public static final DatabaseConnection database = new DatabaseConnection();
     public static Stage primaryStage;
+    public Database_Client dbConnect;
 
 
     public String getGreeting() {
@@ -32,8 +33,7 @@ public class App extends Application{
     	//App.launch();
         //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
         //testing database_client
-        Database_Client dbConnect = new Database_Client();
-        dbConnect.spinUp();
+
         App.launch();
     }
 
@@ -42,9 +42,10 @@ public class App extends Application{
      * @param stage current main stage of the application
      */
     public void start(Stage stage) throws Exception {
-//        database.openConnection(); //DEPRECATED BY ALEX
-//        database.closeConnection();
+        database.openConnection(); //This should be deprecated when ObjectRequester can start sending http_requests in favor of dbConnect.
 
+//        dbConnect = new Database_Client();
+//        dbConnect.spinUp();
 
 
         Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
@@ -61,7 +62,8 @@ public class App extends Application{
     @Override
     public void stop(){
         System.out.println("Stage is closing");
-       // database.closeConnection();
+        //dbConnect.spinDown();
+        database.closeConnection();
     }
 
 }
