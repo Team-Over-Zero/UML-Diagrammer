@@ -20,7 +20,7 @@ public class FXMLControllerTest {
     public void propertyChange() {
     }
 
-    @@Test
+    @Test
     public void getObjectRequesterObservable() {
     }
 
