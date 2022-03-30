@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
 /**
@@ -80,9 +81,14 @@ public class ActionHandler {
         Button button = new Button("Confirm");
         StackPane finalUIElement = uIElement;
         button.setOnAction(e -> {
-            // Should be careful here, since I am completely clearing all labels and such in the UI element.
-            finalUIElement.getChildren().clear();
-            finalUIElement.getChildren().add(new Label(textField.getText()));
+
+            Object nodeObj = finalUIElement.getUserData();
+            AbstractNode node = (AbstractNode) nodeObj;
+
+            int elIndex = findString(finalUIElement, String.valueOf(node.get("Name")));
+            finalUIElement.getChildren().remove(elIndex); // Removes index 1, the name label.
+
+            finalUIElement.getChildren().add(new Text(textField.getText()));
             ((AbstractNode) finalUIElement.getUserData()).set("Name", textField.getText());
             popUp.hide();
         });
@@ -98,6 +104,25 @@ public class ActionHandler {
         popUp.show(App.primaryStage);
         button.setDefaultButton(true); // Lets you press enter to confirm
         popUp.setAutoHide(true);
+    }
+
+    /**
+     * Gets the string value from the stack Pane and returns it's index for removal/editing.
+     * @param UIElement The StackPane that you'd like to search in
+     * @param elementToFind The string value you want to find
+     * @return The index of the string that matches. -1 if no match.
+     */
+    public int findString(StackPane UIElement, String elementToFind){
+        for (Object curItem: UIElement.getChildren()) {
+            try {
+                Text curText = (Text) curItem;
+                if (curText.getText().equals(elementToFind)) {
+                    return UIElement.getChildren().indexOf(curItem);
+                }
+            }
+            catch (Exception e){}
+        }
+        return -1;
     }
 
     /**

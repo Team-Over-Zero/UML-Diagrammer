@@ -11,16 +11,10 @@ package UML.Diagrammer.desktop;
 import UML.Diagrammer.backend.objects.AbstractNode;
 import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
-import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
-import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
-import javafx.geometry.Pos;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
 import javafx.scene.Cursor;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -33,7 +27,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import UML.Diagrammer.backend.objects.NodeFactory.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class ObjectRequester {
@@ -101,7 +97,7 @@ public class ObjectRequester {
      */
     public void makeOvalRequest() throws TranscoderException, IOException {
         OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3);
-        Image image = new Image("/Images/Oval_UseCase.png");/*ByteArrayOutputStream stuff = convertSVG("src/main/resources/Images/DefaultImage.svg");*/
+        String image = "/Oval_UseCase.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
@@ -112,57 +108,56 @@ public class ObjectRequester {
      */
     public void makeClassRequest(){
     	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
-        Image image = new Image("/Images/Class.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "Class.svg";
     	StackPane newUIShape = UIShapeRequest(image,newNode);
-    	newNode.set("x_coord", 250);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeFolderRequest(){
         FolderNode newNode = nodeFactory.buildNode("FOLDER", 3, 3, 3, 3);
-        Image image = new Image("/Images/Folder.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/Folder.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLifeLineRequest(){
         LifeLineNode newNode = nodeFactory.buildNode("LIFELINE", 3, 3, 3, 3);
-        Image image = new Image("/Images/LifeLine.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/LifeLine.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLoopRequest(){
         LoopNode newNode = nodeFactory.buildNode("LOOP", 3, 3, 3, 3);
-        Image image = new Image("/Images/Loop.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/Loop.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest(){
         NoteNode newNode = nodeFactory.buildNode("NOTE", 3, 3, 3, 3);
-        Image image = new Image("/Images/Note.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/Note.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest(){
         StickFigureNode newNode = nodeFactory.buildNode("STICKFIGURE", 3, 3, 3, 3);
-        Image image = new Image("/Images/StickFigure.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/StickFigure.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest(){
         TextBoxNode newNode = nodeFactory.buildNode("TEXTBOX", 3, 3, 3, 3);
-        Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/TextBox_Square_Interface.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest(){
         SquareNode newNode = nodeFactory.buildNode("SQUARE", 3, 3, 3, 3);
-        Image image = new Image("/Images/TextBox_Square_Interface.png"); // Will be just newNode.getSVG() when we get the object back up and running.(And be a svg too)
+        String image = "/TextBox_Square_Interface.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
@@ -195,25 +190,34 @@ public class ObjectRequester {
      * @param node The node that connects to the data side of things
      * @return the shape you requested with its data node linked and actions set up.
      */
-    public StackPane UIShapeRequest(Image image, AbstractNode node) {
-    	//SVGImage img = SVGLoader.load("/Images/DefaultNode.svg");
-    	//svgContainer.load("/Images/DefaultNode.svg");
+    public StackPane UIShapeRequest(String image, AbstractNode node) {
 
-        BackgroundImage BImage = new BackgroundImage(image,
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        Background background = new Background(BImage);
-        StackPane stack = new StackPane();
+        try {
+            SVGPath path = new SVGPath();
 
-        stack.setPrefWidth(image.getWidth());
-        stack.setPrefHeight(image.getHeight());
-        stack.setBackground(background);
-        stack.setCursor(Cursor.HAND);
+            Path filePath = Paths.get("src/main/resources/Images/"+image);
+            Path absPath = filePath.toAbsolutePath();
 
-        Text text = new Text( (String) node.get("Name"));
-        stack.getChildren().addAll(text);
-        setMouseActions(stack, node);
-        return stack;
+            String svgString = Files.readString(absPath);
+
+            path.setContent(svgString);
+
+            StackPane stack = new StackPane(path);
+
+            stack.setPrefWidth(300);
+            stack.setPrefHeight(300);
+            stack.setCursor(Cursor.HAND);
+
+            Text text = new Text((String) node.get("Name"));
+
+            stack.getChildren().addAll(text);
+            setMouseActions(stack, node);
+            return stack;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
     }
-
 }
