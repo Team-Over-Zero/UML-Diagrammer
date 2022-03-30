@@ -53,6 +53,7 @@ public class App extends Application{
         stage.setScene(new Scene(root, 1000, 800));
         stage.show();
         primaryStage = stage;
+        primaryStage.setAlwaysOnTop(true);
     }
 
     /**
