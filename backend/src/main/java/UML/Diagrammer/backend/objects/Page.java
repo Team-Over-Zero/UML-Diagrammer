@@ -7,86 +7,104 @@
  *
  */
 package UML.Diagrammer.backend.objects;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
+import UML.Diagrammer.backend.objects.EdgeFactory.*;
+
 import lombok.*;
+import org.javalite.activejdbc.LazyList;
+import org.javalite.activejdbc.Model;
+
 import java.util.*;
 
     @Getter
     @Setter
-public class Page implements Graph {
-    private HashMap nodeDict; //keys are node ids, values are node objects.
-    private HashMap edgeDict; //keys are edge ids, values are edge objects.
-    private String pageName;
+public class Page extends Model {
+   // private HashMap nodeDict; //keys are node ids, values are node objects.
+    //private HashMap edgeDict; //keys are edge ids, values are edge objects.
+        private HashMap<String,Class> classLookup = new HashMap(20);
+        private ArrayList<Class> nodeClassLookupList = new ArrayList(20);
 
         /**
          * Default Page with pageName set to DEFAULT
          */
     public Page(){
-        nodeDict = new HashMap();
-        edgeDict = new HashMap();
-        pageName = "DEFAULT";
+        set("name","default name");
+        initClassMap();
+        saveIt();
     }
 
         /**
          *
-         * @param nD Hashmap of Nodes
-         * @param eD Hashmap of Edges
-         * @param pN Name of the Page (No spaces)
+         * @param name Name of the page
+
          */
-    public Page(HashMap nD,HashMap eD, String pN){
-        nodeDict = nD;
-        edgeDict = eD;
-        pageName = pN;
+    public Page(String name){
+        set("name",name);
+        initClassMap();
+        saveIt();
     }
 
         /**
-         *
-         * @param n1 Node to add.
+         * A pretty naive and lazy way to get a list of all the nodes on a page.
+         * A better way would be to use a dictionary and map table names to lazy lists as a map. Refactor.
+         * @author Alex
+         * @return
          */
-    public void addNode(AbstractNode n1){
-        nodeDict.put(n1.getId(),n1);
+    public ArrayList<LazyList> getNodes(){
+
+
+
+        //manually get every node table list and return a big list?
+        LazyList<DefaultNode> defaultNodes =  getAll(DefaultNode.class);
+        LazyList<ClassNode> classNodes = getAll(ClassNode.class);
+        ArrayList totalList = new ArrayList();
+
+        for(int i = 0;i<nodeClassLookupList.size();i++){
+            totalList.add(getAll(nodeClassLookupList.get(i))); //queries every node table
+        }
+
+
+        return totalList;
+
     }
 
         /**
-         *
-         * @param n1 Node to remove. Should also remove attached edges from graph
+         * THis helps us map our table names to our object classes.
+         * Necessary because getAll() methods require class names.
          */
-    public void removeNode(AbstractNode n1){
-        nodeDict.remove(n1.getId());
-        //IMPLEMENT: for edge in edge dictionary, if key or value contains n1, remove.
-    }
+        public void initClassMap(){
+            //associates "types" with classes. This is stupid but allows us to Hydrate classes easier.
+            //node classes
+            classLookup.put("class_node", ClassNode.class);
+            classLookup.put("default_node", DefaultNode.class);
+            classLookup.put("folder_node", FolderNode.class);
+            classLookup.put("life_line_node", LifeLineNode.class);
+            classLookup.put("loop_node", LoopNode.class);
+            classLookup.put("note_node", NoteNode.class);
+            classLookup.put("oval_node", OvalNode.class);
+            classLookup.put("square_node", SquareNode.class);
+            classLookup.put("stick_figure_node", StickFigureNode.class);
+            classLookup.put("text_box_node", TextBoxNode.class);
 
-        /**
-         *
-         * @param e1 Edge to add.
-         */
-    public void addEdge(AbstractEdge e1){
-        edgeDict.put(e1.getId(),e1);
-    }
+            //edge classes
+            classLookup.put("default_edge", DefaultEdge.class);
+            classLookup.put("normal_edge", NormalEdge.class);
 
 
-        /**
-         *
-         * @param e1 Edge to remove.
-         */
-    public void removeEdge(AbstractEdge e1){
-        edgeDict.remove(e1.getId());
-    }
-    //needed this to test something
+            nodeClassLookupList.add(ClassNode.class);
+            nodeClassLookupList.add(DefaultNode.class);
+            nodeClassLookupList.add(FolderNode.class);
+            nodeClassLookupList.add(LifeLineNode.class);
+            nodeClassLookupList.add(LoopNode.class);
+            nodeClassLookupList.add(NoteNode.class);
+            nodeClassLookupList.add(OvalNode.class);
+            nodeClassLookupList.add(SquareNode.class);
+            nodeClassLookupList.add(StickFigureNode.class);
+            nodeClassLookupList.add(TextBoxNode.class);
 
-        /**
-         *
-         * @return Size of nodeDict
-         */
-    public int getNodeDictSize(){
-        return nodeDict.size();
-    }
 
-        /**
-         *
-         * @return Size of edgeDict
-         */
-    public int getEdgeDictSize(){
-        return edgeDict.size();
-    }
+        }
+
 
 }
+

@@ -13,7 +13,7 @@ import org.javalite.activejdbc.Model;
  * NodeFactory that any class will need if they want to create various node objects.
  * Syntax for creating a node object could be for example:
  * NodeFactory factory = new NodeFactory();
- * TextBoxNode myNode = factory.buildNoe("TEXTBOX", x, y, w, h)
+ * TextBoxNode myNode = factory.buildNode("TEXTBOX", x, y, w, h)
  *
  * This factory returns a genericNode so that it can return any subclass of AbstractNode.
  */
