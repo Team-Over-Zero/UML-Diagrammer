@@ -14,33 +14,16 @@ import org.javalite.activejdbc.Model;
 @Getter @Setter
 public abstract class AbstractNode extends Model {
 
-//    //protected int id;
-//    protected String name;
-//   // protected String title;
-//    protected String description;
-//    protected String svgImage;
-//    protected int xCoord;
-//    protected int yCoord;
-//    protected int width;
-//    protected int height;
+
 
     /**
      * Constructor for the NodeFactory class so this class can put together things from it's subclasses
      *
      * @author Show
      */
-    public AbstractNode(String name, String desc, String SVGImage, int x, int y, int w, int h) {
-//        this.name = name;
-//        // I didn't add a "Title" attribute here, not sure if we want that.
-//        this.description = desc;
-//        this.xCoord = x;
-//        this.yCoord = y;
-//        this.width = w;
-//        this.height = h;
-//        this.svgImage = SVGImage;
-        //int intExact = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-
+    public AbstractNode(String name, String type,String desc, String SVGImage, int x, int y, int w, int h) {
         set("name", name);
+        set("type",type);
         set("description", desc);
         set("svg_image", SVGImage);
         set("x_coord", x);
@@ -57,6 +40,7 @@ public abstract class AbstractNode extends Model {
      */
     public AbstractNode() {
         set("name", "DEFAULT NAME");
+        set("type","abstract_nodes");
         set("description", "DEFAULT DESCRIPTION");
         set("svg_image", "DEFAULT IMAGE");
         set("x_coord", 0);
@@ -90,17 +74,27 @@ public abstract class AbstractNode extends Model {
 
     /**
      * Just a quick toString function
-     * @author Show. DEPRECATED BY ALEX
+     * @author Show, refactored by Alex
      */
 //    @Override
-//    public String toString() {
-//       String table =  getTableName();
-//        return "Made a node with:" + "\n" +
-//                "Name: " + get(table, "name") + "\n" +
-//                "Description: " + description + "\n" +
-//                "(x, y): " + "(" + xCoord + ", " + yCoord + ")" + "\n" +
-//                "(Width, Height): " + "(" + width + ", " + height + ")";
-//
+    public String toString() {
+        String table = getTableName();
+        String name = get("name").toString();
+        String id = getId().toString();
+        String description = get("description").toString();
+        String xCoord = get("x_coord").toString();
+        String yCoord = get("y_coord").toString();
+        String width = get("width").toString();
+        String height = get("height").toString();
+
+        return "Made a node with:" + "\n" +
+                "Table: "+table+ "\n"+
+                "ID: "+id+ "\n"+
+                "Name: " + name + "\n" +
+                "Description: " + description + "\n" +
+                "(x, y): " + "(" + xCoord + ", " + yCoord + ")" + "\n" +
+                "(Width, Height): " + "(" + width + ", " + height + ")";
+    }
 //
 //    }
 

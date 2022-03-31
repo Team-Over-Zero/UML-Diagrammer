@@ -8,6 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class SquareNode extends AbstractNode {
     SquareNode(int x, int y, int w, int h){
-        super("Square Name", null, "SQUARE_SVG", x, y, w, h);
+        super("Square Name","square_nodes", null, "SQUARE_SVG", x, y, w, h);
     }
 }

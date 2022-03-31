@@ -8,5 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractEdge;
 public class DefaultEdge extends AbstractEdge {
     DefaultEdge(){
         super();
+        set("type","default_edges");
     }
 }

@@ -8,6 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class StickFigureNode extends AbstractNode {
     StickFigureNode(int x, int y, int w, int h){
-        super("Stick Figure Name", null, "STICK_FIGURE_SVG", x, y, w, h);
+        super("Stick Figure Name","square_nodes", null, "STICK_FIGURE_SVG", x, y, w, h);
     }
 }

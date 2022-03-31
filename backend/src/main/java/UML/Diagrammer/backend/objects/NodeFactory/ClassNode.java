@@ -5,8 +5,14 @@ import UML.Diagrammer.backend.objects.*;
  * This will need a name, description, and a TEXT_BOX_SVG image.
  */
  public class ClassNode extends AbstractNode{
-     ClassNode(int x, int y, int w, int h){
-        super("Class Name", "Class Description", "CLASS_SVG", x, y, w, h);
+
+     public ClassNode(){
+         super();
+         set("type","class_nodes");
+         saveIt();
+     }
+     public ClassNode(int x, int y, int w, int h){
+        super("Class Name","class_nodes", "Class Description", "CLASS_SVG", x, y, w, h);
      }
      public void testFunc(){
          System.out.println("subclassing stuffs is working alright");

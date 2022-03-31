@@ -55,8 +55,8 @@ public class EdgeTest extends DBSpec{
         edgar.setNodes(nodeOne,nodeTwo);
         edgar.saveIt();
         assertTrue(edgar.exists());
-        assertEquals(nodeOne,edgar.getN1());
-        assertEquals(nodeTwo,edgar.getN2());
+        assertEquals(nodeOne.getInteger("id"),edgar.getInteger("from_node_id"));
+        assertEquals(nodeTwo.getInteger("id"),edgar.getInteger("to_node_id"));
 
 
     }
@@ -76,13 +76,13 @@ public class EdgeTest extends DBSpec{
         DefaultEdge edge = edgey.buildEdge();
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
-
-        edge.setN1(nodeOne);
-        edge.setN2(nodeTwo);
+        int node1Id = Integer.parseInt(nodeOne.getId().toString());
+        int node2Id = Integer.parseInt(nodeTwo.getId().toString());
+        edge.setNodes(nodeOne,nodeTwo);
         edge.saveIt();
 
-        assertEquals(nodeOne,edge.getN1());
-        assertEquals(nodeTwo,edge.getN2());
+        assertEquals(node1Id,edge.get("from_node_id"));
+        assertEquals(node2Id,edge.get("to_node_id"));
 
     }
 
@@ -97,16 +97,17 @@ public class EdgeTest extends DBSpec{
         DefaultEdge edgar = edgey.buildEdge();
         edgar.setNodes(nodeOne,nodeTwo);
         edgar.saveIt();
-        String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1: " + nodeOne.getId() + "\n" + "Node 2: " + nodeTwo.getId();
+        String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1 ID: " + nodeOne.getId() + "\n" + "Node 2 ID: " + nodeTwo.getId()+"\n"+
+                "Node 1 Type: "+edgar.getString("from_node_type")+"\n"+"Node 2 Type: "+edgar.getString("to_node_type");
         assertEquals(string,edgar.toString());
     }
 
-    @Test
-    public void testEquals(){
-        DefaultEdge nullEdge = null;
-        DefaultEdge nonNullEdge = edgey.buildEdge();
-        assertEquals(false,nonNullEdge.equals(nullEdge));
-        assertEquals(true,nonNullEdge.equals(nonNullEdge));
-
-    }
+//    @Test
+//    public void testEquals(){
+//        DefaultEdge nullEdge = null;
+//        DefaultEdge nonNullEdge = edgey.buildEdge();
+//        assertEquals(false,nonNullEdge.equals(nullEdge));
+//        assertEquals(true,nonNullEdge.equals(nonNullEdge));
+//
+//    }
 }
