@@ -30,8 +30,8 @@ public class EdgeFactoryTest extends DBSpec {
         DefaultNode node = nodeFactory.buildNode();
         DefaultNode node2 = nodeFactory.buildNode();
         NormalEdge edge = factory.buildEdge(node,node2);
-        assertEquals(node,edge.getN1());
-        assertEquals(node2,edge.getN2());
+        assertEquals( node.getInteger("id"),edge.getInteger("from_node_id"));
+        assertEquals((node2.getInteger("id")),edge.getInteger("to_node_id"));
     }
 
 

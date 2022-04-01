@@ -8,6 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class LoopNode extends AbstractNode {
     LoopNode(int x, int y, int w, int h){
-        super("LoopNode Name", null, "LOOP_SVG", x, y, w, h);
+        super("LoopNode Name","loop_nodes", null, "LOOP_SVG", x, y, w, h);
     }
 }

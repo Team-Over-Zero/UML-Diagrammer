@@ -1,6 +1,8 @@
 import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
+import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
+import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.connection_config.DBConfiguration;
@@ -17,22 +19,13 @@ public class PageTest extends DBSpec {
     private NodeFactory factory;
 
     private Page page;
-    private AbstractNode node;
 
     @BeforeEach
     public void setup(){
 
-
-        //DBConfiguration.loadConfiguration("/database.properties");
-        //Base.open();
         factory = new NodeFactory();
-        node = factory.buildNode();
-
     }
-    /*@AfterEach
-    public void teardown() {
-        Base.close();
-    }*/
+
     /**
      * test page's addNode method
      */
@@ -45,22 +38,23 @@ public class PageTest extends DBSpec {
         HashMap nD = new HashMap();
         HashMap eD = new HashMap();
         String s = "Test";
-        Page page = new Page(nD,eD,s);
+        Page page = new Page(s);
         assertNotNull(page);
 
     }
 
-    /**
-     * This test is to make jacoco shup up about lombok setters
-     */
-    @Test
-    public void garbageTestTwo(){
-        Page page = new Page();
-        HashMap nD = new HashMap();
-        HashMap eD = new HashMap();
-        page.setEdgeDict(eD);
-        page.setNodeDict(nD);
-    }
+//    /**
+//     * This test is to make jacoco shup up about lombok setters
+//     * DEPRECATED BY ALEX
+//     */
+//    @Test
+//    public void garbageTestTwo(){
+//        Page page = new Page();
+//        HashMap nD = new HashMap();
+//        HashMap eD = new HashMap();
+//        page.setEdgeDict(eD);
+//        page.setNodeDict(nD);
+//    }
 
 
 
@@ -68,9 +62,9 @@ public class PageTest extends DBSpec {
     public void testPageAddNode(){
         page = new Page();
         factory = new NodeFactory();
-        AbstractNode node = factory.buildNode();
-        page.addNode(node);
-        assertNotNull(page.getNodeDict());
+        DefaultNode node = factory.buildNode();
+        page.add(node);
+        assertNotNull(page.getAll(node.getClass()));
 
     }
     /**
@@ -80,32 +74,36 @@ public class PageTest extends DBSpec {
     public void testRemoveNode(){
         page = new Page();
         NodeFactory factory = new NodeFactory();
-        AbstractNode node = factory.buildNode();
-        page.addNode(node);
-        page.removeNode(node);
-        assertEquals(0,page.getEdgeDictSize());
+        DefaultNode node = factory.buildNode();
+        page.add(node);
+        page.remove(node);
+
+        assertEquals(true,page.getNodes().get(0).isEmpty());
 
     }
 
     @Test
-    public void testGetname(){
+    public void testGetName(){
         page = new Page();
-        page.setPageName("headache");
-        assertEquals("headache",page.getPageName());
+        page.set("name","headache");
+        assertEquals("headache",page.get("name"));
     }
 
     @Test
     public void testAddEdge(){
         page = new Page();
+        page.saveIt();
         factory = new NodeFactory();
         EdgeFactory edge = new EdgeFactory();
         DefaultEdge edgey = edge.buildEdge();
-        AbstractNode nodeOne = factory.buildNode();
-        AbstractNode nodeTwo = factory.buildNode();
+        DefaultNode nodeOne = factory.buildNode();
+        DefaultNode nodeTwo = factory.buildNode();
         edgey.setNodes(nodeOne,nodeTwo);
-        page.addEdge(edgey);
-        assertEquals(1,page.getEdgeDictSize());
-        assertNotNull(page.getEdgeDict());
+        page.add(edgey);
+        page.saveIt();
+
+        assertNotNull(page.getNodes());
+        //assertEquals(1,page.getNodes().get(0).size());
 
 
     }
@@ -116,12 +114,12 @@ public class PageTest extends DBSpec {
         factory = new NodeFactory();
         EdgeFactory edge = new EdgeFactory();
         DefaultEdge edgey = edge.buildEdge();
-        AbstractNode nodeOne = factory.buildNode();
-        AbstractNode nodeTwo = factory.buildNode();
+        DefaultNode nodeOne = factory.buildNode();
+        DefaultNode nodeTwo = factory.buildNode();
         edgey.setNodes(nodeOne,nodeTwo);
-        page.addEdge(edgey);
-        page.removeEdge(edgey);
-        assertEquals(0,page.getEdgeDictSize());
+        page.add(edgey);
+        page.remove(edgey);
+        assertEquals(true,page.getNodes().get(0).isEmpty());
 
 
     }
@@ -129,9 +127,31 @@ public class PageTest extends DBSpec {
     public void testGetNodeDictSize(){
         page = new Page();
         factory = new NodeFactory();
-        AbstractNode node = factory.buildNode();
-        page.addNode(node);
-        assertEquals(1,page.getNodeDictSize());
+        DefaultNode node = factory.buildNode();
+        page.add(node);
+        page.saveIt();
+
+        assertEquals(10,page.getNodes().size());
     }
 
+    @Test
+    public void testGetNodes(){
+        page = new Page();
+        factory = new NodeFactory();
+        DefaultNode defNode = factory.buildNode();
+        ClassNode clsNode = factory.buildNode("CLASS",1,1,1,1);
+        clsNode.saveIt();
+        page.add(defNode);
+        page.add(clsNode);
+        page.saveIt();
+
+        DefaultNode def = page.getAll(DefaultNode.class).get(0);
+        ClassNode cl = page.getAll(ClassNode.class).get(0);
+
+
+        assertEquals("class_nodes",clsNode.get("type"));
+        assertEquals("default_nodes",def.get("type"));
+        assertEquals("class_nodes",cl.get("type"));
+        assertEquals(10,page.getNodes().size()); //tests size of dictionary not number of nodes
+    }
 }

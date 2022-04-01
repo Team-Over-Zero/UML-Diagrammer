@@ -8,6 +8,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class OvalNode extends AbstractNode {
     OvalNode(int x, int y, int w, int h){
-        super("Oval Name", null, "OVAL_SVG", x, y, w, h);
+        super("Oval Name","oval_nodes", null, "OVAL_SVG", x, y, w, h);
     }
 }
