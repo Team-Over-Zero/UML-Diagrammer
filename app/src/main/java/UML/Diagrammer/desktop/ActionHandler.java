@@ -1,13 +1,20 @@
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to handle the most UI event handing like editing text, deleting, moving etc.
@@ -18,6 +25,7 @@ public class ActionHandler {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     StackPane currentFocusedUIElement = null;
+    public static List<StackPane> selectedNodesForEdgeCreation = new ArrayList<>();
 
 
     /**
@@ -57,7 +65,25 @@ public class ActionHandler {
             node.set("x_coord", (int)newTranslateX);
             node.set("y_coord", (int)newTranslateY); // Updates the object with the new coordinates
         }
+    }
 
+
+    /**
+     * Sets action for when a item on the UI is clicked or double-clicked.
+     * Sets focus for a click and context menu for double click.
+     * @param e The mouse event(a primary mouse click in this case.)
+     */
+    public void clickObject(MouseEvent e){
+        StackPane uIElement = (StackPane) e.getSource();
+        if (e.getButton().equals(MouseButton.PRIMARY)) {
+            if (e.getClickCount() == 1) {
+                setFocus(uIElement);
+            }
+
+            else if (e.getClickCount() == 2) {
+                makePopUpEditTextBox(uIElement, (int)e.getScreenX(), (int)e.getSceneY());
+            }
+        }
     }
 
     /**
@@ -184,6 +210,42 @@ public class ActionHandler {
         currentFocusedUIElement.setStyle("-fx-border-color: blue");
         uIElement.requestFocus();
         System.out.println();
+    }
+
+    /**
+     * Sets up the action for clicking on nodes so that the lines knows where to draw.
+     * @param parentPane The parent pane where all the nodes/edges lie.
+     */
+    public void connectNodes(Pane parentPane){
+        for (Node curElement : parentPane.getChildren()) {
+            StackPane curStackPane = (StackPane) curElement;
+            curStackPane.setOnMouseClicked(setOnMouseClickedForEdgeCreation);
+        }
+    }
+
+    /**
+     * Setting the action on a node clicked
+     */
+    EventHandler<MouseEvent> setOnMouseClickedForEdgeCreation =
+            this::selectNodesToConnect;
+
+    /**
+     * We have a global array that is filled with up to 2 nodes. When the array reaches 2 we draw a line between the two
+     * nodes and clear the array. We also disable further clicking for creating lines.
+     * @param e Mouse action event
+     */
+    private void selectNodesToConnect(MouseEvent e){
+        selectedNodesForEdgeCreation.add((StackPane)e.getSource());
+        int arrSize = selectedNodesForEdgeCreation.size();
+        if(arrSize == 2){
+            StackPane n0 = selectedNodesForEdgeCreation.get(0);
+            StackPane n1 = selectedNodesForEdgeCreation.get(1);
+
+            FXMLController.objectRequesterObservable.makeEdgeRequest(n0,n1);
+            selectedNodesForEdgeCreation.clear();
+            // Clear the setOnMouseClicked action
+        }
+
     }
 
 }

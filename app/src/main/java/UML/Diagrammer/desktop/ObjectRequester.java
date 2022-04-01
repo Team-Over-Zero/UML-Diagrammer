@@ -9,23 +9,17 @@
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
 import javafx.scene.Cursor;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.commons.io.FileUtils;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,31 +57,6 @@ public class ObjectRequester {
      */
     public void removePropertyChangeListener(PropertyChangeListener listener){
         support.removePropertyChangeListener(listener);
-    }
-
-    /**
-     * A WIP for the SVG converter. Currently Does not work.
-     */
-    private ByteArrayOutputStream convertSVG(String fileLoc) throws IOException, TranscoderException {
-        try {
-            File svgFile = new File(fileLoc);
-            System.out.println(svgFile.exists());
-            byte[] streamBytes = FileUtils.readFileToByteArray(svgFile);
-
-            BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
-            TranscoderInput input = new TranscoderInput(new ByteArrayInputStream(streamBytes));
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            TranscoderOutput output = new TranscoderOutput(outStream);
-
-            System.out.println("OUT/IN NULL??? "+"\nout; "+output+"\nin; "+input);
-
-            transcoder.transcode(input, output);
-            System.out.println("NEW OUT: "+output);
-            //outStream.flush();
-            return outStream;
-        }
-        catch (Exception e){e.printStackTrace();}
-        return null;
     }
 
     /**
@@ -163,11 +132,34 @@ public class ObjectRequester {
     }
 
     /**
-     * Creates a default edge for now and displays and lets the controller know.
+     * Creates creates an edge for the data and a line for the UI. Then notifies the FXMLController to update.
      */
-    public void makeEdgeRequest(){ // Edge required ***************
-        DefaultEdge newEdge = edgeFactory.buildEdge();
-        support.firePropertyChange("newEdgeCreation", null, newEdge);
+    public void makeEdgeRequest(StackPane n0, StackPane n1){
+        //DefaultEdge newEdge = edgeFactory.buildEdge();
+        Line newLine = UIEdgeRequest(n0,n1);
+        support.firePropertyChange("newEdgeCreation", null, newLine);
+    }
+
+    /**
+     * When we make an edge. The edge will know about it's associated nodes. But the nodes won't know about the edge.
+     * So when we move an node, we need to make a call to tell the edge that we moved and the edge can update.
+     * This is okay on the data side since all the data that is needed is the nodes that are collected. All other info
+     * can be inferred from the UI/UI objects of said nodes.
+     * @param n0 first node
+     * @param n1 second node
+     * @return the created UI object line.
+     */
+    public Line UIEdgeRequest(StackPane n0, StackPane n1){
+        edgeFactory.buildEdge((AbstractNode) n0.getUserData(), (AbstractNode) n1.getUserData());
+        Line line = new Line();
+        //System.out.println("");
+        line.setStartX(n0.getTranslateX()+ (n0.getWidth()/2));
+        line.setStartY(n0.getTranslateY() + (n0.getHeight()/2));
+        line.setEndX(n1.getTranslateX() + (n1.getWidth()/2));
+        line.setEndY(n1.getTranslateY() + (n1.getHeight()/2));
+        StackPane[] UINodes = {n0, n1};
+        line.setUserData(UINodes);
+        return line; // I NEED TO MAKE AN UPDATE EVERYTIME i MOVE A NODE OR DELETE IT.
     }
     
     /**
