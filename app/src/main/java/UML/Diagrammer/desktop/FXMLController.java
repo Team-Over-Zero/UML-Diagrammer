@@ -9,8 +9,10 @@
 
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.AbstractNode;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -22,6 +24,7 @@ import org.apache.batik.transcoder.TranscoderException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.Stack;
 
 
 public class FXMLController extends App implements PropertyChangeListener{
@@ -30,13 +33,14 @@ public class FXMLController extends App implements PropertyChangeListener{
      * Observer object for references
      */
     @Getter public static final ObjectRequester objectRequesterObservable = new ObjectRequester();
-    private static ActionHandler action = new ActionHandler();
+    public static final ActionHandler action = new ActionHandler();
 
     /**
      * Constructor to set this class as the observer for the observable objects
      */
     public FXMLController(){
         objectRequesterObservable.addPropertyChangeListener(this);
+        action.addPropertyChangeListener(this);
     }
 
     /**
@@ -50,15 +54,16 @@ public class FXMLController extends App implements PropertyChangeListener{
     	case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
     	case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
     	case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
-    	}
+    	case "clearLineCreationActions" -> this.clearLineCreationActions();
+    	case "finishedDragUpdateEdges" -> this.updateEdgesAfterDrag((StackPane) event.getNewValue());
+        }
     }
 
     /**
      * Label for the UI to display object changes
      */
     @FXML private Label ActionLabel;
-    @FXML private Label circleObject;
-    @FXML @Getter public Label noElementSelectedErrorLabel;
+    @FXML public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
 
 
@@ -118,7 +123,6 @@ public class FXMLController extends App implements PropertyChangeListener{
      */
     private void updateUINewEdge(Line newLine){
         canvasPane.getChildren().add(newLine);
-        /*testLabel.setText(newEdge.toString());*/
     }
 
     /**
@@ -129,9 +133,42 @@ public class FXMLController extends App implements PropertyChangeListener{
         fxObject.setOnMouseClicked(clickNodeEventHandler);
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
-        //fxObject.setOnMouseReleased(nodeOnMouseReleased); //might need a released action in the future
+        fxObject.setOnMouseReleased(nodeOnMouseReleased);
         fxObject.setOnContextMenuRequested(e -> // Right click
                 action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
+    }
+
+    /**
+     * Changes the mouse action from creating a line back to the default action.
+     */
+    private void clearLineCreationActions(){
+        for (Node curElement : canvasPane.getChildren()) {
+            if (curElement instanceof StackPane curStackPane){
+                curStackPane.setOnMouseClicked(clickNodeEventHandler);
+                ActionLabel.setVisible(false);
+            }
+        }
+    }
+
+    /**
+     * After an node is dragged, it checks every edge and updates it if it's end/starting node matches the line.
+     * There is no need to update anything on the backend, since the only data for an edge is its nodes.
+     * @param movedElement The UI Element that was moved
+     */
+    private void updateEdgesAfterDrag(StackPane movedElement){
+        for (Object obj: canvasPane.getChildren()) {
+            if (obj instanceof Line curLine) {
+                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
+                if(curLineConnectedNodes[0] == movedElement){
+                    curLine.setStartX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
+                    curLine.setStartY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
+                }
+                else if(curLineConnectedNodes[1] == movedElement){
+                    curLine.setEndX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
+                    curLine.setEndY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
+                }
+            }
+        }
     }
 
     /**
@@ -139,13 +176,16 @@ public class FXMLController extends App implements PropertyChangeListener{
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
 \     */
     EventHandler<MouseEvent> clickNodeEventHandler =
-            e -> action.clickObject(e);
+            action::clickObject;
 
     /**
      * These two function together allow for dragging of shapes across the canvas
      */
     EventHandler<MouseEvent> nodeOnMouseGrabEventHandler =
-            e -> action.grabObject(e);
+            action::grabObject;
     EventHandler<MouseEvent> nodeOnMouseDragEventHandler =
-            e -> action.moveObject(e);
+            action::moveObject;
+
+    EventHandler<MouseEvent> nodeOnMouseReleased =
+            action::releaseObject;
 }

@@ -13,6 +13,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,18 @@ public class ActionHandler {
     double orgTranslateX, orgTranslateY;
     StackPane currentFocusedUIElement = null;
     public static List<StackPane> selectedNodesForEdgeCreation = new ArrayList<>();
+
+    /**
+     * Observer boilerplate, see Object requester for more information
+     */
+    private final PropertyChangeSupport support;
+    ActionHandler(){
+        support = new PropertyChangeSupport(this);
+    }
+    public void addPropertyChangeListener(PropertyChangeListener listener){
+        support.addPropertyChangeListener(listener);}
+    public void removePropertyChangeListener(PropertyChangeListener listener){
+        support.removePropertyChangeListener(listener);}
 
 
     /**
@@ -65,6 +79,15 @@ public class ActionHandler {
             node.set("x_coord", (int)newTranslateX);
             node.set("y_coord", (int)newTranslateY); // Updates the object with the new coordinates
         }
+    }
+
+    /**
+     * Finished the object movement. Send a request to see if any edges need to be updated.
+     * @param t the mouse action(mouse release in this case)
+     */
+    public void releaseObject(MouseEvent t){
+        StackPane nodeUIObject = (StackPane) t.getSource();
+        support.firePropertyChange("finishedDragUpdateEdges", null, nodeUIObject);
     }
 
 
@@ -209,7 +232,6 @@ public class ActionHandler {
         currentFocusedUIElement = uIElement;
         currentFocusedUIElement.setStyle("-fx-border-color: blue");
         uIElement.requestFocus();
-        System.out.println();
     }
 
     /**
@@ -218,8 +240,9 @@ public class ActionHandler {
      */
     public void connectNodes(Pane parentPane){
         for (Node curElement : parentPane.getChildren()) {
-            StackPane curStackPane = (StackPane) curElement;
-            curStackPane.setOnMouseClicked(setOnMouseClickedForEdgeCreation);
+            if(curElement instanceof StackPane curStackPane){
+                curStackPane.setOnMouseClicked(setOnMouseClickedForEdgeCreation);
+            }
         }
     }
 
@@ -235,15 +258,20 @@ public class ActionHandler {
      * @param e Mouse action event
      */
     private void selectNodesToConnect(MouseEvent e){
+        if (selectedNodesForEdgeCreation.size() == 1 && // Error checking to connect an edge to itself
+                selectedNodesForEdgeCreation.get(0) == e.getSource()){
+            return;
+        }
+
         selectedNodesForEdgeCreation.add((StackPane)e.getSource());
-        int arrSize = selectedNodesForEdgeCreation.size();
-        if(arrSize == 2){
+
+        if(selectedNodesForEdgeCreation.size() == 2){
             StackPane n0 = selectedNodesForEdgeCreation.get(0);
             StackPane n1 = selectedNodesForEdgeCreation.get(1);
 
             FXMLController.objectRequesterObservable.makeEdgeRequest(n0,n1);
             selectedNodesForEdgeCreation.clear();
-            // Clear the setOnMouseClicked action
+            support.firePropertyChange("clearLineCreationActions", null, null);
         }
 
     }

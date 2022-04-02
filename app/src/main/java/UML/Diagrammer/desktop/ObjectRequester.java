@@ -34,7 +34,6 @@ public class ObjectRequester {
     private final PropertyChangeSupport support;
     private static final NodeFactory nodeFactory = new NodeFactory();
     private static final EdgeFactory edgeFactory = new EdgeFactory();
-    private static final BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
 
 
     /**
@@ -152,7 +151,6 @@ public class ObjectRequester {
     public Line UIEdgeRequest(StackPane n0, StackPane n1){
         edgeFactory.buildEdge((AbstractNode) n0.getUserData(), (AbstractNode) n1.getUserData());
         Line line = new Line();
-        //System.out.println("");
         line.setStartX(n0.getTranslateX()+ (n0.getWidth()/2));
         line.setStartY(n0.getTranslateY() + (n0.getHeight()/2));
         line.setEndX(n1.getTranslateX() + (n1.getWidth()/2));
