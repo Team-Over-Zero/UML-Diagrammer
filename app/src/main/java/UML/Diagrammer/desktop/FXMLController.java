@@ -9,14 +9,13 @@
 
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.AbstractEdge;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import lombok.Getter;
 import org.apache.batik.transcoder.TranscoderException;
 
@@ -30,7 +29,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     /**
      * Observer object for references
      */
-    @Getter private final ObjectRequester objectRequesterObservable = new ObjectRequester();
+    @Getter public static final ObjectRequester objectRequesterObservable = new ObjectRequester();
     private static ActionHandler action = new ActionHandler();
 
     /**
@@ -49,7 +48,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     public void propertyChange(PropertyChangeEvent event){
     	switch(event.getPropertyName()) {
     	case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
-    	case "newEdgeCreation" -> this.updateUINewEdge((AbstractEdge) event.getNewValue());
+    	case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
     	case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
     	}
     }
@@ -57,7 +56,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     /**
      * Label for the UI to display object changes
      */
-    @FXML private Label testLabel;
+    @FXML private Label ActionLabel;
     @FXML private Label circleObject;
     @FXML @Getter public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
@@ -72,8 +71,6 @@ public class FXMLController extends App implements PropertyChangeListener{
         objectRequesterObservable.makeOvalRequest();}
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest();}
-    @FXML private void edgeButtonPressed() {
-        objectRequesterObservable.makeEdgeRequest();}
     @FXML private void folderButtonPressed() {
         objectRequesterObservable.makeFolderRequest();}
     @FXML private void lifeLineButtonPressed() {
@@ -88,6 +85,17 @@ public class FXMLController extends App implements PropertyChangeListener{
         objectRequesterObservable.makeTextBoxRequest();}
     @FXML private void SquareButtonPressed() {
         objectRequesterObservable.makeSquareRequest();}
+
+    /**
+     * Have this jump to ActionHandler, AH will return the two stackpanes I need to create the line.
+     * Then it calls ObjectRequester with those stackpanes and makes the edge, both UI and data.
+     * Need to update the movement method in AH to updates edges as well(If there is one.)
+     */
+    @FXML private void edgeButtonPressed() {
+        ActionLabel.setText("Select 2 items to draw a line between them");
+        ActionLabel.setVisible(true);
+        action.connectNodes(canvasPane);
+    }
 
     @FXML private void deleteButtonPressed(){
         action.deleteObject(canvasPane);
@@ -108,19 +116,20 @@ public class FXMLController extends App implements PropertyChangeListener{
     /**
      * Just displays the edge's info to the screen via a label for now.
      */
-    private void updateUINewEdge(AbstractEdge newEdge){
-        testLabel.setText(newEdge.toString());
+    private void updateUINewEdge(Line newLine){
+        canvasPane.getChildren().add(newLine);
+        /*testLabel.setText(newEdge.toString());*/
     }
 
     /**
      * Sets the action for a double click on an object to edit it.
-     *
      * @param fxObject the StackPane associated with the object.
      */
     private void setMouseActions(StackPane fxObject) {
         fxObject.setOnMouseClicked(clickNodeEventHandler);
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
+        //fxObject.setOnMouseReleased(nodeOnMouseReleased); //might need a released action in the future
         fxObject.setOnContextMenuRequested(e -> // Right click
                 action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
@@ -130,25 +139,13 @@ public class FXMLController extends App implements PropertyChangeListener{
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
 \     */
     EventHandler<MouseEvent> clickNodeEventHandler =
-            t -> { // Double click
-                StackPane uIElement = (StackPane) t.getSource();
-                if (t.getButton().equals(MouseButton.PRIMARY)) {
-                    if (t.getClickCount() == 1) {
-                        action.setFocus(uIElement);
-                    }
-
-                    else if (t.getClickCount() == 2) {
-                        action.makePopUpEditTextBox(uIElement, (int)t.getScreenX(), (int)t.getSceneY());
-                    }
-                }
-            };
+            e -> action.clickObject(e);
 
     /**
      * These two function together allow for dragging of shapes across the canvas
      */
     EventHandler<MouseEvent> nodeOnMouseGrabEventHandler =
-            t -> action.grabObject(t);
-
+            e -> action.grabObject(e);
     EventHandler<MouseEvent> nodeOnMouseDragEventHandler =
-            t -> action.moveObject(t);
+            e -> action.moveObject(e);
 }

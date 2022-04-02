@@ -61,6 +61,8 @@ dependencies {
 
     compileOnly 'org.javalite:activejdbc:1.4.1'
     compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
+    //WireMock
+    testImplementation "com.github.tomakehurst:wiremock-jre8:2.32.0"
 
 
 }
