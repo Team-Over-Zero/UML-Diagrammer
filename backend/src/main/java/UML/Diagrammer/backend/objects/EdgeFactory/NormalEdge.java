@@ -6,7 +6,7 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  * Basic solid edge that is between two nodes
  */
 public class NormalEdge extends AbstractEdge {
-    NormalEdge(AbstractNode n1, AbstractNode n2){
+    public NormalEdge(AbstractNode n1, AbstractNode n2){
         super(n1, n2);
         set("type","normal_edges");
     }

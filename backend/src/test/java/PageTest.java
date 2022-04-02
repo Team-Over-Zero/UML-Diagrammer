@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,8 +36,8 @@ public class PageTest extends DBSpec {
      */
     @Test
     public void garbageTest(){
-        HashMap nD = new HashMap();
-        HashMap eD = new HashMap();
+//        HashMap nD = new HashMap();
+//        HashMap eD = new HashMap();
         String s = "Test";
         Page page = new Page(s);
         assertNotNull(page);
@@ -64,7 +65,9 @@ public class PageTest extends DBSpec {
         factory = new NodeFactory();
         DefaultNode node = factory.buildNode();
         page.add(node);
-        assertNotNull(page.getAll(node.getClass()));
+        DefaultNode testNode = (DefaultNode) page.getNodes().get(0).get(0);
+
+        assertEquals(node.getInteger("id"), testNode.getId() );
 
     }
     /**
@@ -99,10 +102,14 @@ public class PageTest extends DBSpec {
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
         edgey.setNodes(nodeOne,nodeTwo);
-        page.add(edgey);
+        page.add(nodeOne);
+        page.add(nodeTwo);
+        page.add(edgey);//Note that adding an edge doesn't automatically add nodes.
         page.saveIt();
 
-        assertNotNull(page.getNodes());
+        ArrayList testL = page.getNodes();
+        DefaultEdge a1 = (DefaultEdge) page.getEdges().get(0).get(0);
+        assertEquals(edgey.getInteger("id"),a1.getId());
         //assertEquals(1,page.getNodes().get(0).size());
 
 
@@ -152,6 +159,6 @@ public class PageTest extends DBSpec {
         assertEquals("class_nodes",clsNode.get("type"));
         assertEquals("default_nodes",def.get("type"));
         assertEquals("class_nodes",cl.get("type"));
-        assertEquals(10,page.getNodes().size()); //tests size of dictionary not number of nodes
+        //assertEquals(10,page.getNodes().size()); //tests size of dictionary not number of nodes
     }
 }

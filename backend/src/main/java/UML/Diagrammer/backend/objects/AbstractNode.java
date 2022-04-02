@@ -95,6 +95,17 @@ public abstract class AbstractNode extends Model {
                 "(x, y): " + "(" + xCoord + ", " + yCoord + ")" + "\n" +
                 "(Width, Height): " + "(" + width + ", " + height + ")";
     }
+
+
+    @Override
+    /**
+     * There is inconsistency between getId() returning java Integers and Big Integers so I forced normal ints.
+     * @Author Alex
+     */
+    public Integer getId(){
+
+        return getInteger("id");
+    }
 //
 //    }
 

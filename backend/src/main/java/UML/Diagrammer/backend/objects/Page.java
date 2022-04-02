@@ -3,6 +3,8 @@
  *
  * This class should act as a web "page" that holds nodes and edges. Front ends
  * should be able to get all information that they need from this.
+ *
+ *
  * @author Alex
  *
  */
@@ -21,8 +23,9 @@ import java.util.*;
 public class Page extends Model {
    // private HashMap nodeDict; //keys are node ids, values are node objects.
     //private HashMap edgeDict; //keys are edge ids, values are edge objects.
-        private HashMap<String,Class> classLookup = new HashMap(20);
+//        private HashMap<String,Class> classLookup = new HashMap(20);
         private ArrayList<Class> nodeClassLookupList = new ArrayList(20);
+        private ArrayList<Class> edgeClassLookupList = new ArrayList(10);
 
         /**
          * Default Page with pageName set to DEFAULT
@@ -46,27 +49,35 @@ public class Page extends Model {
 
         /**
          * A pretty naive and lazy way to get a list of all the nodes on a page.
-         * A better way would be to use a dictionary and map table names to lazy lists as a map. Refactor.
+         * A better way would be to use a dictionary and map table names to lazy lists as a map. Can
+         * only do this if I figure out how to iterate through a dictionary in Java.
          * @author Alex
          * @return
          */
     public ArrayList<LazyList> getNodes(){
 
-
-
-        //manually get every node table list and return a big list?
-        LazyList<DefaultNode> defaultNodes =  getAll(DefaultNode.class);
-        LazyList<ClassNode> classNodes = getAll(ClassNode.class);
         ArrayList totalList = new ArrayList();
 
-        for(int i = 0;i<nodeClassLookupList.size();i++){
-            totalList.add(getAll(nodeClassLookupList.get(i))); //queries every node table
+        for (Class c:nodeClassLookupList) {
+            List<? extends AbstractNode> tempNodes;
+            totalList.add(tempNodes =  getAll(c));
         }
-
 
         return totalList;
 
     }
+        public ArrayList<LazyList> getEdges(){
+
+            ArrayList totalList = new ArrayList();
+
+            for (Class c:edgeClassLookupList) {
+                List<? extends AbstractNode> tempEdges;
+                totalList.add(tempEdges =  getAll(c));
+            }
+
+            return totalList;
+
+        }
 
         /**
          * THis helps us map our table names to our object classes.
@@ -75,24 +86,26 @@ public class Page extends Model {
         public void initClassMap(){
             //associates "types" with classes. This is stupid but allows us to Hydrate classes easier.
             //node classes
-            classLookup.put("class_node", ClassNode.class);
-            classLookup.put("default_node", DefaultNode.class);
-            classLookup.put("folder_node", FolderNode.class);
-            classLookup.put("life_line_node", LifeLineNode.class);
-            classLookup.put("loop_node", LoopNode.class);
-            classLookup.put("note_node", NoteNode.class);
-            classLookup.put("oval_node", OvalNode.class);
-            classLookup.put("square_node", SquareNode.class);
-            classLookup.put("stick_figure_node", StickFigureNode.class);
-            classLookup.put("text_box_node", TextBoxNode.class);
+//            classLookup.put("class_node", ClassNode.class);
+//            classLookup.put("default_node", DefaultNode.class);
+//            classLookup.put("folder_node", FolderNode.class);
+//            classLookup.put("life_line_node", LifeLineNode.class);
+//            classLookup.put("loop_node", LoopNode.class);
+//            classLookup.put("note_node", NoteNode.class);
+//            classLookup.put("oval_node", OvalNode.class);
+//            classLookup.put("square_node", SquareNode.class);
+//            classLookup.put("stick_figure_node", StickFigureNode.class);
+//            classLookup.put("text_box_node", TextBoxNode.class);
+//
+//            //edge classes
+//            classLookup.put("default_edge", DefaultEdge.class);
+//            classLookup.put("normal_edge", NormalEdge.class);
+//
+//
 
-            //edge classes
-            classLookup.put("default_edge", DefaultEdge.class);
-            classLookup.put("normal_edge", NormalEdge.class);
-
-
-            nodeClassLookupList.add(ClassNode.class);
+            //This adds list of node class names to our lookup list.
             nodeClassLookupList.add(DefaultNode.class);
+            nodeClassLookupList.add(ClassNode.class);
             nodeClassLookupList.add(FolderNode.class);
             nodeClassLookupList.add(LifeLineNode.class);
             nodeClassLookupList.add(LoopNode.class);
@@ -102,9 +115,22 @@ public class Page extends Model {
             nodeClassLookupList.add(StickFigureNode.class);
             nodeClassLookupList.add(TextBoxNode.class);
 
+            //This adds list of edge class names to our lookup list.
+
+            edgeClassLookupList.add(DefaultEdge.class);
+            edgeClassLookupList.add(NormalEdge.class);
 
         }
 
+        @Override
+        /**
+         * There is inconsistency between getId() returning java Integers and Big Integers so I forced normal ints.
+         * @Author Alex
+         */
+        public Integer getId(){
+
+            return getInteger("id");
+        }
 
 }
 

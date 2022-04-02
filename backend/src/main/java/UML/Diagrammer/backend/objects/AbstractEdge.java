@@ -93,6 +93,16 @@ public abstract class AbstractEdge extends Model {
                 "Node 2 Type: "+ get("to_node_type");
     }
 
+
+    @Override
+    /**
+     * There is inconsistency between getId() returning java Integers and Big Integers so I forced normal ints.
+     * @Author Alex
+     */
+    public Integer getId(){
+
+        return getInteger("id");
+    }
 //    public AbstractNode getFromNode(){
 //
 //        String n1Table = get("from_node_type").toString();
