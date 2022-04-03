@@ -44,7 +44,7 @@ public abstract class AbstractNode extends Model {
         set("y_coord", y);
         set("width", w);
         set("height", h);
-        saveIt();
+        //saveIt();
     }
 
     /**
@@ -61,7 +61,7 @@ public abstract class AbstractNode extends Model {
         set("y_coord", 0);
         set("width", 3);
         set("height", 3);
-        saveIt();
+        //saveIt();
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class AbstractNode extends Model {
     }
 
 
-    @Override
+   // @Override
     /**
      * There is inconsistency between getId() returning java Integers and Big Integers so I forced normal ints.
      * @Author Alex
@@ -120,6 +120,14 @@ public abstract class AbstractNode extends Model {
 
         return getInteger("id");
     }
+
+    /**
+     * This just adds an alias for saveIt so that we can move saveIt calls out of constructors.
+     */
+    public void createIt(){
+        saveIt();
+    }
+
 //
 //    }
 

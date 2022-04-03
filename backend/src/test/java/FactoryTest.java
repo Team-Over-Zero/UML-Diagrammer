@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * Note that DBspec searches the database.properties file for its connection information.
  *
- * @Author Mixed, DBSpec Implemented by Alex.
+ * @Author Mixed, DBSpec Implemented by Alex. Various tests Implemented by David.
  */
 public class FactoryTest extends DBSpec {
 
@@ -36,7 +36,7 @@ public class FactoryTest extends DBSpec {
 
             //assertTrue(testDB.hasConnection());
             AbstractNode node = factory.buildNode();
-            ClassNode node2 = factory.buildNode("CLASS",2,2,2,2);
+            ClassNode node2 = factory.buildNode("class_nodes",2,2,2,2);
             String nameSet = "TESTFACTORY CLASSNODE";
             node2.set("name",nameSet);
             node.saveIt();
@@ -52,6 +52,7 @@ public class FactoryTest extends DBSpec {
     @Test
     public void testSizeNotBroken(){
         AbstractNode node = factory.buildNode();
+        node.createIt();
         assertEquals(3,node.get("height"));
         assertEquals(3,node.get("width"));
     }
@@ -118,7 +119,7 @@ public class FactoryTest extends DBSpec {
     /*Tests the factory's classNodeSubclass method in this function*/
     @Test
     public void testClassNodeSubclass(){
-        ClassNode node = factory.buildNode("CLASS", 0, 0, 3, 3);
+        ClassNode node = factory.buildNode("class_nodes", 0, 0, 3, 3);
         assertEquals("Class Name", node.get("name"));
         assertEquals("Class Description", node.get("description"));
         assertEquals(0, node.get("x_coord"));

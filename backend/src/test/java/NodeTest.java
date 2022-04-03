@@ -100,8 +100,11 @@ public class NodeTest extends DBSpec {
      * ALEX NOTE: Can someone figure out how to do TypeTokens of a list? ie. TypeToken<List<AbstractNode>>
      */
     public void nodeHydrationTest(){
-        String gsonStrDefNode = node.toJson(false);
-        ClassNode classNode = factory.buildNode("CLASS",2,1,1,1);
+        //node.set("id",1);
+        node.saveIt();
+        System.out.println("id="+node.getId());
+        String gsonStrDefNode = node.toJson(true);
+        ClassNode classNode = factory.buildNode("class_nodes",2,1,1,1);
         String gsonStrClassNode = classNode.toJson(false);
 
         List<String> gsonStrList = new ArrayList<String>();
@@ -125,7 +128,7 @@ public class NodeTest extends DBSpec {
             System.out.println(n.toString());
         }
                 //gBuilder.fromJson(arrStr, new TypeToken<AbstractNode>(){}.getType());
-
+       // assertEquals("{}",gsonStrDefNode);
         assertTrue(aList.get(0) instanceof DefaultNode);
         assertTrue(aList.get(1) instanceof ClassNode);
 
