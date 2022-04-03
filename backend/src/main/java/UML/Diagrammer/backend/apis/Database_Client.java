@@ -77,6 +77,8 @@ public class Database_Client {
          //initializes javalin listeners
          devGetParamInit();
          devGetNode();
+         devTryCreateNode();
+         devUpdateNode();
          devPostStatusCodeInit();
          devTestCreateNode();
          devGetNodeNameWithId();
@@ -127,6 +129,13 @@ public class Database_Client {
         httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
     }
 
+    void devTryCreateNode(){
+        httpServer.post("/trycreatenode/",RequestController::tryCreateNode);
+    }
+
+    void devUpdateNode(){
+        httpServer.get("/updatenode/", RequestController::updateNode);
+    }
     /**
      * Adds a get request handler that takes a link in the form .../defaultnodenameid/{objectid} and returns the name
      * of the node with that id if found in the database.

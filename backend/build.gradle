@@ -57,6 +57,11 @@ dependencies {
     //GSON
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    //Apache HTTP
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+
 
 
     compileOnly 'org.javalite:activejdbc:1.4.1'

@@ -99,8 +99,11 @@ public class PageTest extends DBSpec {
         factory = new NodeFactory();
         EdgeFactory edge = new EdgeFactory();
         DefaultEdge edgey = edge.buildEdge();
+        edgey.createIt();
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
+        nodeOne.createIt();
+        nodeTwo.createIt();
         edgey.setNodes(nodeOne,nodeTwo);
         page.add(nodeOne);
         page.add(nodeTwo);
@@ -123,10 +126,16 @@ public class PageTest extends DBSpec {
         DefaultEdge edgey = edge.buildEdge();
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
+        nodeOne.createIt();
+        nodeTwo.createIt();
+        edgey.createIt();
         edgey.setNodes(nodeOne,nodeTwo);
+        edgey.saveIt();
         page.add(edgey);
         page.remove(edgey);
-        assertEquals(true,page.getNodes().get(0).isEmpty());
+        page.remove(nodeOne);
+        page.remove(nodeTwo);
+        assertTrue(page.getNodes().get(0).isEmpty());
 
 
     }
@@ -146,7 +155,7 @@ public class PageTest extends DBSpec {
         page = new Page();
         factory = new NodeFactory();
         DefaultNode defNode = factory.buildNode();
-        ClassNode clsNode = factory.buildNode("CLASS",1,1,1,1);
+        ClassNode clsNode = factory.buildNode("class_nodes",1,1,1,1);
         clsNode.saveIt();
         page.add(defNode);
         page.add(clsNode);

@@ -65,7 +65,7 @@ public class ObjectRequester {
      * All makeXRequest function should look really similar to this function, the difference being the image and node type.
      */
     public void makeOvalRequest() throws TranscoderException, IOException {
-        OvalNode newNode = nodeFactory.buildNode("OVAL", 3, 3, 3, 3);
+        OvalNode newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 3, 3);
         String image = "/Oval_UseCase.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
@@ -76,56 +76,56 @@ public class ObjectRequester {
      * Then returns these objects to the UI via the support.firePropertyChange call.
      */
     public void makeClassRequest(){
-    	ClassNode newNode = nodeFactory.buildNode("CLASS", 3, 3, 3, 3);
+    	ClassNode newNode = nodeFactory.buildNode("class_nodes", 3, 3, 3, 3);
         String image = "Class.svg";
     	StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeFolderRequest(){
-        FolderNode newNode = nodeFactory.buildNode("FOLDER", 3, 3, 3, 3);
+        FolderNode newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 3, 3);
         String image = "/Folder.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLifeLineRequest(){
-        LifeLineNode newNode = nodeFactory.buildNode("LIFELINE", 3, 3, 3, 3);
+        LifeLineNode newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 3, 3);
         String image = "/LifeLine.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLoopRequest(){
-        LoopNode newNode = nodeFactory.buildNode("LOOP", 3, 3, 3, 3);
+        LoopNode newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 3, 3);
         String image = "/Loop.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest(){
-        NoteNode newNode = nodeFactory.buildNode("NOTE", 3, 3, 3, 3);
+        NoteNode newNode = nodeFactory.buildNode("note_nodes", 3, 3, 3, 3);
         String image = "/Note.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest(){
-        StickFigureNode newNode = nodeFactory.buildNode("STICKFIGURE", 3, 3, 3, 3);
+        StickFigureNode newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 3, 3);
         String image = "/StickFigure.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest(){
-        TextBoxNode newNode = nodeFactory.buildNode("TEXTBOX", 3, 3, 3, 3);
+        TextBoxNode newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 3, 3);
         String image = "/TextBox_Square_Interface.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest(){
-        SquareNode newNode = nodeFactory.buildNode("SQUARE", 3, 3, 3, 3);
+        SquareNode newNode = nodeFactory.buildNode("square_nodes", 3, 3, 3, 3);
         String image = "/TextBox_Square_Interface.svg";
         StackPane newUIShape = UIShapeRequest(image,newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);

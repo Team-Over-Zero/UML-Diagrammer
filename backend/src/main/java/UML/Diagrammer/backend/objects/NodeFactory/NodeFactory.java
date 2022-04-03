@@ -22,23 +22,23 @@ public class NodeFactory{
 
     /**
      * Main function to be used by the factory for creating nodes, delegates tasks to subclasses.
-     * @param SVGImage The type of node you want, CLASS, TEXTBOX, NOTE, FOLDER, SQUARE, STICKFIGURE, OVAL, LIFELINE, and LOOP
+     * @param tableName The type of node you want, CLASS, TEXTBOX, NOTE, FOLDER, SQUARE, STICKFIGURE, OVAL, LIFELINE, and LOOP
      * @return A subtype of an AbstractNode, if the SVG text doesn't match one above (or empty params) returns a DefaultNode
      */
     @SuppressWarnings("unchecked")
 	public <genericNode extends AbstractNode> genericNode
-    buildNode(String SVGImage, int x, int y, int w, int h){
+    buildNode(String tableName, int x, int y, int w, int h){
 
-        switch(SVGImage){
-            case "CLASS" -> {return (genericNode) new ClassNode(x, y, w, h);}
-            case "TEXTBOX" -> {return (genericNode) new TextBoxNode(x, y, w, h);}
-            case "NOTE" -> {return (genericNode) new NoteNode(x, y, w, h);}
-            case "FOLDER" -> {return (genericNode) new FolderNode(x, y, w, h);}
-            case "SQUARE" -> {return (genericNode) new SquareNode(x, y, w, h);}
-            case "STICKFIGURE" -> {return (genericNode) new StickFigureNode(x, y, w, h);}
-            case "OVAL" -> {return (genericNode) new OvalNode(x, y, w, h);}
-            case "LIFELINE" -> {return (genericNode) new LifeLineNode(x, y, w, h);}
-            case "LOOP" -> {return (genericNode) new LoopNode(x, y, w, h);}
+        switch(tableName){
+            case "class_nodes" -> {return (genericNode) new ClassNode(x, y, w, h);}
+            case "text_box_nodes" -> {return (genericNode) new TextBoxNode(x, y, w, h);}
+            case "note_nodes" -> {return (genericNode) new NoteNode(x, y, w, h);}
+            case "folder_nodes" -> {return (genericNode) new FolderNode(x, y, w, h);}
+            case "square_nodes" -> {return (genericNode) new SquareNode(x, y, w, h);}
+            case "stick_figure_nodes" -> {return (genericNode) new StickFigureNode(x, y, w, h);}
+            case "oval_nodes" -> {return (genericNode) new OvalNode(x, y, w, h);}
+            case "life_line_nodes" -> {return (genericNode) new LifeLineNode(x, y, w, h);}
+            case "loop_nodes" -> {return (genericNode) new LoopNode(x, y, w, h);}
             default -> {return (genericNode) new DefaultNode();}
         }
     }

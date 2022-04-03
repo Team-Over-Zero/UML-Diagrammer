@@ -30,6 +30,8 @@ public abstract class AbstractEdge extends Model {
         NodeFactory NFac = new NodeFactory();
         DefaultNode n1 = NFac.buildNode();
         DefaultNode n2 = NFac.buildNode();
+        n1.createIt();
+        n2.createIt();
         int fN = Integer.parseInt( n1.getId().toString());
         int tN = Integer.parseInt( n2.getId().toString());
         //n1.get("type")
@@ -60,9 +62,9 @@ public abstract class AbstractEdge extends Model {
      * @param n1 AbstractNode fromNode
      * @param n2 AbstractNode toNode
      */
-    public void setNodes(AbstractNode n1, AbstractNode n2){
-        int fromNodeId =  Integer.parseInt(n1.getId().toString());
-        int toNodeId =  Integer.parseInt(n2.getId().toString());
+    public void setNodes(DefaultNode n1, DefaultNode n2){
+        int fromNodeId =  n1.getId();
+        int toNodeId =  n2.getId();
         String fromNodeType = n1.getString("type");
         String toNodeType = n2.getString("type");
         setNodes(fromNodeId,fromNodeType,toNodeId,toNodeType);
@@ -79,7 +81,7 @@ public abstract class AbstractEdge extends Model {
         set("to_node_id",toId);
         set("from_node_type",fromType);
         set("to_node_type",toType);
-        saveIt();
+        //saveIt();
 
     }
 
@@ -103,6 +105,15 @@ public abstract class AbstractEdge extends Model {
 
         return getInteger("id");
     }
+
+    /**
+     * Alias for saveIt() for clarity
+     */
+    public void createIt(){
+        saveIt();
+    }
+
+
 //    public AbstractNode getFromNode(){
 //
 //        String n1Table = get("from_node_type").toString();
