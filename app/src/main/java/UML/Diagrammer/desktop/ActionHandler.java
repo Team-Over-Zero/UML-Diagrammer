@@ -15,7 +15,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

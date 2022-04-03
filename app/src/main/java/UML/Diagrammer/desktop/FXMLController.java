@@ -23,7 +23,6 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.AbstractNode;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -38,7 +37,6 @@ import org.apache.batik.transcoder.TranscoderException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.Stack;
 
 
 public class FXMLController extends App implements PropertyChangeListener{
