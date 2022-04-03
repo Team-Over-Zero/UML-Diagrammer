@@ -225,18 +225,18 @@ public class ActionHandler {
         }
         canvasPane.getChildren().remove(uIElement);
 
+        ArrayList<Line> linesToRemove = new ArrayList<>(); // A list of all the lines to be deleted
         // Checks if the node had any nodes associated with it so those lines can also be deleted.
         for (Object obj: canvasPane.getChildren()) {
             if (obj instanceof Line curLine) {
                 StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
                 if (curLineConnectedNodes[0] == uIElement || curLineConnectedNodes[1] == uIElement){
-                    canvasPane.getChildren().remove(curLine);
-                    return;
-                    // DATABASE EDGE DELETE REQUEST
+                    linesToRemove.add(curLine);
                 }
             }
         }
-        // DATABASE NODE DELETE REQUEST
+        canvasPane.getChildren().removeAll(linesToRemove);
+        // DATABASE NODE AND EDGE DELETE REQUEST
     }
 
     /**
