@@ -76,8 +76,10 @@ public class EdgeTest extends DBSpec{
         DefaultEdge edge = edgey.buildEdge();
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
-        int node1Id = Integer.parseInt(nodeOne.getId().toString());
-        int node2Id = Integer.parseInt(nodeTwo.getId().toString());
+        nodeOne.createIt();
+        nodeTwo.createIt();
+        int node1Id = nodeOne.getId();
+        int node2Id = nodeTwo.getId();
         edge.setNodes(nodeOne,nodeTwo);
         edge.saveIt();
 

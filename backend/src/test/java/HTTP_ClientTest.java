@@ -1,14 +1,6 @@
-import UML.Diagrammer.backend.objects.*;
-import UML.Diagrammer.backend.objects.NodeFactory.*;
-import UML.Diagrammer.backend.objects.HTTP_Client.*;
-import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.connection_config.DBConfiguration;
-import org.javalite.activejdbc.test.DBSpec;
-import org.junit.jupiter.api.AfterEach;
+import UML.Diagrammer.backend.apis.HTTP_Client;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class HTTP_ClientTest {
 

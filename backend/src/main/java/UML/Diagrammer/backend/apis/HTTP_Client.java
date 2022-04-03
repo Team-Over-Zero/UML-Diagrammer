@@ -19,13 +19,25 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * HTTP requests, this will help clients easily build those requests, helping with separation of responsibilities.
  * @Author Alex
  */
-package UML.Diagrammer.backend.objects;
+package UML.Diagrammer.backend.apis;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -38,7 +50,7 @@ public class HTTP_Client {
     String serverString;
     public HTTP_Client(){
         address = "127.0.0.1";
-        port = "7778";
+        port = "8888";
         serverString = String.format("https://%s:%s",address,port);
     }
 
@@ -146,10 +158,68 @@ public class HTTP_Client {
     }
 
     /**
-     * Should send a post or put request (still not sure) to the database with the current page state.
+     * Should send a post req to the database with the current page state.
      * May want to change from void return to test errors and such.
      */
     public void sendCurrentPageState(String page){}
 
+    /**
+     *
+     * @param nodeJson json node with no id
+     * @return A string with the new node Id
+     * @throws URISyntaxException thrown if input is not json
+     * @throws IOException genericIO exception
+     */
+    public String sendNodeCreateRequest(String nodeJson) throws URISyntaxException, IOException {
+
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+
+        HttpPut httpPut = new HttpPut("http://127.0.0.1:8888/trycreatenode/");
+
+        URI uri = new URIBuilder(httpPut.getURI())
+                .addParameter("node", nodeJson)
+                .build();
+        ((HttpRequestBase) httpPut).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpPut);
+        HttpEntity resStr = response.getEntity();
+        InputStream iS=resStr.getContent();
+        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
+        client.close();
+
+
+        return returnString;
+    }
+
+
+    /**
+     * * Sends a passed in "updated node", and returns if it was successfully updated in the backend or note.
+     * @param nodeJson Json node with id
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws URISyntaxException
+     */
+    public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException {
+
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+
+        HttpGet httpGet = new HttpGet("http://127.0.0.1:8888/updatenode/");
+        URI uri = new URIBuilder(httpGet.getURI())
+                .addParameter("node", nodeJson)
+                .build();
+        ((HttpRequestBase) httpGet).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpGet);
+        String testStr = response.toString();
+        HttpEntity resStr = response.getEntity();
+        InputStream iS=resStr.getContent();
+
+        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
+        client.close();
+
+        return returnString;
+
+    }
 
 }
+
+

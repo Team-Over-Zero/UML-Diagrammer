@@ -24,6 +24,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.Database_Client;
+import UML.Diagrammer.backend.apis.HTTP_Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,7 +58,6 @@ public class App extends Application{
      */
     public void start(Stage stage) throws Exception {
         database.openConnection(); //This should be deprecated when ObjectRequester can start sending http_requests in favor of dbConnect.
-
 //        dbConnect = new Database_Client();
 //        dbConnect.spinUp();
 

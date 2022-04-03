@@ -23,7 +23,7 @@ public class DefaultNode extends AbstractNode {
     public DefaultNode(){
         super();
         set("type","default_nodes");
-        saveIt();
+        //saveIt();
 
     }
 
