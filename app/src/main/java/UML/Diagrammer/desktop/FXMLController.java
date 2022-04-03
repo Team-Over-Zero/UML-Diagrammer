@@ -80,7 +80,6 @@ public class FXMLController extends App implements PropertyChangeListener{
     @FXML public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
 
-
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).
      * Sends a request to ObjectRequester to make a UML object(Just a node right now).
@@ -117,7 +116,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     @FXML private void deleteButtonPressed(){
-        action.deleteObject(canvasPane);
+        action.deleteObject(null, canvasPane);
     }
     @FXML private void editButtonPressed(){
         action.makePopUpEditTextBox(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());

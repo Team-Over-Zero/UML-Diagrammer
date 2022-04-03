@@ -24,6 +24,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
@@ -130,7 +131,7 @@ public class ActionHandler {
     public void makePopUpEditTextBox(StackPane uIElement, int x, int y) {
         if (uIElement == null){ uIElement = currentFocusedUIElement;}
         Popup popUp = new Popup();
-        popUp.setHeight(100);    // Might want to scale this to the size of the node in the future
+        popUp.setHeight(100);
         popUp.setWidth(100);
         popUp.setX(x - (uIElement.getWidth() / 2));
         popUp.setY(y);
@@ -219,19 +220,23 @@ public class ActionHandler {
      * @param canvasPane the main pane of the UI
      */
     public void deleteObject(StackPane uIElement, Pane canvasPane){
+        if (uIElement == null ){ // for deleting current focused node. E.G button press rather than context menu.
+            uIElement = currentFocusedUIElement;
+        }
         canvasPane.getChildren().remove(uIElement);
-        // DATABASE DELETE REQUEST
-        // Or if we only save via sending the whole page to the database, then I can translate the
-        // canvas pane to a Page before save.
-    }
 
-    /**
-     * Overridden, if we use delete via the button rather than a right click.
-     * Deletes the currently focused UI element
-     * @param canvasPane The main pane of the UI
-     */
-    public void deleteObject(Pane canvasPane){
-        canvasPane.getChildren().remove(currentFocusedUIElement);
+        // Checks if the node had any nodes associated with it so those lines can also be deleted.
+        for (Object obj: canvasPane.getChildren()) {
+            if (obj instanceof Line curLine) {
+                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
+                if (curLineConnectedNodes[0] == uIElement || curLineConnectedNodes[1] == uIElement){
+                    canvasPane.getChildren().remove(curLine);
+                    return;
+                    // DATABASE EDGE DELETE REQUEST
+                }
+            }
+        }
+        // DATABASE NODE DELETE REQUEST
     }
 
     /**
