@@ -14,7 +14,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.apis.HTTP_Client;
+import UML.Diagrammer.backend.apis.RequestController;
 import UML.Diagrammer.backend.objects.AbstractNode;
+import com.google.gson.Gson;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -102,6 +105,7 @@ public class ActionHandler {
     public void releaseObject(MouseEvent t){
         StackPane nodeUIObject = (StackPane) t.getSource();
         support.firePropertyChange("finishedDragUpdateEdges", null, nodeUIObject);
+        ((StackPane) t.getSource()).getUserData();
     }
 
 
@@ -214,7 +218,30 @@ public class ActionHandler {
     }
 
     /**
-     * Removes the UI Element from the UI(The main pane)
+     * Right click to delete edges. This is seperate from the nodes due to how the UI is set up, it could use the same
+     * function with a bit of reformatting though.
+     * @param lineElement What line to delete
+     * @param canvasPane What parent does the line belong to
+     * @param x x coord of the mouse
+     * @param y y coord of the mouse
+     */
+    public void makeEdgeContextMenu(Line lineElement, Pane canvasPane, int x, int y){
+        ContextMenu menu = new ContextMenu();
+        menu.setAutoHide(true);
+        MenuItem deleteItem = new MenuItem("Delete");
+
+        deleteItem.setOnAction(e-> {
+            canvasPane.getChildren().remove(lineElement);
+            //DATABASE DELETE EDGE REQUEST
+        });
+        menu.getItems().addAll(deleteItem);
+        menu.setX(x); menu.setY(y);
+        menu.show(App.primaryStage);
+
+    }
+
+    /**
+     * Removes the node Element from the UI(The main pane)
      * @param uIElement The UI piece that we would like to remove
      * @param canvasPane the main pane of the UI
      */
@@ -292,6 +319,11 @@ public class ActionHandler {
             support.firePropertyChange("clearLineCreationActions", null, null);
         }
 
+    }
+
+    private void updateNodeInDB(AbstractNode node){
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(node);
     }
 
 }

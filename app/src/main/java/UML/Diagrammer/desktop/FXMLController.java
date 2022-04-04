@@ -134,6 +134,8 @@ public class FXMLController extends App implements PropertyChangeListener{
      */
     private void updateUINewEdge(Line newLine){
         canvasPane.getChildren().add(newLine);
+        newLine.setOnContextMenuRequested(e ->
+                action.makeEdgeContextMenu(newLine, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
 
     /**
