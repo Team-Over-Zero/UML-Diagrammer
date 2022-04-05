@@ -190,7 +190,6 @@ public class HTTP_Client {
         return returnString;
     }
 
-
     /**
      * * Sends a passed in "updated node", and returns if it was successfully updated in the backend or note.
      * @param nodeJson Json node with id
