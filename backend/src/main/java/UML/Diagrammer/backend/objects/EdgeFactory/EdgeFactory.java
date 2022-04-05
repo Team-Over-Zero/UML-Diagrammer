@@ -27,8 +27,13 @@ public class EdgeFactory {
 
     @SuppressWarnings("unchecked")
 	public <genericEdge extends AbstractEdge> genericEdge
-    buildEdge(AbstractNode n1, AbstractNode n2){
-        return (genericEdge) new NormalEdge(n1, n2);
+    buildEdge(String tableName,int fromNodeId,String fromNodeType,int toNodeId,String toNodeType){
+
+        if(tableName.equals("normal_edges")) {
+            return (genericEdge) new NormalEdge(fromNodeId,fromNodeType,toNodeId,toNodeType);
+        }
+
+        else return (genericEdge) new DefaultEdge(fromNodeId,fromNodeType,toNodeId,toNodeType);
     }
 
     @SuppressWarnings("unchecked")

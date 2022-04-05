@@ -37,7 +37,7 @@ public abstract class AbstractEdge extends Model {
 
     /**
      * Default constructor, creates two defaultNodes, and sets the attributes of the edge based on the type and ids of the
-     * edge. Note that this instantiates the nodes it is dependent on.
+     * edge. Note that this instantiates the nodes it is dependent on. Shouldn't ever need to use this since you would usually pass in pregen node attributes.
      */
     public AbstractEdge(){
         set("type","abstract_edges");
@@ -56,25 +56,32 @@ public abstract class AbstractEdge extends Model {
     }
 
     /**
-     * This method is a bit deceptive. Since we can't actually store instances of nodes inside edge, we
+     * This method is a bit deceptive, and DEPRECATED. Since we can't actually store instances of nodes inside edge, we
      * mimick it by storing ids of nodes and types of nodes to allow for the retrieval of nodes.
      * @param n1 From Node object
      * @param n2 To Node object
+     * @deprecated
      */
-    public AbstractEdge(AbstractNode n1, AbstractNode n2){
-        set("type","abstract_edges");
+    public <genericNode extends AbstractNode>AbstractEdge(genericNode n1, genericNode n2){
+        set("type","abstract_edges"); //this should get overriden by all subtypes and so is just here for testing.
         int fromNodeId =  Integer.parseInt(n1.getId().toString());
         int toNodeId =  Integer.parseInt(n2.getId().toString());
-        String fromNodeType = n1.getString("type");
+        String fromNodeType = n1.getString("type"); //database call might work due to wildcarding but haven't tested.
         String toNodeType = n2.getString("type");
         setNodes(fromNodeId,fromNodeType,toNodeId,toNodeType);
     }
 
 
+    public AbstractEdge(int fId,String fT,int tId,String tT){
+        setNodes(fId,fT,tId,tT);
+
+    }
+
     /**
      * Wrapper method that unpacks node objects and sends the data to the other setNodes method.
      * @param n1 AbstractNode fromNode
      * @param n2 AbstractNode toNode
+     * @deprecated
      */
     public void setNodes(DefaultNode n1, DefaultNode n2){
         int fromNodeId =  n1.getId();
@@ -127,33 +134,6 @@ public abstract class AbstractEdge extends Model {
         saveIt();
     }
 
-
-//    public AbstractNode getFromNode(){
-//
-//        String n1Table = get("from_node_type").toString();
-//        String n1Id = get("from_node_id").toString();
-//        String queryStr = "SELECT * FROM "+n1Table + " WHERE id = "+n1Id;
-//        System.out.println(queryStr);
-//        List<AbstractNode> rules = findBySQL(queryStr);
-//        for (AbstractNode x: rules
-//             ) {
-//           return x;
-//        }
-//        return null;
-//    }
-//
-//    public AbstractNode getToNode() {
-//        String n2Table = get("to_node_type").toString();
-//        String n2Id = get("to_node_id").toString();
-//        String queryStr = "SELECT * FROM "+n2Table + "WHERE id = '"+n2Id+"'";
-//        System.out.println(queryStr);
-//        List<AbstractNode> rules = findBySQL(queryStr);
-//        for (AbstractNode x: rules
-//        ) {
-//            return x;
-//        }
-//        return null;
-//    }
 
         /**
          * Equals deals with different ordering of nodes(Since order doesn't matter in an edge). ALEX NOTE: Deprecating temporarily

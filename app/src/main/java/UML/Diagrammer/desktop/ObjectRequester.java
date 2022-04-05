@@ -163,7 +163,7 @@ public class ObjectRequester {
      * @return the created UI object line.
      */
     public Line UIEdgeRequest(StackPane n0, StackPane n1){
-        edgeFactory.buildEdge((AbstractNode) n0.getUserData(), (AbstractNode) n1.getUserData());
+       // edgeFactory.buildEdge((AbstractNode) n0.getUserData(), (AbstractNode) n1.getUserData());
         Line line = new Line();
         line.setStartX(n0.getTranslateX()+ (n0.getWidth()/2));
         line.setStartY(n0.getTranslateY() + (n0.getHeight()/2));

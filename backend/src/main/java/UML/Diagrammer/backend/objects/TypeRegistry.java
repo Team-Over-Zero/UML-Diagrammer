@@ -27,6 +27,9 @@ public class TypeRegistry {
     private ArrayList<Class> edgeClassList;
     private HashMap<String,Class> nodeClassMap;
     private HashMap<String,Class> edgeClassMap;
+    private HashMap<String,Runnable> nodeTableMap;
+    private String[] nodeTableArr = {"default_nodes","class_nodes","folder_nodes","life_line_nodes","loop_nodes","note_nodes","oval_nodes","square_nodes","stick_figure_nodes","text_box_nodes"};
+
 
     private TypeRegistry(){
         tableNodeList = new ArrayList<>(20);
@@ -91,6 +94,9 @@ public class TypeRegistry {
         }
         return instance;
     }
+
+
+
 
 
 }
