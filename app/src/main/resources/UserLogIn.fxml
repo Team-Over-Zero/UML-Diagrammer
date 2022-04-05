@@ -5,21 +5,23 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserLogIn">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserLogIn">
    <children>
-      <Label layoutX="56.0" prefHeight="76.0" prefWidth="489.0" text="Welcome to the UML Diagrammer. Please log in">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="130.0" layoutY="130.0" text="User Name" />
-      <Label layoutX="130.0" layoutY="154.0" text="Password" />
-      <TextField layoutX="216.0" layoutY="126.0" />
-      <TextField layoutX="215.0" layoutY="150.0" />
-      <Button layoutX="329.0" layoutY="188.0" mnemonicParsing="false" text="Log In" />
-      <Button layoutX="241.0" layoutY="226.0" mnemonicParsing="false" text="Create account" />
+      <TextField layoutX="216.0" layoutY="126.0" promptText="UserName" />
+      <TextField layoutX="215.0" layoutY="150.0" promptText="Password" />
+      <Button layoutX="216.0" layoutY="188.0" mnemonicParsing="false" text="Log In" />
+      <Button layoutX="216.0" layoutY="230.0" mnemonicParsing="false" text="Register New Account" />
       <Label fx:id="ErrorLabel" layoutX="215.0" layoutY="98.0" text="Error" textFill="RED" visible="false" />
+      <Button layoutX="275.0" layoutY="188.0" mnemonicParsing="false" text="Forgot Your Password?" />
+      <Text layoutX="159.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UML Diagrammer 2.5">
+         <font>
+            <Font size="33.0" />
+         </font>
+      </Text>
+      <Button blendMode="SRC_ATOP" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Button layoutX="290.0" layoutY="277.0" mnemonicParsing="false" text="Read Me" />
+      <Button layoutX="214.0" layoutY="277.0" mnemonicParsing="false" text="Credits" />
    </children>
 </AnchorPane>
