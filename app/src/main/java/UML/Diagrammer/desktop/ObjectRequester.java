@@ -24,8 +24,8 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
-import UML.Diagrammer.backend.objects.NodeFactory.*;
+import UML.Diagrammer.backend.objects.UIEdge.*;
+import UML.Diagrammer.backend.objects.UINode.*;
 import com.google.gson.Gson;
 import javafx.scene.Cursor;
 import javafx.scene.layout.StackPane;
@@ -50,8 +50,9 @@ public class ObjectRequester {
      * Global observable object to call updates to the UI.
      */
     private final PropertyChangeSupport support;
-    private static final NodeFactory nodeFactory = new NodeFactory();
-    private static final EdgeFactory edgeFactory = new EdgeFactory();
+    //private static final NodeFactory nodeFactory = new NodeFactory();
+    private static final UINodeFactory nodeFactory = new UINodeFactory();
+    private static final UIEdgeFactory edgeFactory = new UIEdgeFactory();
     HTTP_Client HTTPClient = new HTTP_Client();
 
     /**
@@ -84,8 +85,8 @@ public class ObjectRequester {
      * Then returns these objects to the UI via the support.firePropertyChange call.
      * All makeXRequest function should look really similar to this function, the difference being the image and node type.
      */
-    public void makeOvalRequest() throws TranscoderException, IOException {
-        OvalNode newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 3, 3);
+    public void makeOvalRequest() {
+        UIOvalNode newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 3, 3);
         String image = "/Oval_UseCase.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
@@ -97,7 +98,7 @@ public class ObjectRequester {
      */
     public void makeClassRequest() {
         try {
-            ClassNode newNode = nodeFactory.buildNode("class_nodes", 3, 3, 3, 3);
+            UIClassNode newNode = nodeFactory.buildNode("class_nodes", 3, 3, 3, 3);
             //AbstractNode savedNode = saveNodeToDB(newNode);
             String image = "Class.svg";
             StackPane newUIShape = UIShapeRequest(image, newNode);
@@ -109,49 +110,49 @@ public class ObjectRequester {
     }
 
     public void makeFolderRequest() {
-        FolderNode newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 3, 3);
+        UIFolderNode newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 3, 3);
         String image = "/Folder.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLifeLineRequest() {
-        LifeLineNode newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 3, 3);
+        UILifeLineNode newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 3, 3);
         String image = "/LifeLine.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeLoopRequest() {
-        LoopNode newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 3, 3);
+        UILoopNode newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 3, 3);
         String image = "/Loop.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest() {
-        NoteNode newNode = nodeFactory.buildNode("note_nodes", 3, 3, 3, 3);
+        UINoteNode newNode = nodeFactory.buildNode("note_nodes", 3, 3, 3, 3);
         String image = "/Note.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest() {
-        StickFigureNode newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 3, 3);
+        UIStickFigureNode newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 3, 3);
         String image = "/StickFigure.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest() {
-        TextBoxNode newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 3, 3);
+        UITextBoxNode newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 3, 3);
         String image = "/TextBox_Square_Interface.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest() {
-        SquareNode newNode = nodeFactory.buildNode("square_nodes", 3, 3, 3, 3);
+        UISquareNode newNode = nodeFactory.buildNode("square_nodes", 3, 3, 3, 3);
         String image = "/TextBox_Square_Interface.svg";
         StackPane newUIShape = UIShapeRequest(image, newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
@@ -161,7 +162,7 @@ public class ObjectRequester {
      * Creates creates an edge for the data and a line for the UI. Then notifies the FXMLController to update.
      */
     public void makeEdgeRequest(StackPane n0, StackPane n1) {
-        //DefaultEdge newEdge = edgeFactory.buildEdge();
+        UIDefaultEdge newEdge = edgeFactory.buildEdge();
         Line newLine = UIEdgeRequest(n0, n1);
         support.firePropertyChange("newEdgeCreation", null, newLine);
     }
@@ -194,25 +195,25 @@ public class ObjectRequester {
      * Sets up the mouse actions for dragging and updating the associated node.
      * This should be called after any new creation of a node.
      * setUserData makes it so we can reference the data object from the UI object via UIElement.getUserData()
-     * This effectively ties together the UI object Rectangle and the given AbstractNode data object.
+     * This effectively ties together the UI object Rectangle and the given UINode data object.
      *
      * @param fxObject The UI element that is displayed to the screen.
      * @param node     The actual backend object that is apart of the data.
      */
-    public void setMouseActions(StackPane fxObject, AbstractNode node) {
+    public void setMouseActions(StackPane fxObject, UINode node) {
         fxObject.setUserData(node);
         support.firePropertyChange("setMouseActions", null, fxObject);
     }
 
     /**
      * Creates a new shape for the UI and sets up it's mouse actions
-     * This function ties together a UI Object (StackPane) and node object (AbstractNode).
+     * This function ties together a UI Object (StackPane) and node object (UINode).
      *
      * @param image the image that you would like to associate with the new UI element.
      * @param node  The node that connects to the data side of things
      * @return the shape you requested with its data node linked and actions set up.
      */
-    public StackPane UIShapeRequest(String image, AbstractNode node) {
+    public StackPane UIShapeRequest(String image, UINode node) {
 
         try {
             SVGPath path = new SVGPath();
@@ -230,7 +231,7 @@ public class ObjectRequester {
             stack.setPrefHeight(300);
             stack.setCursor(Cursor.HAND);
 
-            Text text = new Text((String) node.get("Name"));
+            Text text = new Text((String) node.getName());
 
             stack.getChildren().addAll(text);
             setMouseActions(stack, node);

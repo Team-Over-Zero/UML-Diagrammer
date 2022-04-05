@@ -14,8 +14,24 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.backend.objects.UIEdge;
 
-public class UIDefaultEdge extends UIEdge{
-    public UIDefaultEdge() {
-        super();
+import UML.Diagrammer.backend.objects.UINode.UINode;
+
+public class UIEdgeFactory {
+    public UIEdgeFactory(){}
+
+    @SuppressWarnings("unchecked")
+    public <genericEdge extends UIEdge> genericEdge
+    buildEdge(String type, UINode fromNode, UINode toNode){
+
+        switch(type){
+            case "normal_edges" -> {return (genericEdge) new UINormalEdge(fromNode, toNode);}
+            default -> {return (genericEdge) new UIDefaultEdge();}
+        }
     }
+
+    @SuppressWarnings("unchecked")
+    public <genericEdge extends UIEdge> genericEdge buildEdge(){
+        return (genericEdge) new UIDefaultEdge();
+    }
+
 }

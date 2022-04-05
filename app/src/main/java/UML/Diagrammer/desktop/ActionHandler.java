@@ -14,9 +14,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.apis.HTTP_Client;
-import UML.Diagrammer.backend.apis.RequestController;
-import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.UINode.UINode;
 import com.google.gson.Gson;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -92,9 +90,9 @@ public class ActionHandler {
         // Sets the new coordinates of the that we moved.
         Object nodeObject = t.getSource();
         if (nodeObject instanceof StackPane) {
-            AbstractNode node = (AbstractNode) ((StackPane) nodeObject).getUserData();
-            node.set("x_coord", (int)newTranslateX);
-            node.set("y_coord", (int)newTranslateY); // Updates the object with the new coordinates
+            UINode node = (UINode) ((StackPane) nodeObject).getUserData();
+            node.setX((int)newTranslateX);
+            node.setY((int)newTranslateY); // Updates the object with the new coordinates
         }
     }
 
@@ -150,13 +148,13 @@ public class ActionHandler {
         button.setOnAction(e -> {
 
             Object nodeObj = finalUIElement.getUserData();
-            AbstractNode node = (AbstractNode) nodeObj;
+            UINode node = (UINode) nodeObj;
 
-            int elIndex = findString(finalUIElement, String.valueOf(node.get("Name")));
+            int elIndex = findString(finalUIElement, String.valueOf(node.getName()));
             finalUIElement.getChildren().remove(elIndex); // Removes index 1, the name label.
 
             finalUIElement.getChildren().add(new Text(textField.getText()));
-            ((AbstractNode) finalUIElement.getUserData()).set("Name", textField.getText());
+            ((UINode) finalUIElement.getUserData()).setName(textField.getText());
             popUp.hide();
         });
 
@@ -321,7 +319,7 @@ public class ActionHandler {
 
     }
 
-    private void updateNodeInDB(AbstractNode node){
+    private void updateNodeInDB(UINode node){
         Gson gson = new Gson();
         String jsonString = gson.toJson(node);
     }
