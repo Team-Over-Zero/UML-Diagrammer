@@ -24,7 +24,7 @@ import lombok.Setter;
 public abstract class UIEdge {
     UINode n1;
     UINode n2;
-    int id; //Should an edge have an ID?
+    int id;
 
     public <genericNode extends UINode>UIEdge(genericNode n1, genericNode n2) {
         this.id = -1;

@@ -47,12 +47,12 @@ public abstract class UINode {
 
     public UINode(){
         this.id = -1;
-        this.name = "default name";
-        this.type = "default type";
-        this.desc = "default desc";
-        this.SVGImage = "default svg";
-        this.x = 3;
-        this.y = 3;
+        this.name = "DEFAULT NAME";
+        this.type = "DEFAULT TYPE";
+        this.desc = "DEFAULT DESCRIPTION";
+        this.SVGImage = "DEFAULT SVG";
+        this.x = 0;
+        this.y = 0;
         this.w = 3;
         this.h = 3;
     }
