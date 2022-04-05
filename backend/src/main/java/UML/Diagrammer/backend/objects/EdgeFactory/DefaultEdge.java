@@ -24,4 +24,8 @@ public class DefaultEdge extends AbstractEdge {
         super();
         set("type","default_edges");
     }
+    public DefaultEdge(int fromId,String fromType, int toId,String toType){
+        super(fromId,fromType,toId,toType);
+        set("type","default_edges");
+    }
 }

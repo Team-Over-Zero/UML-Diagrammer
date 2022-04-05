@@ -68,7 +68,7 @@ public class Database_ClientTest extends DBSpec {
             e.printStackTrace();
         }
 
-        assertEquals("success",response);
+        assertEquals("SUCCESS",response);
 
 
     }

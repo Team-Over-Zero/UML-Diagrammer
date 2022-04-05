@@ -21,6 +21,9 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 
 package UML.Diagrammer.backend.apis;
+import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
+import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
+import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
 import UML.Diagrammer.backend.objects.*;
 import com.google.gson.*;
@@ -42,47 +45,123 @@ public final class RequestController {
     }
 
     /**
-     * This method attaches to the /defaultnodenameid/{objectid} get request. It tries to find a node in the default_nodes table
+     * This method attaches to the /getanynode/ get request. It tries to find a node with the id {objectid} and the table name {type}
      * @param context implicitly passed in context
      */
-    public static void getNodeNameWithId(Context context){
-        //context.status(500);
-        //int id = Integer.valueOf(idStr);
-        Gson gson = new Gson();
-        String nodeStr = null;
-        String idStr = context.pathParam("objectid");
+    @SuppressWarnings({"UnnecessaryBreak", "DuplicateBranchesInSwitch"})
+    public static void getAnyNode(Context context){
+        String nodeStr = "";
+        String idStr = context.queryParam("objectid");
+        String typeStr = "";
+             typeStr=   context.queryParam("type");
+
         int id = 0;
         try {
-            id = Integer.valueOf(idStr);
+            id = Integer.parseInt(idStr); //object id
+            
         }
         catch (ClassCastException ce){
             ce.printStackTrace();
+            context.result("BAD NODE ID TYPE");
         }
         finally{
-          //  id = 404;
+            
         }
-        //System.out.println(id);
-        List<Map> test = Base.findAll("use dev; SELECT * FROM default_nodes where id = " + "'"+ idStr+ "'"+ ";"); //raw sql query that returns a map
 
-        try {
-            for (Map t:test) {
-                System.out.println("Map: " +t.toString() +" keyset:" +t.keySet().toString());
+        //This switch statement subjects us to the shotgun code problem. Ie adding a new node class should automatically
+        //make the ability to query it, but instead has to be updated here. The problem is that there is no good way that
+        //I can find to cast an object from a supertype to a subtype in a way that can store the "cast type" as a variable and then cast objects to that type. -Alex
+        switch (typeStr) {
+            case "default_nodes" -> {
+                DefaultNode foundNode = DefaultNode.findById(id); //queries the default_nodes table for an object with the passed in id.
+                nodeStr = foundNode.toJson(true);
+                break;
             }
-            nodeStr = gson.toJson(test.get(0).get("name")); //tries to parse the map for a default node object and serializes it
-            System.out.println("The node is: " +nodeStr);
+            case "class_nodes" -> {
+                ClassNode foundNode = ClassNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "folder_nodes" -> {
+                FolderNode foundNode = FolderNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "life_line_nodes" -> {
+                LifeLineNode foundNode = LifeLineNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "loop_nodes" -> {
+                LoopNode foundNode = LoopNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "note_nodes" -> {
+                NoteNode foundNode = NoteNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "oval_nodes" -> {
+                OvalNode foundNode = OvalNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "square_nodes" -> {
+                SquareNode foundNode = SquareNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "stick_figure_nodes" -> {
+                StickFigureNode foundNode = StickFigureNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
+            case "text_box_nodes" -> {
+                TextBoxNode foundNode = TextBoxNode.findById(id);
+                nodeStr = foundNode.toJson(true);
+                break;
+            }
         }
-        catch (NullPointerException nulEx){
-            System.out.println("A node with the specified ID could not be found.");
-            nulEx.printStackTrace();
+
+        context.result(nodeStr); //sends the json back as a response string.
+    }
+
+    /**
+     * This method attaches to the /getanynode/ get request. It tries to find a node with the id {objectid} and the table name {type}
+     * @param context implicitly passed in context
+     */
+    @SuppressWarnings({"UnnecessaryBreak", "DuplicateBranchesInSwitch"})
+    public static void getAnyEdge(Context context) {
+        String edgeStr = "";
+        String idStr = context.queryParam("objectid");
+        String typeStr = "";
+        typeStr = context.queryParam("type");
+        int id = 0;
+        try {
+            id = Integer.parseInt(idStr); //object id
+
+        } catch (ClassCastException ce) {
+            ce.printStackTrace();
+            context.result("BAD NODE ID TYPE");
         }
-        //testNode.saveIt(); //Initialization already saves the object so we don't need to handle this.
-        if(nodeStr!=null) {
-            context.result(nodeStr);
+
+        switch (typeStr) {
+            case "default_edges" -> {
+                DefaultEdge foundEdge = DefaultEdge.findById(id); //queries the default_nodes table for an object with the passed in id.
+                edgeStr = foundEdge.toJson(true);
+                break;
+            }
+            case "normal_edges" -> {
+                NormalEdge foundEdge = NormalEdge.findById(id);
+                edgeStr = foundEdge.toJson(true);
+                break;
+            }
+
         }
-        else{
-            context.status(405);
-            context.result("NODE NOT FOUND");
-        }
+
+            context.result(edgeStr);
+
     }
 
 
@@ -100,9 +179,9 @@ public final class RequestController {
             try {
                 NodeFactory nf = new NodeFactory();
                 //DefaultNode testNode =  nf.buildNode();
-                //DefaultNode testNode2 = new DefaultNode();
-                DefaultNode testNode2 = DefaultNode.findById(nodeId); //MESSY, FIX LATER -Alex
-                nodeStr = testNode2.toJson(true);
+                //DefaultNode foundNode = new DefaultNode();
+                DefaultNode foundNode = DefaultNode.findById(nodeId); //MESSY, FIX LATER -Alex
+                nodeStr = foundNode.toJson(true);
 
             }
             catch(Exception il){
@@ -118,7 +197,7 @@ public final class RequestController {
     }
 
     /**
-     * Given a query param of the form /trycreatenode/?node={"json"}
+     * Given a query param of the form /trycreatenode/?node={"json"} returns an id of an inialized edge or "-1" if bad input.
      * @param context
      */
     public static void tryCreateNode(Context context){
@@ -149,6 +228,49 @@ public final class RequestController {
 
     }
 
+    /**
+     * Given a query param of the form /trycreateedge/?edge={"json"} returns an id of an initialized edge or "-1" if bad input.
+     * @param context
+     */
+    public static void tryCreateEdge(Context context){
+        String edgeJson = context.queryParam("edge");
+
+        try{
+            JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
+            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            String tableName = jsonObject.get("type").getAsString();
+            int fromNodeId = jsonObject.get("from_node_id").getAsInt();
+            String fromNodeType = jsonObject.get("from_node_type").getAsString();
+            int toNodeId = jsonObject.get("to_node_id").getAsInt();
+            String toNodeType = jsonObject.get("to_node_type").getAsString();
+
+            EdgeFactory edgeFactory = new EdgeFactory();
+            AbstractEdge newEdge=  edgeFactory.buildEdge(tableName,fromNodeId,fromNodeType,toNodeId,toNodeType);
+            newEdge.createIt();
+
+            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
+                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
+                newEdge.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
+            }
+            String idOfCreatedEdge = newEdge.getString("id"); //id of initialized edge
+
+            context.result(idOfCreatedEdge);
+        }
+        catch (JsonSyntaxException jsonEx){
+            jsonEx.printStackTrace();
+            context.result("-1");
+        }
+        catch(ClassCastException c){
+            c.printStackTrace();
+            context.result("-1");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            context.result("-1");
+        }
+
+    }
+
 
     /**
      * Given a query param of the form node = "json", attempts to update an existing node with all the attributes in the passed in node.
@@ -159,7 +281,7 @@ public final class RequestController {
      */
     public static void updateNode(Context context) {
 
-        String nodeJson = context.queryParam("node");
+        String nodeJson = context.queryParam("node"); //query param
         //initializes deserializers and lets them know to associate "type" attributes with classes.
         NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
        //EdgeTypeDeserializer customEdgeDeserializer = new EdgeTypeDeserializer("type");
@@ -196,7 +318,7 @@ public final class RequestController {
             //A set of key value pairs of attributes and attribute values from the json object.
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
 
-            //Since Activejdbc doesn't like sererializing with objects we can cheat and get id directly from the json object.
+            //Since Activejdbc doesn't like serializing with objects we can cheat and get id directly from the json object.
             String fromId = jsonObject.get("id").getAsString(); //gets the id of the passed in object
             String nodeType = jsonObject.get("type").getAsString();
             //Class<AbstractNode> nodeClass = registryNodeMap.get(nodeType);
@@ -206,10 +328,19 @@ public final class RequestController {
             //System.out.println(fromJsonNode.getClass());
             //fromJsonNode.getClass();
 
+            //private String[] nodeTableArr = {"default_nodes","class_nodes","folder_nodes","life_line_nodes","loop_nodes","note_nodes","oval_nodes","square_nodes","stick_figure_nodes","text_box_nodes"};
+
             LazyList<? extends AbstractNode> dfList = switch (nodeType) {
                 case "default_nodes" -> DefaultNode.where("id = ?", fromId);
                 case "folder_nodes" -> FolderNode.where("id = ?", fromId);
                 case "class_nodes" -> ClassNode.where("id = ?", fromId);
+                case "life_line_nodes"->LifeLineNode.where("id = ?",fromId);
+                case "loop_nodes"-> LoopNode.where("id = ?",fromId);
+                case "note_nodes"-> NoteNode.where("id = ?",fromId);
+                case "oval_nodes"-> OvalNode.where("id = ?",fromId);
+                case "square_nodes"->SquareNode.where("id = ?",fromId);
+                case "stick_figure_nodes"->StickFigureNode.where("id = ?",fromId);
+                case "text_box_nodes"->TextBoxNode.where("id = ?",fromId);
                 default -> DefaultNode.where("id = ?", fromId); //just the default list type.
                 //There has to be a better way to specify Class type right?
             };
@@ -217,10 +348,18 @@ public final class RequestController {
             System.out.println("Passed in edit request node: " + nodeJson);
 
             //This node is the node that we want to edit the values of.
-            AbstractNode updateNode = dfList.get(0);
+            AbstractNode updateNode = null;
+            try {
+                updateNode = dfList.get(0);
+            }
+            catch (NullPointerException nullPointerException){
+                nullPointerException.printStackTrace();
+                context.result("node not found");
+            }
             System.out.println("Database Node Pre Update: " + updateNode.toJson(true));
 
             // System.out.println("Map: ");
+
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
                 //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
                 updateNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
@@ -230,15 +369,15 @@ public final class RequestController {
             //AbstractNode outputNode2 = new Gson().fromJson(updatedJson, nodeClass);
             System.out.println("Database Node Post Update: " + updateNode.toJson(true));
             updateNode.saveIt();
-            context.result("success");
+            context.result("SUCCESS");
         }
         catch (JsonSyntaxException e){
             e.printStackTrace();
-            context.result("failure");
+            context.result("BAD INPUT");
         }
         catch(Exception e){
             e.printStackTrace();
-            context.result("Generic Exception");
+            context.result("GENERIC EXCEPTION");
         }
 
     }

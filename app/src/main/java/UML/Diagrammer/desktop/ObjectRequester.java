@@ -176,6 +176,7 @@ public class ObjectRequester {
      * @param n1 second node
      * @return the created UI object line.
      */
+
     public Line UIEdgeRequest(StackPane n0, StackPane n1) {
         //edgeFactory.buildEdge((AbstractNode) n0.getUserData(), (AbstractNode) n1.getUserData());
         Line line = new Line();

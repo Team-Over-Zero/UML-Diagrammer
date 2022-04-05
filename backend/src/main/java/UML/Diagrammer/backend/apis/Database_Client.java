@@ -90,12 +90,14 @@ public class Database_Client {
 
          //initializes javalin listeners
          devGetParamInit();
-         devGetNode();
+         devGetDefaultNode();
+         devGetAnyNode();
+         devGetAnyEdge();
          devTryCreateNode();
+         devTryCreateEdge();
          devUpdateNode();
          devPostStatusCodeInit();
          devTestCreateNode();
-         devGetNodeNameWithId();
          devGetObjectsAsMap();
 
          //This handler will run before every single request handler. This will ensure
@@ -138,7 +140,7 @@ public class Database_Client {
     /**
      * Adds a get request handler that will get an id from a hardcoded default_nodes table.
      */
-    void devGetNode(){
+    void devGetDefaultNode(){
 
         httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
     }
@@ -147,16 +149,22 @@ public class Database_Client {
         httpServer.post("/trycreatenode/",RequestController::tryCreateNode);
     }
 
+    void devTryCreateEdge(){httpServer.post("/trycreateedge/",RequestController::tryCreateEdge);}
+
     void devUpdateNode(){
         httpServer.get("/updatenode/", RequestController::updateNode);
     }
     /**
-     * Adds a get request handler that takes a link in the form .../defaultnodenameid/{objectid} and returns the name
-     * of the node with that id if found in the database.
+     * Adds a get request handler that takes a link in the form .../getnode/?objectid=x&tablename=y and returns the node
+     * json string if found.
      */
-    void devGetNodeNameWithId(){
-        httpServer.get("/defaultnodenameid/{objectid}",RequestController::getNodeNameWithId);
+    void devGetAnyNode(){
+        httpServer.get("/getnode/",RequestController::getAnyNode);
     }
+
+    void devGetAnyEdge(){httpServer.get("/getedge/",RequestController::getAnyEdge);}
+
+
 
     void devGetObjectsAsMap(){
         httpServer.get("/getobjectsasmap/",RequestController::getObjsAsMapWithIdandTable);

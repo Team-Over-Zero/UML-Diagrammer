@@ -186,7 +186,6 @@ public class HTTP_Client {
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
         client.close();
 
-
         return returnString;
     }
 
@@ -199,7 +198,6 @@ public class HTTP_Client {
      * @throws URISyntaxException
      */
     public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException {
-
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
         HttpGet httpGet = new HttpGet("http://127.0.0.1:8888/updatenode/");
@@ -216,6 +214,27 @@ public class HTTP_Client {
         client.close();
 
         return returnString;
+    }
+
+
+    public String sendEdgeCreateRequest(String edgeJson) throws IOException,InterruptedException,URISyntaxException{
+
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+
+        HttpPut httpPut = new HttpPut("http://127.0.0.1:8888/trycreateedge/");
+
+        URI uri = new URIBuilder(httpPut.getURI())
+                .addParameter("edge", edgeJson)
+                .build();
+        ((HttpRequestBase) httpPut).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpPut);
+        HttpEntity resStr = response.getEntity();
+        InputStream iS=resStr.getContent();
+        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
+        client.close();
+
+        return returnString;
+
 
     }
 
