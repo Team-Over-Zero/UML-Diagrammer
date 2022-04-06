@@ -23,19 +23,26 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package UML.Diagrammer.desktop;
 
+import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.stage.FileChooser;
 import lombok.Getter;
 import org.apache.batik.transcoder.TranscoderException;
 
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 
 
@@ -128,7 +135,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     private void updateUINewNode(StackPane newNodeUIRepresentation){
         canvasPane.getChildren().add(newNodeUIRepresentation);
     }
-    
+
     /**
      * Just displays the edge's info to the screen via a label for now.
      */
@@ -180,6 +187,35 @@ public class FXMLController extends App implements PropertyChangeListener{
                     curLine.setEndX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
                     curLine.setEndY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
                 }
+            }
+        }
+    }
+
+    /**
+     * Takes a screenshot of the current scene when you press the png export button
+     */
+    @FXML
+    private void exportToPNG() {
+        action.clearFocusedElement();
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+
+        //Prompt user to select a file
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                //Pad the capture area
+                WritableImage writableImage = new WritableImage((int) App.primaryStage.getWidth() + 20,
+                        (int) App.primaryStage.getHeight() - 120);
+                canvasPane.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                //Write the snapshot to the chosen file
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
     }

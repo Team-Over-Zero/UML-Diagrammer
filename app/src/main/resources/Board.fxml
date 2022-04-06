@@ -23,7 +23,7 @@
       </MenuButton>
       <MenuButton fx:id="loadMenuButton1" layoutX="120.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Export">
          <items>
-            <MenuItem mnemonicParsing="false" text="PNG" />
+            <MenuItem mnemonicParsing="false" onAction="#exportToPNG" text="PNG" />
             <MenuItem mnemonicParsing="false" text="SVG" />
          </items>
       </MenuButton>

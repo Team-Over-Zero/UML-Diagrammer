@@ -24,17 +24,17 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.UIEdge.*;
+import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
+import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
 import UML.Diagrammer.backend.objects.UINode.*;
 import com.google.gson.Gson;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.text.Text;
-import org.apache.batik.transcoder.TranscoderException;
 
-import javax.xml.crypto.Data;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -87,8 +87,8 @@ public class ObjectRequester {
      */
     public void makeOvalRequest() {
         UIOvalNode newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 3, 3);
-        String image = "/Oval_UseCase.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        String image = "Oval_UseCase.svg";
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
@@ -100,8 +100,8 @@ public class ObjectRequester {
         try {
             UIClassNode newNode = nodeFactory.buildNode("class_nodes", 3, 3, 3, 3);
             //AbstractNode savedNode = saveNodeToDB(newNode);
-            String image = "Class.svg";
-            StackPane newUIShape = UIShapeRequest(image, newNode);
+            StackPane newUIShape = UIClassRequest(newNode);
+            newNode.toJson();
             support.firePropertyChange("newNodeCreation", null, newUIShape);
         }
         catch (Exception e){
@@ -111,50 +111,52 @@ public class ObjectRequester {
 
     public void makeFolderRequest() {
         UIFolderNode newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 3, 3);
-        String image = "/Folder.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        String image = "Folder.svg";
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
+    //unique
     public void makeLifeLineRequest() {
         UILifeLineNode newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 3, 3);
         String image = "/LifeLine.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 80, 430, Pos.TOP_CENTER);
+
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
+    //unique
     public void makeLoopRequest() {
         UILoopNode newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 3, 3);
-        String image = "/Loop.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        StackPane newUIShape = UILoopRequest(newNode);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest() {
         UINoteNode newNode = nodeFactory.buildNode("note_nodes", 3, 3, 3, 3);
         String image = "/Note.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 200, 150, Pos.TOP_LEFT);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest() {
         UIStickFigureNode newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 3, 3);
         String image = "/StickFigure.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 220, 150, Pos.BOTTOM_CENTER);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest() {
         UITextBoxNode newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 3, 3);
-        String image = "/TextBox_Square_Interface.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        String image = "TextBox_Square_Interface.svg";
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.TOP_LEFT);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest() {
         UISquareNode newNode = nodeFactory.buildNode("square_nodes", 3, 3, 3, 3);
-        String image = "/TextBox_Square_Interface.svg";
-        StackPane newUIShape = UIShapeRequest(image, newNode);
+        String image = "TextBox_Square_Interface.svg";
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
@@ -206,41 +208,83 @@ public class ObjectRequester {
     }
 
     /**
+     * A general way to create a stack pane, since each UI element is unique we need specific function for various
+     * text elements, locations, and shapes.
      * Creates a new shape for the UI and sets up it's mouse actions
-     * This function ties together a UI Object (StackPane) and node object (UINode).
-     *
-     * @param image the image that you would like to associate with the new UI element.
-     * @param node  The node that connects to the data side of things
-     * @return the shape you requested with its data node linked and actions set up.
+     * his function ties together a UI Object (StackPane) and node object (UINode).
+     * @param node The associated data node
+     * @param image the shape you'd like to use.
+     * @return The stackpane that was created.
      */
-    public StackPane UIShapeRequest(String image, UINode node) {
-
+    private StackPane makeStackPane(UINode node, String image){
         try {
             SVGPath path = new SVGPath();
-
             Path filePath = Paths.get("src/main/resources/Images/" + image);
             Path absPath = filePath.toAbsolutePath();
-
             String svgString = Files.readString(absPath);
-
             path.setContent(svgString);
-
             StackPane stack = new StackPane(path);
-
-            stack.setPrefWidth(300);
-            stack.setPrefHeight(300);
             stack.setCursor(Cursor.HAND);
-
-            Text text = new Text((String) node.getName());
-
-            stack.getChildren().addAll(text);
             setMouseActions(stack, node);
             return stack;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        catch (Exception e){e.printStackTrace();}
         return null;
+    }
 
+    /**
+     * Tailored request for the class since it has a name/desc in specific position
+     * @param node the associated data node.
+     * @return UI StackPane
+     */
+    public StackPane UIClassRequest(UINode node) {
+        StackPane stack = makeStackPane(node, "Class.svg");
+        stack.setPrefWidth(300);
+        stack.setPrefHeight(150);
+
+        Label name = new Label((String) node.getName());
+        Label desc = new Label((String) node.getDesc());
+        name.setWrapText(true); desc.setWrapText(true);
+        stack.getChildren().addAll(name, desc);
+        StackPane.setAlignment(name, Pos.TOP_LEFT);
+        StackPane.setAlignment(desc, Pos.CENTER_LEFT);
+        return stack;
+    }
+
+    /**
+     * A general request for most UI objects since most object just need a name in the center of the element.
+     * @param node associated data node.
+     * @param image the specified background image
+     * @param w width of your pane
+     * @param h height of your pane
+     * @param namePos the position you'd like the name to appear.
+     * @return UI StackPane
+     */
+    public StackPane UIBasicRequest(UINode node, String image, int w, int h, Pos namePos) {
+        StackPane stack = makeStackPane(node, image);
+        stack.setPrefWidth(w);
+        stack.setPrefHeight(h);
+
+        Label name = new Label((String) node.getName());
+        name.setWrapText(true);
+        //name.setWrappingWidth(stack.getWidth());
+
+        stack.getChildren().addAll(name);
+        StackPane.setAlignment(name, namePos);
+        return stack;
+    }
+
+    /**
+     * Talored stackpane request since we need a loop liable on the top left.
+     * @param node the associated data node.
+     * @return UI StackPane
+     */
+    public StackPane UILoopRequest(UINode node){
+        StackPane stack = UIBasicRequest(node, "Loop.svg", 300, 150, Pos.TOP_CENTER);
+        Label loopLabel = new Label("Loop");
+        stack.getChildren().add(loopLabel);
+        StackPane.setAlignment(loopLabel, Pos.TOP_LEFT);
+        return stack;
     }
 
     private AbstractNode saveNodeToDB(AbstractNode node) throws URISyntaxException, IOException {

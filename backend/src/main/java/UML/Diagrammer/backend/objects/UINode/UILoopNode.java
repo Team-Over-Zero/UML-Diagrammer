@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UILoopNode extends UINode{
     public UILoopNode(int x, int y, int w, int h){
-        super("LoopNode Name","loop_nodes", null, "LOOP_SVG", x, y, w, h);
+        super("Loop Name","loop_nodes", null, "LOOP_SVG", x, y, w, h);
     }
 }

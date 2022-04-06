@@ -25,7 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
 import java.beans.PropertyChangeListener;
@@ -131,6 +130,9 @@ public class ActionHandler {
      */
     public void makePopUpEditTextBox(StackPane uIElement, int x, int y) {
         if (uIElement == null){ uIElement = currentFocusedUIElement;}
+
+        UINode node = (UINode) uIElement.getUserData();
+
         Popup popUp = new Popup();
         popUp.setHeight(100);
         popUp.setWidth(100);
@@ -139,21 +141,16 @@ public class ActionHandler {
 
         Label label = new Label("Enter a new name");
 
-        TextField textField = new TextField();
+        TextField textField = new TextField(node.getName());
         textField.setPrefWidth(200);
         textField.setPrefHeight(50);
 
         Button button = new Button("Confirm");
         StackPane finalUIElement = uIElement;
         button.setOnAction(e -> {
-
-            Object nodeObj = finalUIElement.getUserData();
-            UINode node = (UINode) nodeObj;
-
             int elIndex = findString(finalUIElement, String.valueOf(node.getName()));
-            finalUIElement.getChildren().remove(elIndex); // Removes index 1, the name label.
-
-            finalUIElement.getChildren().add(new Text(textField.getText()));
+            Label textEl = (Label) finalUIElement.getChildren().get(elIndex);
+            textEl.setText(textField.getText());
             ((UINode) finalUIElement.getUserData()).setName(textField.getText());
             popUp.hide();
         });
@@ -180,7 +177,7 @@ public class ActionHandler {
     public int findString(StackPane UIElement, String elementToFind){
         for (Object curItem: UIElement.getChildren()) {
             try {
-                Text curText = (Text) curItem;
+                Label curText = (Label) curItem;
                 if (curText.getText().equals(elementToFind)) {
                     return UIElement.getChildren().indexOf(curItem);
                 }
@@ -322,6 +319,11 @@ public class ActionHandler {
     private void updateNodeInDB(UINode node){
         Gson gson = new Gson();
         String jsonString = gson.toJson(node);
+    }
+
+    public void clearFocusedElement(){
+        currentFocusedUIElement.setStyle("-fx-border-color: ");
+        currentFocusedUIElement = null;
     }
 
 }

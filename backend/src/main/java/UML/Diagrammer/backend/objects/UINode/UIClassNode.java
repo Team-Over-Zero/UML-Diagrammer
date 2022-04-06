@@ -17,12 +17,19 @@ package UML.Diagrammer.backend.objects.UINode;
 //json serialization
 //default id for node creation
 
+import com.google.gson.Gson;
+
 public class UIClassNode extends UINode{
     public UIClassNode(int x, int y, int w, int h){
         super("Class Name","class_nodes", "Class Description", "CLASS_SVG", x, y, w, h);
     }
-    public void testFunc(){
-        System.out.println("subclassing stuffs is working alright");
+    public String toJson(){
+        Gson gson = new Gson();
+        return gson.toJson(this, UIClassNode.class);
     }
+
+    //public String hydrate(){
+
+    //}
 
 }
