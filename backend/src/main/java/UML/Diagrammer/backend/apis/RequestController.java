@@ -159,9 +159,7 @@ public final class RequestController {
             }
 
         }
-
             context.result(edgeStr);
-
     }
 
 
@@ -212,6 +210,7 @@ public final class RequestController {
            AbstractNode newNode=  nodeFactory.buildNode(tableName,0,0,0,0);
            newNode.createIt();
            System.out.println(newNode.saveIt());
+           //entry.remove("id");
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
                 //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
                 newNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
@@ -298,7 +297,6 @@ public final class RequestController {
         for (String n:registryNodeList) {
             customNodeDeserializer.registerSubtype(n,registryNodeMap.get(n)); //Registers our class and associates it with a node type.
         }
-
         //registers our edge tables
 //        for (String e: registryEdgeList){
 //            customEdgeDeserializer.registerSubtype(e,registryEdgeMap.get(e));
