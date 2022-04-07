@@ -68,6 +68,16 @@ public class CustomJsonHelper {
         return jsonStr;
     }
 
+    public Iterator<Map.Entry<String,JsonElement>> getIterator(String jsonStr){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        JsonObject jsonObject = gson.fromJson(jsonStr,JsonObject.class);
+        Iterator<Map.Entry<String,JsonElement>> objectIterator = jsonObject.entrySet().iterator();
+        return  objectIterator;
+
+    }
+
+
 
 
 

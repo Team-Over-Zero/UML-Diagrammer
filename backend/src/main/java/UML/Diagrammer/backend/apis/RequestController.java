@@ -34,34 +34,34 @@ import java.util.*;
 
 import io.javalin.http.Context;
 import org.javalite.activejdbc.LazyList;
+import org.javalite.activejdbc.associations.NotAssociatedException;
 
 public final class RequestController {
 
-    private RequestController(){
+    private RequestController() {
     }
 
     /**
      * This method attaches to the /getanynode/ get request. It tries to find a node with the id {objectid} and the table name {type}
+     *
      * @param context implicitly passed in context
      */
     @SuppressWarnings({"UnnecessaryBreak", "DuplicateBranchesInSwitch"})
-    public static void getAnyNode(Context context){
+    public static void getAnyNode(Context context) {
         String nodeStr = "";
         String idStr = context.queryParam("objectid");
         String typeStr = "";
-             typeStr=   context.queryParam("type");
+        typeStr = context.queryParam("type");
 
         int id = 0;
         try {
             id = Integer.parseInt(idStr); //object id
-            
-        }
-        catch (ClassCastException ce){
+
+        } catch (ClassCastException ce) {
             ce.printStackTrace();
             context.result("BAD NODE ID TYPE");
-        }
-        finally{
-            
+        } finally {
+
         }
 
         //This switch statement subjects us to the shotgun code problem. Ie adding a new node class should automatically
@@ -125,6 +125,7 @@ public final class RequestController {
 
     /**
      * This method attaches to the /getanynode/ get request. It tries to find a node with the id {objectid} and the table name {type}
+     *
      * @param context implicitly passed in context
      */
     @SuppressWarnings({"UnnecessaryBreak", "DuplicateBranchesInSwitch"})
@@ -153,16 +154,17 @@ public final class RequestController {
                 break;
             }
         }
-            context.result(edgeStr);
+        context.result(edgeStr);
     }
 
 
     /**
      * This method attaches to the /getdefaultnode/{objectid} get request. It will return a json string representation
      * of a found default node with the given id, or will throw an error code. (405).
+     *
      * @param context implicitly passed in context
      */
-    public static void getDefaultNode(Context context){
+    public static void getDefaultNode(Context context) {
         {
 
             String nodeIdStr = context.pathParam("objectid");
@@ -175,8 +177,7 @@ public final class RequestController {
                 DefaultNode foundNode = DefaultNode.findById(nodeId); //MESSY, FIX LATER -Alex
                 nodeStr = foundNode.toJson(true);
 
-            }
-            catch(Exception il){
+            } catch (Exception il) {
                 il.printStackTrace();
                 nodeStr = null;
             }
@@ -190,22 +191,39 @@ public final class RequestController {
 
     /**
      * Given a query param of the form /trycreatenode/?node={"json"} returns an id of an inialized edge or "-1" if bad input.
+     *
      * @param context
      */
-    public static void tryCreateNode(Context context){
-        String errJson = "{\"id\":\"-1\"}";
+    public static void tryCreateNode(Context context) {
         String nodeJson = context.queryParam("node");
+        if(nodeJson!=null) {
+            String retJson = createNode(nodeJson);
+            context.result(retJson);
+        }
+        else{
+            context.status(500);
+            context.result("ERROR: NULL PARAMETERS");
+        }
+    }
 
-        try{
+    /**
+     * This does the real grunt work of tryCreateNode.
+     * @param nodeJson Passed in node string
+     * @return
+     */
+    private static String createNode(String nodeJson){
+        String errJson = "{\"id\":\"-1\"}";
+        String finalJson = "";
 
+        try {
             JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
             String tableName = jsonObject.get("type").getAsString();
             NodeFactory nodeFactory = new NodeFactory();
-           AbstractNode newNode=  nodeFactory.buildNode(tableName,0,0,0,0);
-           newNode.createIt();
-           System.out.println(newNode.saveIt());
-           //entry.remove("id");
+            AbstractNode newNode = nodeFactory.buildNode(tableName, 0, 0, 0, 0);
+            newNode.createIt();
+            System.out.println(newNode.saveIt());
+            //entry.remove("id");
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
                 //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
                 newNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
@@ -213,24 +231,38 @@ public final class RequestController {
 
             String idOfCreatedNode = newNode.getString("id");
 
-            String jsonSuccess = "{\"id\":\""+idOfCreatedNode+"\"}";
-            context.result(jsonSuccess);
-        }
-        catch (JsonSyntaxException jsonEx){
+            String jsonSuccess = "{\"id\":\"" + idOfCreatedNode + "\"}";
+            finalJson = jsonSuccess;
+            //context.result(jsonSuccess);
+        } catch (JsonSyntaxException jsonEx) {
             jsonEx.printStackTrace();
-            context.result(errJson);
+            finalJson =errJson;
+            //context.result(errJson);
         }
-
+        return finalJson;
     }
+
 
     /**
      * Given a query param of the form /trycreateedge/?edge={"json"} returns an id of an initialized edge or "-1" if bad input.
+     *
      * @param context
      */
-    public static void tryCreateEdge(Context context){
+    public static void tryCreateEdge(Context context) {
         String edgeJson = context.queryParam("edge");
+        if(edgeJson!=null) {
+            createEdge(edgeJson);
+        }
+        else{
+            context.status(500);
+            context.result("ERROR: NULL PARAMETER");
+        }
+
+    }
+    private static String createEdge(String edgeJson){
+        String finalJson = "";
         String errJson = "{\"id\":\"-1\"}";
-        try{
+        try {
 
             JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
@@ -242,7 +274,7 @@ public final class RequestController {
 
 
             EdgeFactory edgeFactory = new EdgeFactory();
-            AbstractEdge newEdge=  edgeFactory.buildEdge(tableName,fromNodeId,fromNodeType,toNodeId,toNodeType);
+            AbstractEdge newEdge = edgeFactory.buildEdge(tableName, fromNodeId, fromNodeType, toNodeId, toNodeType);
             newEdge.createIt();
 
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
@@ -251,23 +283,24 @@ public final class RequestController {
             }
             String idOfCreatedEdge = newEdge.getString("id"); //id of initialized edge
 
-            String jsonSuccess = "{\"id\":\""+idOfCreatedEdge+"\"}";
-            context.result(jsonSuccess);
-        }
-        catch (JsonSyntaxException jsonEx){
+            String jsonSuccess = "{\"id\":\"" + idOfCreatedEdge + "\"}";
+            finalJson = jsonSuccess;
+            //context.result(jsonSuccess);
+        } catch (JsonSyntaxException jsonEx) {
             jsonEx.printStackTrace();
-            context.result(errJson);
-        }
-        catch(ClassCastException c){
-            c.printStackTrace();
-            context.result(errJson);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            context.result(errJson);
-        }
+           // context.result(errJson);
+            finalJson = errJson;
 
+        } catch (ClassCastException c) {
+            c.printStackTrace();
+            //context.result(errJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //context.result(errJson);
+        }
+        return finalJson;
     }
+
 
     /**
      * Given a query param of the form edge = "json", attempts to delete that edge
@@ -288,16 +321,14 @@ public final class RequestController {
             case "normal_edges" -> NormalEdge.where("id = ?", fromId);
         };
 
-        try{
-            if (dfList.size()==0){
+        try {
+            if (dfList.size() == 0) {
                 context.result("NOT FOUND");
-            }
-            else{
-               dfList.get(0).delete();
+            } else {
+                dfList.get(0).delete();
                 context.result("SUCCESS");
             }
-        }
-        catch (Exception n){
+        } catch (Exception n) {
             n.printStackTrace();
         }
     }
@@ -306,14 +337,15 @@ public final class RequestController {
     /**
      * Given a query param of the form node = "json", attempts to update an existing node with all the attributes in the passed in node.
      * Takes queries in the form /updatenode/?node={}
-     *
+     * <p>
      * Alex Note: This Method currently has a bunch of junk code, but I can't remove it until I figure out how reflection actually works.
+     *
      * @param context
      */
     public static void updateNode(Context context) {
         String nodeJson = context.queryParam("node"); //query param
         CustomJsonHelper testDeser = new CustomJsonHelper();
-       //System.out.println(testDeser.outputObjNoId(nodeJson));
+        //System.out.println(testDeser.outputObjNoId(nodeJson));
 
         try {
             //deserializes our gson as a json object rather than a direct object
@@ -327,39 +359,22 @@ public final class RequestController {
 
             //private String[] nodeTableArr = {"default_nodes","class_nodes","folder_nodes","life_line_nodes","loop_nodes","note_nodes","oval_nodes","square_nodes","stick_figure_nodes","text_box_nodes"};
 
-            LazyList<? extends AbstractNode> dfList = switch (nodeType) {
-                case "default_nodes" -> DefaultNode.where("id = ?", fromId);
-                case "folder_nodes" -> FolderNode.where("id = ?", fromId);
-                case "class_nodes" -> ClassNode.where("id = ?", fromId);
-                case "life_line_nodes"->LifeLineNode.where("id = ?",fromId);
-                case "loop_nodes"-> LoopNode.where("id = ?",fromId);
-                case "note_nodes"-> NoteNode.where("id = ?",fromId);
-                case "oval_nodes"-> OvalNode.where("id = ?",fromId);
-                case "square_nodes"->SquareNode.where("id = ?",fromId);
-                case "stick_figure_nodes"->StickFigureNode.where("id = ?",fromId);
-                case "text_box_nodes"->TextBoxNode.where("id = ?",fromId);
-                default -> DefaultNode.where("id = ?", fromId); //just the default list type.
-                //There has to be a better way to specify Class type right?
-            };
-
-           System.out.println("Passed in edit request node: " + nodeJson);
+            System.out.println("Passed in edit request node: " + nodeJson);
 
             //This node is the node that we want to edit the values of.
             AbstractNode updateNode = null;
             try {
-                if(dfList.size()>0) {
+                LazyList<? extends AbstractNode> dfList = nodeListByIdType(fromId, nodeType);
+                if (dfList.size() > 0) {
                     updateNode = dfList.get(0);
-                }
-
-                else{
+                } else {
                     context.result("node not found");
                 }
-            }
-            catch (NullPointerException nullPointerException){
+            } catch (NullPointerException nullPointerException) {
                 nullPointerException.printStackTrace();
                 context.result("node not found");
             }
-           // System.out.println("Database Node Pre Update: " + updateNode.toJson(true));
+            // System.out.println("Database Node Pre Update: " + updateNode.toJson(true));
             // System.out.println("Map: ");
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
                 //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
@@ -368,15 +383,13 @@ public final class RequestController {
 
             //String updatedJson = updateNode.toJson(true);
             //AbstractNode outputNode2 = new Gson().fromJson(updatedJson, nodeClass);
-           // System.out.println("Database Node Post Update: " + updateNode.toJson(true));
+            // System.out.println("Database Node Post Update: " + updateNode.toJson(true));
             updateNode.saveIt();
             context.result("SUCCESS");
-        }
-        catch (JsonSyntaxException e){
+        } catch (JsonSyntaxException e) {
             e.printStackTrace();
             context.result("BAD INPUT");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             context.result("GENERIC EXCEPTION");
         }
@@ -394,32 +407,21 @@ public final class RequestController {
         String fromId = jsonObject.get("id").getAsString(); //gets the id of the passed in object
         String nodeType = jsonObject.get("type").getAsString();
 
-        LazyList<? extends AbstractNode> dfList = switch (nodeType) {
-            case "default_nodes" -> DefaultNode.where("id = ?", fromId);
-            case "folder_nodes" -> FolderNode.where("id = ?", fromId);
-            case "class_nodes" -> ClassNode.where("id = ?", fromId);
-            case "life_line_nodes"->LifeLineNode.where("id = ?",fromId);
-            case "loop_nodes"-> LoopNode.where("id = ?",fromId);
-            case "note_nodes"-> NoteNode.where("id = ?",fromId);
-            case "oval_nodes"-> OvalNode.where("id = ?",fromId);
-            case "square_nodes"->SquareNode.where("id = ?",fromId);
-            case "stick_figure_nodes"->StickFigureNode.where("id = ?",fromId);
-            case "text_box_nodes"->TextBoxNode.where("id = ?",fromId);
-            default -> DefaultNode.where("id = ?", fromId); //just the default list type.
-            //There has to be a better way to specify Class type right?
-        };
 
         try {
-            if(dfList.size()>0) {
+            LazyList<? extends AbstractNode> dfList = nodeListByIdType(fromId, nodeType);
+
+            if (dfList.size() > 0) {
                 dfList.get(0).delete();
                 context.result("SUCCESS");
-            }
-            else{
+            } else {
                 context.result("NODE NOT FOUND");
             }
-        }
-        catch (NullPointerException n){
+        } catch (NullPointerException n) {
             n.printStackTrace();
+            context.result("NODE NOT FOUND");
+        }
+        catch(Exception E){
             context.result("NODE NOT FOUND");
         }
     }
@@ -428,8 +430,9 @@ public final class RequestController {
      * Given a two param object get request with id and table name as parameters, attempts to send back an object.
      * attaches to the /getobject/ get request. unlike the path params {} this takes implicit user defined params.
      * These would be structured in the url like : .../getobject/?objectid=foo&objecttable=bar in this method.
-     *
+     * <p>
      * Note that this will actually return a list of maps not an object.
+     *
      * @param context
      */
     public static void getObjsAsMapWithIdandTable(Context context) {
@@ -438,17 +441,16 @@ public final class RequestController {
         String tableName = context.queryParam("objecttable");
         context.status(405);
 
-        List<Map> resultSet = Base.findAll(" SELECT * FROM "+tableName +" WHERE id = "+objectId+";");
+        List<Map> resultSet = Base.findAll(" SELECT * FROM " + tableName + " WHERE id = " + objectId + ";");
         try {
             String rezStr = "";
 
             ListIterator<Map> lm = resultSet.listIterator();
-            while (lm.hasNext()){
+            while (lm.hasNext()) {
                 rezStr += lm.next().toString();
             }
             context.result(rezStr);
-        }
-        catch(NullPointerException np){
+        } catch (NullPointerException np) {
             np.printStackTrace();
             System.out.println("No node found");
         }
@@ -457,43 +459,171 @@ public final class RequestController {
     /**
      * attaches to the /testpostnode/ post request. looks for the name query parameter and then creates a new node
      * with that parameter and saves it to the database. This is a dev tool, not how we would actually build nodes
+     *
      * @param context implicitly passed in context
      */
     public static void createTestDefaultNodeWithPost(Context context){
         NodeFactory nf = new NodeFactory();
         DefaultNode testNode = nf.buildNode();
-        testNode.set("name",context.queryParam("name")); //sets the name of the node based on a ? query.
+        testNode.set("name", context.queryParam("name")); //sets the name of the node based on a ? query.
         testNode.saveIt();
         context.result(testNode.getString("name"));
     }
 
+
     /**
-     * The following are not yet implemented
+     * Attaches to the /createpage/ post request. looks for the userId and page query paramters and creates a new page with
+     * the passed in attributes of page attached to the user with the passed in id.
+     *
+     * @param context
      */
-    public static void createPage(int userId, String pageJson){
+    public static void createPage(Context context) {
+        String userId = context.queryParam("userid");
+        String pageJson = context.queryParam("page");
+
+        User foundUser = User.findById(userId);
+
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        Iterator<Map.Entry<String, JsonElement>> jsonIterator = jsonHelper.getIterator(pageJson); //needs exception checking
+        Page createdPage = new Page();
+        while (jsonIterator.hasNext()) {
+            Map.Entry<String, JsonElement> currentRow = jsonIterator.next();
+            createdPage.set(currentRow.getKey(), currentRow.getValue().toString()); //sets the attributes of the page to the passed in object attributes
+        }
+
+        try {
+            foundUser.add(createdPage);
+            context.result("SUCCESS");
+
+        } catch (NotAssociatedException notAsso) {
+            notAsso.printStackTrace();
+            context.result("OBJECTS NOT ASSOCIATED");
+
+        }
 
     }
-    public static void deletePage(int pageId){
 
-    }
-    public static void addNodeToPage(int pageId, String nodeJson){
-
-    }
-    public static void removeNodeFromPage(int pageId, String edgeJson){
+    //I need to put a little bit of thought into this before implementing due to cascading deletion issues.
+    public static void deletePage(Context context) {
+        String userId = context.queryParam("userid");
+        String pageJson = context.queryParam("page");
     }
 
-    public static void addEdgeToPage(int pageId, String edgeJson){
+    /**
+     * Attaches to the /pagecreatenode/ post request. Given the query params pageid and node where pageid is a string representation of an id
+     * and node is a passed in node object, this instantiates that node and adds it to the page associated with pageId.
+     * @param context
+     */
+    public static void createNodeOnPage(Context context) {
+
+        String userId = context.queryParam("pageid");
+        String nodeJson = context.queryParam("node");
+        int id = -1;
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+
+        if(userId!=null && nodeJson!=null) {
+            try {
+                id = Integer.parseInt(userId); //will throw exception if userId is not int-able. Messy, fix later.
+                String newJson = jsonHelper.replaceId(id, nodeJson);
+                Gson gson = new Gson();
+                JsonObject jObj = gson.fromJson(newJson, JsonObject.class);
+               //String type = jObj.get("type").toString();
+
+
+
+            } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
+                e.printStackTrace();
+                context.result("GENERIC EXCEPTION");
+            }
+        }
+        else{
+            context.result("ERROR: NULL PARAMETER");
+        }
 
     }
-    public static void removeEdgeFromPage(int pageId, String nodeJson){
+
+    /**
+     * NOT IMPLEMENTED YET
+     * @param context
+     */
+    public static void removeNodeFromPage(Context context) {
+        String userId = context.queryParam("userid");
+        String nodeJson = context.queryParam("node");
+
+
 
     }
 
-    public static void createUser(String userJson){
+
+    /**
+     * Attaches to the /pagecreateedge/ post request. Given the query params pageid and node where pageid is a string representation of an id
+     * and edge is a passed in edge object, this instantiates that edge and adds it to the page associated with pageId.
+     * @param context
+     */
+    public static void createEdgeOnPage(Context context) {
+        String userId = context.queryParam("pageid");
+        String edgeJson = context.queryParam("edge");
+
+        int id = -1;
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+
+        if(userId!=null && edgeJson!=null) {
+            try {
+                id = Integer.parseInt(userId);
+                String newJson = jsonHelper.replaceId(id, edgeJson);
+            } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
+                e.printStackTrace();
+                context.result("GENERIC EXCEPTION");
+            }
+        }
+        else{
+            context.result("ERROR: NULL PARAMETER");
+        }
 
     }
-    public static void deleteUser(int userId){
+
+    public static void removeEdgeFromPage(int pageId, String nodeJson) {
+
     }
-    public static void addUserToPage(int userId, int pageId){}
+
+    public static void createUser(String userJson) {
+
+    }
+
+    public static void deleteUser(int userId) {
+    }
+
+    public static void addUserToPage(int userId, int pageId) {
+    }
+
+    private static LazyList<? extends AbstractNode> nodeListByIdType(String fromId, String nodeType) throws Exception{
+        LazyList<? extends AbstractNode> dfList = switch (nodeType) {
+            case "default_nodes" -> DefaultNode.where("id = ?", fromId);
+            case "folder_nodes" -> FolderNode.where("id = ?", fromId);
+            case "class_nodes" -> ClassNode.where("id = ?", fromId);
+            case "life_line_nodes" -> LifeLineNode.where("id = ?", fromId);
+            case "loop_nodes" -> LoopNode.where("id = ?", fromId);
+            case "note_nodes" -> NoteNode.where("id = ?", fromId);
+            case "oval_nodes" -> OvalNode.where("id = ?", fromId);
+            case "square_nodes" -> SquareNode.where("id = ?", fromId);
+            case "stick_figure_nodes" -> StickFigureNode.where("id = ?", fromId);
+            case "text_box_nodes" -> TextBoxNode.where("id = ?", fromId);
+            default -> DefaultNode.where("id = ?", fromId); //just the default list type.
+            //There has to be a better way to specify Class type right?
+        };
+
+        return dfList;
+    }
+
+    private static LazyList<? extends AbstractEdge> edgeListByIdType(String fromId, String edgeType) throws Exception{
+
+        LazyList<? extends AbstractEdge> dfList = switch (edgeType) {
+            case "default_edges" -> DefaultEdge.where("id = ?", fromId);
+            case "normal_edges" -> NormalEdge.where("id = ?", fromId);
+        };
+
+        return dfList;
+
+    }
 
 }
