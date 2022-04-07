@@ -26,18 +26,14 @@ import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
 import UML.Diagrammer.backend.objects.*;
+import UML.Diagrammer.backend.objects.tools.CustomJsonHelper;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import org.javalite.activejdbc.Base;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 import io.javalin.http.Context;
 import org.javalite.activejdbc.LazyList;
-import org.javalite.activejdbc.Model;
-import org.javalite.activejdbc.connection_config.DBConfiguration;
-import org.w3c.dom.Node;
 
 public final class RequestController {
 
@@ -145,7 +141,6 @@ public final class RequestController {
             ce.printStackTrace();
             context.result("BAD NODE ID TYPE");
         }
-
         switch (typeStr) {
             case "default_edges" -> {
                 DefaultEdge foundEdge = DefaultEdge.findById(id); //queries the default_nodes table for an object with the passed in id.
@@ -157,7 +152,6 @@ public final class RequestController {
                 edgeStr = foundEdge.toJson(true);
                 break;
             }
-
         }
             context.result(edgeStr);
     }
@@ -199,6 +193,7 @@ public final class RequestController {
      * @param context
      */
     public static void tryCreateNode(Context context){
+        String errJson = "{\"id\":\"-1\"}";
         String nodeJson = context.queryParam("node");
 
         try{
@@ -218,11 +213,12 @@ public final class RequestController {
 
             String idOfCreatedNode = newNode.getString("id");
 
-            context.result(idOfCreatedNode);
+            String jsonSuccess = "{\"id\":\""+idOfCreatedNode+"\"}";
+            context.result(jsonSuccess);
         }
         catch (JsonSyntaxException jsonEx){
             jsonEx.printStackTrace();
-            context.result("-1");
+            context.result(errJson);
         }
 
     }
@@ -233,8 +229,9 @@ public final class RequestController {
      */
     public static void tryCreateEdge(Context context){
         String edgeJson = context.queryParam("edge");
-
+        String errJson = "{\"id\":\"-1\"}";
         try{
+
             JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
             String tableName = jsonObject.get("type").getAsString();
@@ -242,6 +239,7 @@ public final class RequestController {
             String fromNodeType = jsonObject.get("from_node_type").getAsString();
             int toNodeId = jsonObject.get("to_node_id").getAsInt();
             String toNodeType = jsonObject.get("to_node_type").getAsString();
+
 
             EdgeFactory edgeFactory = new EdgeFactory();
             AbstractEdge newEdge=  edgeFactory.buildEdge(tableName,fromNodeId,fromNodeType,toNodeId,toNodeType);
@@ -253,21 +251,55 @@ public final class RequestController {
             }
             String idOfCreatedEdge = newEdge.getString("id"); //id of initialized edge
 
-            context.result(idOfCreatedEdge);
+            String jsonSuccess = "{\"id\":\""+idOfCreatedEdge+"\"}";
+            context.result(jsonSuccess);
         }
         catch (JsonSyntaxException jsonEx){
             jsonEx.printStackTrace();
-            context.result("-1");
+            context.result(errJson);
         }
         catch(ClassCastException c){
             c.printStackTrace();
-            context.result("-1");
+            context.result(errJson);
         }
         catch (Exception e){
             e.printStackTrace();
-            context.result("-1");
+            context.result(errJson);
         }
 
+    }
+
+    /**
+     * Given a query param of the form edge = "json", attempts to delete that edge
+     * Takes queries in the form /deleteedge/?edge={}
+     *
+     * @param context
+     */
+    public static void deleteEdge(Context context) {
+
+        String edgeJson = context.queryParam("edge");
+        JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
+        String fromId = jsonObject.get("id").getAsString();
+        String edgeType = jsonObject.get("id").getAsString();
+        AbstractEdge updateEdge = null;
+
+        LazyList<? extends AbstractEdge> dfList = switch (edgeType) {
+            case "default_edges" -> DefaultEdge.where("id = ?", fromId);
+            case "normal_edges" -> NormalEdge.where("id = ?", fromId);
+        };
+
+        try{
+            if (dfList.size()==0){
+                context.result("NOT FOUND");
+            }
+            else{
+               dfList.get(0).delete();
+                context.result("SUCCESS");
+            }
+        }
+        catch (Exception n){
+            n.printStackTrace();
+        }
     }
 
 
@@ -279,36 +311,9 @@ public final class RequestController {
      * @param context
      */
     public static void updateNode(Context context) {
-
         String nodeJson = context.queryParam("node"); //query param
-        //initializes deserializers and lets them know to associate "type" attributes with classes.
-        NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
-       //EdgeTypeDeserializer customEdgeDeserializer = new EdgeTypeDeserializer("type");
-        //Our Type Registry Object holds all the types of nodes and edges tables that we want to map to classes.
-        TypeRegistry typeRegistry = TypeRegistry.getInstance();
-
-        //These are helpers that can attempt to get classes from table names.
-        ArrayList<String> registryNodeList = typeRegistry.getTableNodeList();
-        HashMap<String,Class> registryNodeMap = typeRegistry.getNodeClassMap();
-        //ArrayList<String> registryEdgeList = typeRegistry.getTableEdgeList();
-        //HashMap<String,Class> registryEdgeMap = typeRegistry.getEdgeClassMap();
-
-        //registers our node tables
-        for (String n:registryNodeList) {
-            customNodeDeserializer.registerSubtype(n,registryNodeMap.get(n)); //Registers our class and associates it with a node type.
-        }
-        //registers our edge tables
-//        for (String e: registryEdgeList){
-//            customEdgeDeserializer.registerSubtype(e,registryEdgeMap.get(e));
-//        }
-
-        Gson nodeBuilder = new GsonBuilder()
-                .registerTypeAdapter(AbstractNode.class,customNodeDeserializer)
-                .create();
-
-//        Gson edgeBuilder = new GsonBuilder()
-//                .registerTypeAdapter(AbstractEdge.class,customEdgeDeserializer)
-//                .create();
+        CustomJsonHelper testDeser = new CustomJsonHelper();
+       //System.out.println(testDeser.outputObjNoId(nodeJson));
 
         try {
             //deserializes our gson as a json object rather than a direct object
@@ -319,12 +324,6 @@ public final class RequestController {
             //Since Activejdbc doesn't like serializing with objects we can cheat and get id directly from the json object.
             String fromId = jsonObject.get("id").getAsString(); //gets the id of the passed in object
             String nodeType = jsonObject.get("type").getAsString();
-            //Class<AbstractNode> nodeClass = registryNodeMap.get(nodeType);
-            //Type testType = new TypeToken<>(){}.getType();
-            //instantiates the object (no Id).
-            // genericNode fromJsonNode = nodeBuilder.fromJson(nodeJson, new TypeToken<AbstractNode>(){}.getType()); //has no Id?
-            //System.out.println(fromJsonNode.getClass());
-            //fromJsonNode.getClass();
 
             //private String[] nodeTableArr = {"default_nodes","class_nodes","folder_nodes","life_line_nodes","loop_nodes","note_nodes","oval_nodes","square_nodes","stick_figure_nodes","text_box_nodes"};
 
@@ -343,21 +342,25 @@ public final class RequestController {
                 //There has to be a better way to specify Class type right?
             };
 
-            System.out.println("Passed in edit request node: " + nodeJson);
+           System.out.println("Passed in edit request node: " + nodeJson);
 
             //This node is the node that we want to edit the values of.
             AbstractNode updateNode = null;
             try {
-                updateNode = dfList.get(0);
+                if(dfList.size()>0) {
+                    updateNode = dfList.get(0);
+                }
+
+                else{
+                    context.result("node not found");
+                }
             }
             catch (NullPointerException nullPointerException){
                 nullPointerException.printStackTrace();
                 context.result("node not found");
             }
-            System.out.println("Database Node Pre Update: " + updateNode.toJson(true));
-
+           // System.out.println("Database Node Pre Update: " + updateNode.toJson(true));
             // System.out.println("Map: ");
-
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
                 //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
                 updateNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
@@ -365,7 +368,7 @@ public final class RequestController {
 
             //String updatedJson = updateNode.toJson(true);
             //AbstractNode outputNode2 = new Gson().fromJson(updatedJson, nodeClass);
-            System.out.println("Database Node Post Update: " + updateNode.toJson(true));
+           // System.out.println("Database Node Post Update: " + updateNode.toJson(true));
             updateNode.saveIt();
             context.result("SUCCESS");
         }
@@ -377,10 +380,49 @@ public final class RequestController {
             e.printStackTrace();
             context.result("GENERIC EXCEPTION");
         }
-
     }
 
+    /**
+     * Given a query param of the form node = "json", attempts to delete that node
+     * Takes queries in the form /deletenode/?node={}
+     *
+     * @param context
+     */
+    public static void deleteNode(Context context) {
+        String nodeJson = context.queryParam("node"); //query param
+        JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
+        String fromId = jsonObject.get("id").getAsString(); //gets the id of the passed in object
+        String nodeType = jsonObject.get("type").getAsString();
 
+        LazyList<? extends AbstractNode> dfList = switch (nodeType) {
+            case "default_nodes" -> DefaultNode.where("id = ?", fromId);
+            case "folder_nodes" -> FolderNode.where("id = ?", fromId);
+            case "class_nodes" -> ClassNode.where("id = ?", fromId);
+            case "life_line_nodes"->LifeLineNode.where("id = ?",fromId);
+            case "loop_nodes"-> LoopNode.where("id = ?",fromId);
+            case "note_nodes"-> NoteNode.where("id = ?",fromId);
+            case "oval_nodes"-> OvalNode.where("id = ?",fromId);
+            case "square_nodes"->SquareNode.where("id = ?",fromId);
+            case "stick_figure_nodes"->StickFigureNode.where("id = ?",fromId);
+            case "text_box_nodes"->TextBoxNode.where("id = ?",fromId);
+            default -> DefaultNode.where("id = ?", fromId); //just the default list type.
+            //There has to be a better way to specify Class type right?
+        };
+
+        try {
+            if(dfList.size()>0) {
+                dfList.get(0).delete();
+                context.result("SUCCESS");
+            }
+            else{
+                context.result("NODE NOT FOUND");
+            }
+        }
+        catch (NullPointerException n){
+            n.printStackTrace();
+            context.result("NODE NOT FOUND");
+        }
+    }
 
     /**
      * Given a two param object get request with id and table name as parameters, attempts to send back an object.
@@ -410,7 +452,6 @@ public final class RequestController {
             np.printStackTrace();
             System.out.println("No node found");
         }
-
     }
 
     /**
@@ -425,4 +466,34 @@ public final class RequestController {
         testNode.saveIt();
         context.result(testNode.getString("name"));
     }
+
+    /**
+     * The following are not yet implemented
+     */
+    public static void createPage(int userId, String pageJson){
+
+    }
+    public static void deletePage(int pageId){
+
+    }
+    public static void addNodeToPage(int pageId, String nodeJson){
+
+    }
+    public static void removeNodeFromPage(int pageId, String edgeJson){
+    }
+
+    public static void addEdgeToPage(int pageId, String edgeJson){
+
+    }
+    public static void removeEdgeFromPage(int pageId, String nodeJson){
+
+    }
+
+    public static void createUser(String userJson){
+
+    }
+    public static void deleteUser(int userId){
+    }
+    public static void addUserToPage(int userId, int pageId){}
+
 }

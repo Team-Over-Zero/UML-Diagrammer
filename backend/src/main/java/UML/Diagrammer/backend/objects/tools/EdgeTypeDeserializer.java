@@ -2,12 +2,15 @@
  *
  * Ripped straight from: https://www.baeldung.com/gson-list
  *
+ * DEPRECATED. USING A DIFFERENT DESERIALIZATION STANDARD
+ *
  * @author Alex
  */
 
 
-package UML.Diagrammer.backend.objects;
+package UML.Diagrammer.backend.objects.tools;
 
+import UML.Diagrammer.backend.objects.AbstractEdge;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

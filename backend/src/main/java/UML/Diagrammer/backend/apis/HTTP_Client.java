@@ -58,6 +58,7 @@ public class HTTP_Client {
         address = addr;
         port = p;
         serverString = String.format("https://%s:%s",address,port);
+        //serverString = serverString;
     }
 
     /**
@@ -135,9 +136,18 @@ public class HTTP_Client {
      */
     public String tryLoginUser(){
 
-
-
         return "FAILED TO LOGIN";
+    }
+
+    /**
+     * Takes a passed in user Json object with an arbitrary id and returns a user json object with a unique Id
+     * @return
+     */
+    public String usercreaterequest(){
+       String newUser = "";
+
+
+        return newUser;
     }
 
     /**
@@ -176,7 +186,7 @@ public class HTTP_Client {
 
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        HttpPut httpPut = new HttpPut("http://127.0.0.1:8888/trycreatenode/");
+        HttpPut httpPut = new HttpPut(serverString+"/trycreatenode/");
 
         URI uri = new URIBuilder(httpPut.getURI())
                 .addParameter("node", nodeJson)
@@ -200,9 +210,9 @@ public class HTTP_Client {
      * @throws URISyntaxException
      */
     public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException {
-        CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        HttpGet httpGet = new HttpGet("http://127.0.0.1:8888/updatenode/");
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        HttpGet httpGet = new HttpGet(serverString+"/updatenode/");
         URI uri = new URIBuilder(httpGet.getURI())
                 .addParameter("node", nodeJson)
                 .build();
@@ -223,7 +233,7 @@ public class HTTP_Client {
 
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        HttpPut httpPut = new HttpPut("http://127.0.0.1:8888/trycreateedge/");
+        HttpPut httpPut = new HttpPut(serverString+"/trycreateedge/");
 
         URI uri = new URIBuilder(httpPut.getURI())
                 .addParameter("edge", edgeJson)

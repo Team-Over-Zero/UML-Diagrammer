@@ -9,19 +9,15 @@ import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
+import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.internal.bind.MapTypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
-import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.connection_config.DBConfiguration;
 import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class NodeTest extends DBSpec {
