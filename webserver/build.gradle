@@ -63,6 +63,10 @@ dependencies {
     implementation "org.javalite:activejdbc:3.0-j11"
     implementation "org.javalite:javalite-common:3.0-j11"
 
+
+// https://mvnrepository.com/artifact/org.webjars/fabric.js
+    implementation group: 'org.webjars', name: 'fabric.js', version: '1.4.12'
+
 }
 
 application {
