@@ -115,7 +115,6 @@ public class PageTest extends DBSpec {
         assertEquals(edgey.getInteger("id"),a1.getId());
         //assertEquals(1,page.getNodes().get(0).size());
 
-
     }
 
     @Test
@@ -136,7 +135,6 @@ public class PageTest extends DBSpec {
         page.remove(nodeOne);
         page.remove(nodeTwo);
         assertTrue(page.getNodes().get(0).isEmpty());
-
 
 
     }
