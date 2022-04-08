@@ -43,12 +43,6 @@ public class WebServer {
 
     private void init(){
 
-//        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-//        String databaseUser = "root";
-//        String databasePassword = "TeamOverZero";
-//        //Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
-//        DBConfiguration.loadConfiguration("/database.properties");
-//        Base.open();
         http_client = new HTTP_Client();
         Database_Client db = new Database_Client();
         db.spinUp();
@@ -77,6 +71,18 @@ public class WebServer {
             ctx.result(http_client.exampleGetRequest());
         });
         client.get("/", new VueComponent("uml-editor"));
+        client.get("/api/nodeCreate", ctx -> {
+            ctx.result("Slow Hello World");
+        });
+    }
+
+    private String sendNodeCreateRequest(String node){
+        try{
+            return http_client.sendNodeCreateRequest(node);
+        }catch(Exception e){
+            return "";
+        }
+
     }
 
     public void close(){
