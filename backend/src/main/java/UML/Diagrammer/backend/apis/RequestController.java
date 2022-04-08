@@ -610,6 +610,8 @@ public final class RequestController {
 
 
     /**
+     * NOT TESTED
+     *
      * Attaches to the /pageremoveedge/ post request. Given the query params page and edge where page is a page object.
      * edge is a passed in edge object, this removes that edge and returns a context result regarding the success of the operation.
      * @param context
@@ -627,6 +629,11 @@ public final class RequestController {
                 String pageId = jsonHelper.getObjId(page);
                 LazyList<? extends AbstractEdge> lazyList = edgeListByIdType(edgeId, edgeType);
                 Page queriedPage = Page.findById(pageId);
+                AbstractEdge queriedEdge = lazyList.get(0);
+
+                queriedPage.remove(queriedEdge); //removes edge from page.
+                queriedEdge.delete(); //deletes edge from database.
+                queriedPage.saveIt();
                 context.result("SUCCESS");
             } catch (Exception e) {
                 e.printStackTrace();
