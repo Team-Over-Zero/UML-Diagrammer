@@ -78,6 +78,24 @@ public class CustomJsonHelper {
     }
 
 
+    public String getObjId(String jsonStr){
+        GsonBuilder gBuilder = new GsonBuilder();
+        Gson gson = gBuilder.create();
+        JsonObject jObj = gson.fromJson(jsonStr,JsonObject.class);
+
+        return jObj.get("id").getAsString();
+
+    }
+
+    public String getObjType(String jsonStr){
+        GsonBuilder gBuilder = new GsonBuilder();
+        Gson gson = gBuilder.create();
+        JsonObject jObj = gson.fromJson(jsonStr,JsonObject.class);
+
+        return jObj.get("type").getAsString();
+
+    }
+
 
 
 

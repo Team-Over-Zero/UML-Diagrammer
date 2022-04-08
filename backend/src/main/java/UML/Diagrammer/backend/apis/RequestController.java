@@ -35,9 +35,13 @@ import java.util.*;
 import io.javalin.http.Context;
 import org.javalite.activejdbc.LazyList;
 import org.javalite.activejdbc.associations.NotAssociatedException;
+import org.javalite.common.JsonHelper;
 
 public final class RequestController {
-
+    public static final String nullParams = "ERROR: NULL PARAMETERS";
+    public static final String genericException = "GENERIC EXCEPTION";
+    public static final String successMsg = "SUCCESS";
+    public static final String nodeNotFoundErr = "ERROR: NODE NOT FOUND";
     private RequestController() {
     }
 
@@ -201,8 +205,8 @@ public final class RequestController {
             context.result(retJson);
         }
         else{
-            context.status(500);
-            context.result("ERROR: NULL PARAMETERS");
+            context.status(499);
+            context.result(nullParams);
         }
     }
 
@@ -254,8 +258,8 @@ public final class RequestController {
             createEdge(edgeJson);
         }
         else{
-            context.status(500);
-            context.result("ERROR: NULL PARAMETER");
+            context.status(499);
+            context.result(nullParams);
         }
 
     }
@@ -271,7 +275,6 @@ public final class RequestController {
             String fromNodeType = jsonObject.get("from_node_type").getAsString();
             int toNodeId = jsonObject.get("to_node_id").getAsInt();
             String toNodeType = jsonObject.get("to_node_type").getAsString();
-
 
             EdgeFactory edgeFactory = new EdgeFactory();
             AbstractEdge newEdge = edgeFactory.buildEdge(tableName, fromNodeId, fromNodeType, toNodeId, toNodeType);
@@ -319,6 +322,7 @@ public final class RequestController {
         LazyList<? extends AbstractEdge> dfList = switch (edgeType) {
             case "default_edges" -> DefaultEdge.where("id = ?", fromId);
             case "normal_edges" -> NormalEdge.where("id = ?", fromId);
+            default -> DefaultEdge.where("id = ?", fromId);
         };
 
         try {
@@ -326,7 +330,7 @@ public final class RequestController {
                 context.result("NOT FOUND");
             } else {
                 dfList.get(0).delete();
-                context.result("SUCCESS");
+                context.result(successMsg);
             }
         } catch (Exception n) {
             n.printStackTrace();
@@ -368,11 +372,11 @@ public final class RequestController {
                 if (dfList.size() > 0) {
                     updateNode = dfList.get(0);
                 } else {
-                    context.result("node not found");
+                    context.result(nodeNotFoundErr);
                 }
             } catch (NullPointerException nullPointerException) {
                 nullPointerException.printStackTrace();
-                context.result("node not found");
+                context.result(nodeNotFoundErr);
             }
             // System.out.println("Database Node Pre Update: " + updateNode.toJson(true));
             // System.out.println("Map: ");
@@ -415,18 +419,20 @@ public final class RequestController {
                 dfList.get(0).delete();
                 context.result("SUCCESS");
             } else {
-                context.result("NODE NOT FOUND");
+                context.result(nodeNotFoundErr);
             }
         } catch (NullPointerException n) {
             n.printStackTrace();
-            context.result("NODE NOT FOUND");
+            context.result("NULL POINTER EXCEPTION");
         }
         catch(Exception E){
-            context.result("NODE NOT FOUND");
+            context.result(genericException);
         }
     }
 
     /**
+     * DEPRECATED
+     *
      * Given a two param object get request with id and table name as parameters, attempts to send back an object.
      * attaches to the /getobject/ get request. unlike the path params {} this takes implicit user defined params.
      * These would be structured in the url like : .../getobject/?objectid=foo&objecttable=bar in this method.
@@ -452,7 +458,7 @@ public final class RequestController {
             context.result(rezStr);
         } catch (NullPointerException np) {
             np.printStackTrace();
-            System.out.println("No node found");
+            //System.out.println("No node found");
         }
     }
 
@@ -529,34 +535,52 @@ public final class RequestController {
                 JsonObject jObj = gson.fromJson(newJson, JsonObject.class);
                //String type = jObj.get("type").toString();
 
-
-
             } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
+                context.status(500);
+
                 context.result("GENERIC EXCEPTION");
             }
         }
         else{
-            context.result("ERROR: NULL PARAMETER");
+            context.status(499);
+            context.result(nullParams);
         }
 
     }
 
     /**
-     * NOT IMPLEMENTED YET
+     * Attaches to the /pageremovenode/ post request. Given the query params pageid and node where pageid is a json of an id
+     * and node is a passed in node object, this removes that node from a page and deletes it.
      * @param context
      */
     public static void removeNodeFromPage(Context context) {
-        String userId = context.queryParam("userid");
+        String pageJson = context.queryParam("page");
         String nodeJson = context.queryParam("node");
+        if(pageJson!=null && nodeJson!=null){
+            try{
+                CustomJsonHelper jHelper = new CustomJsonHelper();
+                String pageId = jHelper.getObjId(pageJson);
+                String nodeId= jHelper.getObjId(nodeJson);
+                String nodeType = jHelper.getObjType(nodeJson);
+                Page queriedPage = Page.findById(jHelper);
+                LazyList<? extends AbstractNode> lazyList = nodeListByIdType(nodeId,nodeType);
+                queriedPage.remove(lazyList.get(0));
+                lazyList.get(0).delete();
+                context.result(successMsg);
 
-
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.status(500);
+                context.result(genericException);
+            }
+        }
 
     }
 
 
     /**
-     * Attaches to the /pagecreateedge/ post request. Given the query params pageid and node where pageid is a string representation of an id
+     * Attaches to the /pagecreateedge/ post request. Given the query params pageid and node where pageid is a json representation of an id
      * and edge is a passed in edge object, this instantiates that edge and adds it to the page associated with pageId.
      * @param context
      */
@@ -573,53 +597,166 @@ public final class RequestController {
                 String newJson = jsonHelper.replaceId(id, edgeJson);
             } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
+                context.status(500);
                 context.result("GENERIC EXCEPTION");
             }
         }
         else{
-            context.result("ERROR: NULL PARAMETER");
+            context.status(499);
+            context.result(nullParams);
         }
 
     }
 
-    public static void removeEdgeFromPage(int pageId, String nodeJson) {
+
+    /**
+     * Attaches to the /pageremoveedge/ post request. Given the query params page and edge where page is a page object.
+     * edge is a passed in edge object, this removes that edge and returns a context result regarding the success of the operation.
+     * @param context
+     */
+    public static void removeEdgeFromPage(Context context) {
+        String page = context.queryParam("page");
+        String edgeJson = context.queryParam("edge"); //this edge should have an id.
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+
+        if(page!=null && edgeJson!=null){
+
+            try {
+                String edgeId = jsonHelper.getObjId(edgeJson);
+                String edgeType = jsonHelper.getObjType(edgeJson);
+                String pageId = jsonHelper.getObjId(page);
+                LazyList<? extends AbstractEdge> lazyList = edgeListByIdType(edgeId, edgeType);
+                Page queriedPage = Page.findById(pageId);
+                context.result("SUCCESS");
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.result("GENERIC EXCEPTION");
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+    }
+
+    /**
+     * Attachhes to the /createuser/ post request.
+     * Given a json string of user attributes, attempts to create a User in the backend.
+     * @param context
+     */
+    public static void createUser(Context context) {
+        String userJson = context.queryParam("user");
+        //JsonHelper.toMap(); //Note to self. Javalite has a serializer and deserializer.
+        if(userJson!=null) {
+            try {
+                User user = new User(); //Activejdbc user.
+                CustomJsonHelper jHelper = new CustomJsonHelper();
+                Iterator<Map.Entry<String, JsonElement>> iterator = jHelper.getIterator(userJson);
+                while (iterator.hasNext()) {
+                    Map.Entry<String, JsonElement> currEntry = iterator.next();
+                    user.set(currEntry.getKey(), currEntry.getValue().getAsString());
+                }
+                user.saveIt();
+                context.result(successMsg);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                context.status(500);
+                context.result(genericException);
+            }
+        }
+        else{
+            context.status(499);
+            context.result(nullParams);
+        }
 
     }
 
-    public static void createUser(String userJson) {
+    /**
+     * Attaches to the /removeuserfrompage/ post request.
+     * removes a user from a page. Does not delete the user.
+     * @param context
+     */
+    public static void removeUserFromPage(Context context) {
+        String userJson = context.queryParam("user");
+        String pageJson = context.queryParam("page");
+        try {
+            if(userJson!=null && pageJson!=null) {
+                CustomJsonHelper jHelper = new CustomJsonHelper();
+                String userId = jHelper.getObjId(userJson);
+                String pageId = jHelper.getObjId(pageJson);
+                User queriedUser = User.findById(userId);
+                Page queriedPage = Page.findById(pageId);
+                queriedPage.remove(queriedUser);
+            }
+            else{
+                context.status(499);
+                context.result(nullParams);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            context.status(500);
+            context.result(genericException);
+        }
 
     }
 
-    public static void deleteUser(int userId) {
+    public static void addUserToPage(Context context) {
+        String userJson = context.queryParam("user");
+        String pageJson = context.queryParam("page");
+        if(userJson!=null && pageJson!=null){
+            CustomJsonHelper jHelper = new CustomJsonHelper();
+            String userId = jHelper.getObjId(userJson);
+            String pageId = jHelper.getObjId(pageJson);
+            Page page = Page.findById(pageId);
+            User user = User.findById(userId);
+            page.add(user);
+        }
+        else{
+            context.result(nullParams);
+        }
     }
 
-    public static void addUserToPage(int userId, int pageId) {
-    }
-
-    private static LazyList<? extends AbstractNode> nodeListByIdType(String fromId, String nodeType) throws Exception{
+    /**
+     * This method is a helper method. A developer may not need access to this so its private and used by other methods in
+     * RequestController currently. Gets a list (of 0 or 1) nodes matching the given id and type.
+     * @param nodeId id of the passed in node.
+     * @param nodeType type of the passed in node. should be a table name, ie "default_nodes"
+     * @return A lazy list of nodes, a lazy list being a special activejdbc construct.
+     * @throws Exception
+     */
+    private static LazyList<? extends AbstractNode> nodeListByIdType(String nodeId, String nodeType) throws Exception{
         LazyList<? extends AbstractNode> dfList = switch (nodeType) {
-            case "default_nodes" -> DefaultNode.where("id = ?", fromId);
-            case "folder_nodes" -> FolderNode.where("id = ?", fromId);
-            case "class_nodes" -> ClassNode.where("id = ?", fromId);
-            case "life_line_nodes" -> LifeLineNode.where("id = ?", fromId);
-            case "loop_nodes" -> LoopNode.where("id = ?", fromId);
-            case "note_nodes" -> NoteNode.where("id = ?", fromId);
-            case "oval_nodes" -> OvalNode.where("id = ?", fromId);
-            case "square_nodes" -> SquareNode.where("id = ?", fromId);
-            case "stick_figure_nodes" -> StickFigureNode.where("id = ?", fromId);
-            case "text_box_nodes" -> TextBoxNode.where("id = ?", fromId);
-            default -> DefaultNode.where("id = ?", fromId); //just the default list type.
+            case "default_nodes" -> DefaultNode.where("id = ?", nodeId);
+            case "folder_nodes" -> FolderNode.where("id = ?", nodeId);
+            case "class_nodes" -> ClassNode.where("id = ?", nodeId);
+            case "life_line_nodes" -> LifeLineNode.where("id = ?", nodeId);
+            case "loop_nodes" -> LoopNode.where("id = ?", nodeId);
+            case "note_nodes" -> NoteNode.where("id = ?", nodeId);
+            case "oval_nodes" -> OvalNode.where("id = ?", nodeId);
+            case "square_nodes" -> SquareNode.where("id = ?", nodeId);
+            case "stick_figure_nodes" -> StickFigureNode.where("id = ?", nodeId);
+            case "text_box_nodes" -> TextBoxNode.where("id = ?", nodeId);
+            default -> DefaultNode.where("id = ?", nodeId); //just the default list type.
             //There has to be a better way to specify Class type right?
         };
 
         return dfList;
     }
 
-    private static LazyList<? extends AbstractEdge> edgeListByIdType(String fromId, String edgeType) throws Exception{
+    /**
+     * Helper method for getting an edge given an id and type.
+     * @param edgeId id of passed in edge
+     * @param edgeType type of the passed in edge, should be a table_name, ie "default_edges"
+     * @return
+     * @throws Exception
+     */
+    private static LazyList<? extends AbstractEdge> edgeListByIdType(String edgeId, String edgeType) throws Exception{
 
         LazyList<? extends AbstractEdge> dfList = switch (edgeType) {
-            case "default_edges" -> DefaultEdge.where("id = ?", fromId);
-            case "normal_edges" -> NormalEdge.where("id = ?", fromId);
+            case "default_edges" -> DefaultEdge.where("id = ?", edgeId);
+            case "normal_edges" -> NormalEdge.where("id = ?", edgeId);
+            default -> DefaultEdge.where("id = ?", edgeId);
         };
 
         return dfList;

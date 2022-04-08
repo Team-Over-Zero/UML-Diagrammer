@@ -246,9 +246,9 @@ public class HTTP_Client {
         client.close();
 
         return returnString;
-
-
     }
+
+
 
 }
 
