@@ -65,7 +65,13 @@ public class EdgeTest extends DBSpec{
     @Test
     public void testGetID() {
 
-        DefaultEdge edge = edgey.buildEdge();
+        DefaultNode node1 = factory.buildNode();
+        DefaultNode node2 = factory.buildNode();
+        node1.saveIt();
+        node2.saveIt();
+        DefaultEdge edge = new DefaultEdge();
+        edge.setNodes(node1.getInteger("id"),node1.getString("type"),node2.getInteger("id"),node2.getString("type"));
+       // DefaultEdge edge = edgey.buildEdge(node1,node2); //Alex note: trouble with creating a node without first creating nodes atm
         edge.saveIt();
         edge.setId(100);
         assertEquals(100,edge.getId());
