@@ -24,16 +24,20 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
 import UML.Diagrammer.backend.objects.UINode.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import netscape.javascript.JSObject;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -42,6 +46,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Set;
 
 
 public class ObjectRequester {
@@ -102,6 +108,7 @@ public class ObjectRequester {
             //AbstractNode savedNode = saveNodeToDB(newNode);
             StackPane newUIShape = UIClassRequest(newNode);
             newNode.toJson();
+            //saveNewNodeToDB(newNode);
             support.firePropertyChange("newNodeCreation", null, newUIShape);
         }
         catch (Exception e){
@@ -287,11 +294,24 @@ public class ObjectRequester {
         return stack;
     }
 
-    private AbstractNode saveNodeToDB(AbstractNode node) throws URISyntaxException, IOException {
-        System.out.println("about to gson");
+    private void saveNewNodeToDB(UINode node) {
+        try {
+            System.out.println("about to gson");
             Gson gson = new Gson();
-            String jsonString = gson.toJson(node, AbstractNode.class);
-            String jsonDBNode = HTTPClient.sendNodeCreateRequest(jsonString);
-            return gson.fromJson(jsonDBNode, AbstractNode.class);
+
+            NodeFactory nF = new NodeFactory();
+            AbstractNode testNode = nF.buildNode();
+
+            String jsonString = gson.toJson(node, UINode.class);
+            //System.out.println(jsonString);
+            String dbString = HTTPClient.sendNodeCreateRequest(jsonString);// THIS IS RETURNING NOTHING, Internal server error
+            System.out.println("dbString: "+dbString);
+            JsonObject dbObject = gson.fromJson(dbString, JsonObject.class);
+
+            //Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            String returnedID = dbObject.get("id").getAsString();
+            node.setId(Integer.valueOf(returnedID));
+        }
+        catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
     }
 }
