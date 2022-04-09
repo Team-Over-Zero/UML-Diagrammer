@@ -29,6 +29,7 @@ import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
 import UML.Diagrammer.backend.objects.UINode.*;
+import UML.Diagrammer.backend.objects.UIPage;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -300,13 +301,15 @@ public class ObjectRequester {
             System.out.println("about to gson");
             Gson gson = new Gson();
 
-            //NodeFactory nF = new NodeFactory();
-            //DefaultNode testNode = nF.buildNode();
+            UIPage page = new UIPage(0, "page0");
+            String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), page.getPageIDAsJSon());
+            System.out.println(newID);
 
-            String jsonString = gson.toJson(node, UINode.class);
+
+            //String jsonString = gson.toJson(node, UINode.class);
             //System.out.println(jsonString);
-            String dbString = HTTPClient.sendNodeCreateRequest(jsonString);// THIS IS RETURNING NOTHING, Internal server error
-            System.out.println("dbString: "+dbString);
+            //String dbString = HTTPClient.sendNodeCreateRequest(jsonString);// THIS IS RETURNING NOTHING, Internal server error
+            //System.out.println("dbString: "+dbString);
 
             //JsonObject dbObject = gson.fromJson(dbString, JsonObject.class);
 
