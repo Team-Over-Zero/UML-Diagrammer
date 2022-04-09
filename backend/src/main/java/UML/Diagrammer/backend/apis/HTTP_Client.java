@@ -151,14 +151,13 @@ public class HTTP_Client {
      * Takes a passed in user Json object with an arbitrary id and returns a user json object with a unique Id
      * @return
      */
-    public String usercreaterequest(){
-       String newUser = "";
-
-
-        return newUser;
+    public String usercreaterequest(String userJson) throws URISyntaxException, IOException {
+        String returnString = genericPutRequestOneParam("/createuser/","user", userJson);
+        return returnString;
     }
 
     /**
+     * @implNote NOT IMPLEMENTED
      * Simple get Request that asks for a gson of a page object given a pagename.
      * @param pageName name of UML page the user is requesting to edit
      * @return
@@ -168,6 +167,7 @@ public class HTTP_Client {
     }
 
     /**
+     * @implNote NOT IMPLEMENTED
      * Should return a list of names of all of the pages the user has created.
      * @return
      */
@@ -176,6 +176,14 @@ public class HTTP_Client {
 
         return userPageList;
     }
+
+    public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        String returnString = genericPutRequestTwoParams("/createpage/","page", pageJson,"userid",userId);
+        return returnString;
+    }
+
+
+
     /**
      * Should send a post req to the database with the current page state.
      * May want to change from void return to test errors and such.
@@ -243,7 +251,7 @@ public class HTTP_Client {
     public String sendAddNodeToPage(String nodeJson, String pageIdJson){
         String returnString = "";
         try {
-            returnString = genericPutRequestTwoParams("/addnodetopage/","node",nodeJson,"pageid",pageIdJson);
+            returnString = genericPutRequestTwoParams("/pagecreatenode/","node",nodeJson,"pageid",pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -262,7 +270,7 @@ public class HTTP_Client {
         String returnString = "";
 
         try {
-            returnString = genericPutRequestTwoParams("/removenodefrompage/","node",nodeJson,"pageid",pageIdJson);
+            returnString = genericPutRequestTwoParams("/pageremovenode/","node",nodeJson,"pageid",pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -281,7 +289,7 @@ public class HTTP_Client {
         String returnString = "";
 
         try {
-            returnString = genericPutRequestTwoParams("/addedgetopage/","edge",edgeJson,"pageid",pageIdJson);
+            returnString = genericPutRequestTwoParams("/pagecreateedge/","edge",edgeJson,"pageid",pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -299,7 +307,7 @@ public class HTTP_Client {
     public String sendRemoveEdgeFromPage(String edgeJson, String pageIdJson){
         String returnString = "";
         try {
-            returnString = genericPutRequestTwoParams("/removeedgefrompage/","edge",edgeJson,"pageid",pageIdJson);
+            returnString = genericPutRequestTwoParams("/pageremoveedge/","edge",edgeJson,"pageid",pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {

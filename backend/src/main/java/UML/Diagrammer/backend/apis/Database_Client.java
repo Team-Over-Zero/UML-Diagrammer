@@ -185,7 +185,7 @@ public class Database_Client {
 
     //Page requests
     void createPage(){
-        httpServer.post("/createpage/",RequestController::createUser);
+        httpServer.post("/createpage/",RequestController::createPage);
     }
     void deletePage(){
         httpServer.post("/deletepage/",RequestController::deletePage);

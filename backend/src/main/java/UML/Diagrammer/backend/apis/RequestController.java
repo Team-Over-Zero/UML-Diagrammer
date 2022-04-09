@@ -201,7 +201,7 @@ public final class RequestController {
     public static void tryCreateNode(Context context) {
         String nodeJson = context.queryParam("node");
         if(nodeJson!=null) {
-            String retJson = createNode(nodeJson);
+            String retJson = createNodeSendId(nodeJson);
             context.result(retJson);
         }
         else{
@@ -210,47 +210,7 @@ public final class RequestController {
         }
     }
 
-    /**
-     * This does the real grunt work of tryCreateNode.
-     * @param nodeJson Passed in node string
-     * @return
-     */
-    private static String createNode(String nodeJson){
-        String errJson = "{\"id\":\"-1\"}";
-        String finalJson = "";
 
-        try {
-            JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
-            if(jsonObject.has("id")) {
-                jsonObject.remove("id");
-               // System.out.println("SUCCESSFUL ID REMOVAl");
-            }
-            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
-            CustomJsonHelper jHelper = new CustomJsonHelper();
-            //jHelper.replaceId()
-            String tableName = jsonObject.get("type").getAsString();
-            NodeFactory nodeFactory = new NodeFactory();
-            AbstractNode newNode = nodeFactory.buildNode(tableName, 0, 0, 0, 0);
-            newNode.createIt();
-            System.out.println(newNode.saveIt());
-            //entry.remove("id");
-            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
-                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
-                newNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
-            }
-
-            String idOfCreatedNode = newNode.getString("id");
-
-            String jsonSuccess = "{\"id\":\"" + idOfCreatedNode + "\"}";
-            finalJson = jsonSuccess;
-            //context.result(jsonSuccess);
-        } catch (JsonSyntaxException jsonEx) {
-            jsonEx.printStackTrace();
-            finalJson = errJson;
-            //context.result(errJson);
-        }
-        return finalJson;
-    }
 
 
     /**
@@ -261,7 +221,7 @@ public final class RequestController {
     public static void tryCreateEdge(Context context) {
         String edgeJson = context.queryParam("edge");
         if(edgeJson!=null) {
-           context.result( createEdge(edgeJson));
+           context.result( createEdgeSendId(edgeJson));
         }
         else{
             context.status(499);
@@ -269,50 +229,7 @@ public final class RequestController {
         }
 
     }
-    private static String createEdge(String edgeJson){
-        String finalJson = "";
-        String errJson = "{\"id\":\"-1\"}";
-        try {
 
-            JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
-            if(jsonObject.has("id")){
-                jsonObject.remove("id");
-            }
-            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
-            String tableName = jsonObject.get("type").getAsString();
-            int fromNodeId = jsonObject.get("from_node_id").getAsInt();
-            String fromNodeType = jsonObject.get("from_node_type").getAsString();
-            int toNodeId = jsonObject.get("to_node_id").getAsInt();
-            String toNodeType = jsonObject.get("to_node_type").getAsString();
-
-            EdgeFactory edgeFactory = new EdgeFactory();
-            AbstractEdge newEdge = edgeFactory.buildEdge(tableName, fromNodeId, fromNodeType, toNodeId, toNodeType);
-            newEdge.createIt();
-
-
-            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
-                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
-                newEdge.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
-            }
-            String idOfCreatedEdge = newEdge.getString("id"); //id of initialized edge
-
-            String jsonSuccess = "{\"id\":\"" + idOfCreatedEdge + "\"}";
-            finalJson = jsonSuccess;
-            //context.result(jsonSuccess);
-        } catch (JsonSyntaxException jsonEx) {
-            jsonEx.printStackTrace();
-           // context.result(errJson);
-            finalJson = errJson;
-
-        } catch (ClassCastException c) {
-            c.printStackTrace();
-            //context.result(errJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-            //context.result(errJson);
-        }
-        return finalJson;
-    }
 
 
     /**
@@ -494,32 +411,48 @@ public final class RequestController {
      * @param context
      */
     public static void createPage(Context context) {
-        String userId = context.queryParam("userid");
+        String userIdJson = context.queryParam("userid");
         String pageJson = context.queryParam("page");
-
-        User foundUser = User.findById(userId);
-
         CustomJsonHelper jsonHelper = new CustomJsonHelper();
-        Iterator<Map.Entry<String, JsonElement>> jsonIterator = jsonHelper.getIterator(pageJson); //needs exception checking
-        Page createdPage = new Page();
-        while (jsonIterator.hasNext()) {
-            Map.Entry<String, JsonElement> currentRow = jsonIterator.next();
-            createdPage.set(currentRow.getKey(), currentRow.getValue().toString()); //sets the attributes of the page to the passed in object attributes
+
+        if(userIdJson!=null && pageJson!=null) {
+            try {
+                String userIdStr = jsonHelper.getObjId(userIdJson);
+                int userIdInt = Integer.parseInt(userIdStr);
+                User foundUser = User.findById(userIdInt);
+                Iterator<Map.Entry<String, JsonElement>> jsonIterator = jsonHelper.getIterator(pageJson); //needs exception checking
+                Page createdPage = new Page();
+                createdPage.saveIt();
+                while (jsonIterator.hasNext()) {
+                    Map.Entry<String, JsonElement> currentRow = jsonIterator.next();
+                    createdPage.set(currentRow.getKey(), currentRow.getValue().toString()); //sets the attributes of the page to the passed in object attributes
+                }
+                createdPage.saveIt();
+
+                foundUser.add(createdPage);
+                String jsonSuccess = "{\"id\":\"" + createdPage.getString("id") + "\"}";
+                context.result(jsonSuccess);
+                //context.result("SUCCESS");
+
+            } catch (NotAssociatedException notAsso) {
+                notAsso.printStackTrace();
+                context.result("OBJECTS NOT ASSOCIATED");
+
+            }
         }
-
-        try {
-            foundUser.add(createdPage);
-            context.result("SUCCESS");
-
-        } catch (NotAssociatedException notAsso) {
-            notAsso.printStackTrace();
-            context.result("OBJECTS NOT ASSOCIATED");
-
+        else{
+            context.result(nullParams);
         }
 
     }
 
     //I need to put a little bit of thought into this before implementing due to cascading deletion issues.
+
+    /**
+     * NOT IMPLEMENTED
+     * @param context
+     * @implNote NOT IMPLEMENTED
+     */
     public static void deletePage(Context context) {
         String userId = context.queryParam("userid");
         String pageJson = context.queryParam("page");
@@ -527,24 +460,33 @@ public final class RequestController {
 
     /**
      * Attaches to the /pagecreatenode/ post request. Given the query params pageid and node where pageid is a string representation of an id
-     * and node is a passed in node object, this instantiates that node and adds it to the page associated with pageId.
+     * and node is a passed in node object, this instantiates that node and adds it to the page associated with pageId. Returns the id object
+     * of the create node.
      * @param context
      */
     public static void createNodeOnPage(Context context) {
+        String errJson = "{\"id\":\"-1\"}";
 
-        String userId = context.queryParam("pageid");
+        String pageIdJson = context.queryParam("pageid");
         String nodeJson = context.queryParam("node");
-        int id = -1;
         CustomJsonHelper jsonHelper = new CustomJsonHelper();
-
-        if(userId!=null && nodeJson!=null) {
+        if(pageIdJson!=null && nodeJson!=null) {
             try {
-                id = Integer.parseInt(userId); //will throw exception if userId is not int-able. Messy, fix later.
-                String newJson = jsonHelper.replaceId(id, nodeJson);
-                Gson gson = new Gson();
-                JsonObject jObj = gson.fromJson(newJson, JsonObject.class);
-               //String type = jObj.get("type").toString();
+                String pageIdStr =jsonHelper.getObjId(pageIdJson);
+                String createdNodeJson = createNode(nodeJson); //instantiates a node and creates an id.
+                int pageIdInt = Integer.parseInt(pageIdStr); //will throw exception if pageId is not int-able. Messy, fix later.
+               // int nodeIdInt = Integer.parseInt(nodeId);
+                String newNodeId = jsonHelper.getObjId(createdNodeJson); // id of database node.
+                String nodeType = jsonHelper.getObjType(createdNodeJson);
 
+
+                LazyList<? extends AbstractNode> foundNodeList = nodeListByIdType(newNodeId,nodeType);
+                AbstractNode foundNode = foundNodeList.get(0);
+                Page page = Page.findById(pageIdInt);
+                page.add(foundNode);
+                String jsonSuccess = "{\"id\":\"" + foundNode.getId() + "\"}";
+
+                context.result(jsonSuccess); //result is the id of the instantiated node as a json object.
             } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
                 context.status(500);
@@ -565,18 +507,21 @@ public final class RequestController {
      * @param context
      */
     public static void removeNodeFromPage(Context context) {
-        String pageJson = context.queryParam("page");
+        String pageJson = context.queryParam("pageid");
         String nodeJson = context.queryParam("node");
+        CustomJsonHelper jHelper = new CustomJsonHelper();
+
         if(pageJson!=null && nodeJson!=null){
             try{
-                CustomJsonHelper jHelper = new CustomJsonHelper();
+
                 String pageId = jHelper.getObjId(pageJson);
                 String nodeId= jHelper.getObjId(nodeJson);
                 String nodeType = jHelper.getObjType(nodeJson);
-                Page queriedPage = Page.findById(jHelper);
+                Page queriedPage = Page.findById(pageId);
+                //System.out.println(nodeId+ " " +nodeType);
                 LazyList<? extends AbstractNode> lazyList = nodeListByIdType(nodeId,nodeType);
                 queriedPage.remove(lazyList.get(0));
-                lazyList.get(0).delete();
+                //lazyList.get(0).delete();
                 context.result(successMsg);
 
             } catch (Exception e) {
@@ -595,16 +540,29 @@ public final class RequestController {
      * @param context
      */
     public static void createEdgeOnPage(Context context) {
-        String userId = context.queryParam("pageid");
+        String pageIdJson = context.queryParam("pageid");
         String edgeJson = context.queryParam("edge");
 
-        int id = -1;
-        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        CustomJsonHelper jHelper = new CustomJsonHelper();
 
-        if(userId!=null && edgeJson!=null) {
+        if(pageIdJson!=null && edgeJson!=null) {
             try {
-                id = Integer.parseInt(userId);
-                String newJson = jsonHelper.replaceId(id, edgeJson);
+
+                String pageIdStr = jHelper.getObjId(pageIdJson);
+                String createdEdgeJson = createEdge(edgeJson); //instantiates an edge and creates an id. Returns an edge json
+                int pageIdInt = Integer.parseInt(pageIdStr); //will throw exception if pageId is not int-able. Messy, fix later.
+                // int nodeIdInt = Integer.parseInt(nodeId);
+                String newNodeId = jHelper.getObjId(createdEdgeJson); // id of database node.
+                String edgeType = jHelper.getObjType(createdEdgeJson);
+
+                LazyList<? extends AbstractEdge> foundEdgeList = edgeListByIdType(newNodeId,edgeType);
+                AbstractEdge foundEdge = foundEdgeList.get(0);
+                Page page = Page.findById(pageIdInt);
+                page.add(foundEdge);
+                String jsonSuccess = "{\"id\":\"" + foundEdge.getId() + "\"}";
+                context.result(jsonSuccess);
+
+
             } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
                 context.status(500);
@@ -627,22 +585,21 @@ public final class RequestController {
      * @param context
      */
     public static void removeEdgeFromPage(Context context) {
-        String page = context.queryParam("page");
+        String pageIdJson = context.queryParam("pageid");
         String edgeJson = context.queryParam("edge"); //this edge should have an id.
         CustomJsonHelper jsonHelper = new CustomJsonHelper();
 
-        if(page!=null && edgeJson!=null){
+        if(pageIdJson!=null && edgeJson!=null){
 
             try {
                 String edgeId = jsonHelper.getObjId(edgeJson);
                 String edgeType = jsonHelper.getObjType(edgeJson);
-                String pageId = jsonHelper.getObjId(page);
+                String pageId = jsonHelper.getObjId(pageIdJson);
                 LazyList<? extends AbstractEdge> lazyList = edgeListByIdType(edgeId, edgeType);
                 Page queriedPage = Page.findById(pageId);
                 AbstractEdge queriedEdge = lazyList.get(0);
-
-                queriedPage.remove(queriedEdge); //removes edge from page.
-                queriedEdge.delete(); //deletes edge from database.
+                queriedPage.remove(queriedEdge); //removes edge from page. Should automatically delete from database.
+               // queriedEdge.delete(); //deletes edge from database.
                 queriedPage.saveIt();
                 context.result("SUCCESS");
             } catch (Exception e) {
@@ -666,14 +623,19 @@ public final class RequestController {
         if(userJson!=null) {
             try {
                 User user = new User(); //Activejdbc user.
+                int userDatabaseId = user.getInteger("id");
                 CustomJsonHelper jHelper = new CustomJsonHelper();
                 Iterator<Map.Entry<String, JsonElement>> iterator = jHelper.getIterator(userJson);
                 while (iterator.hasNext()) {
                     Map.Entry<String, JsonElement> currEntry = iterator.next();
                     user.set(currEntry.getKey(), currEntry.getValue().getAsString());
                 }
+
+                //ensures that our id is not overridden by passed in object attributes. Note that this is not
+                // consistent with other ways that we have handled this problem in RequestController
+                user.set("id",userDatabaseId);
                 user.saveIt();
-                context.result(successMsg);
+                //context.result(successMsg);
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -734,6 +696,11 @@ public final class RequestController {
         }
     }
 
+
+
+    //Helper Methods:
+
+
     /**
      * This method is a helper method. A developer may not need access to this so its private and used by other methods in
      * RequestController currently. Gets a list (of 0 or 1) nodes matching the given id and type.
@@ -777,6 +744,167 @@ public final class RequestController {
         };
         return dfList;
 
+    }
+
+
+    /**
+     * Given a string representation of a node, instantiates it on the database and returns a string representation of that node with a database id.
+     * @param nodeJson Node json object.
+     * @return
+     */
+    private static String createNode(String nodeJson){
+        String finalJson ="";
+        try {
+            JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
+            if(jsonObject.has("id")) {
+                jsonObject.remove("id");
+                // System.out.println("SUCCESSFUL ID REMOVAl");
+            }
+            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            CustomJsonHelper jHelper = new CustomJsonHelper();
+            //jHelper.replaceId()
+            String tableName = jsonObject.get("type").getAsString();
+            NodeFactory nodeFactory = new NodeFactory();
+            AbstractNode newNode = nodeFactory.buildNode(tableName, 0, 0, 0, 0);
+            newNode.createIt();
+            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
+                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
+                newNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
+            }
+            newNode.saveIt();
+            finalJson = newNode.toJson(true);
+
+        } catch (JsonSyntaxException jsonEx) {
+            jsonEx.printStackTrace();
+            //finalJson = errJson;
+            //context.result(errJson);
+        }
+
+        return finalJson;
+    }
+
+    /**
+     * Given a string representation of an edge, instantiates it on the database and returns a string representation of that node with a database id.
+     * @param edgeJson Edge json object.
+     * @return
+     */
+    private static String createEdge(String edgeJson){
+        String finalJson ="";
+        try {
+            JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
+            if(jsonObject.has("id")) {
+                jsonObject.remove("id"); //Note: Different way of handling passed in Ids than create . Logically equivalent.
+            }
+            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            CustomJsonHelper jHelper = new CustomJsonHelper();
+            String tableName = jsonObject.get("type").getAsString();
+            EdgeFactory edgeFactory = new EdgeFactory();
+            AbstractEdge newEdge = edgeFactory.buildEdge();
+            newEdge.createIt();
+            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
+                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
+                newEdge.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
+            }
+            newEdge.saveIt();
+            finalJson = newEdge.toJson(true);
+        } catch (JsonSyntaxException jsonEx) {
+            jsonEx.printStackTrace();
+            //finalJson = errJson;
+            //context.result(errJson);
+        }
+
+        return finalJson;
+    }
+
+    /**
+     * This does the real grunt work of tryCreateNode. Given a json node representation, instantiates that node in the backend
+     * and returns a json id object.
+     * @param nodeJson Passed in node string
+     * @return
+     */
+    private static String createNodeSendId(String nodeJson){
+        String errJson = "{\"id\":\"-1\"}";
+        String finalJson = "";
+        try {
+            JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
+            if(jsonObject.has("id")) {
+                jsonObject.remove("id");
+                // System.out.println("SUCCESSFUL ID REMOVAl");
+            }
+            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            CustomJsonHelper jHelper = new CustomJsonHelper();
+            //jHelper.replaceId()
+            String tableName = jsonObject.get("type").getAsString();
+            NodeFactory nodeFactory = new NodeFactory();
+            AbstractNode newNode = nodeFactory.buildNode(tableName, 0, 0, 0, 0);
+            newNode.createIt();
+            System.out.println(newNode.saveIt());
+            //entry.remove("id");
+            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
+                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
+                newNode.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
+            }
+
+            String idOfCreatedNode = newNode.getString("id");
+
+            String jsonSuccess = "{\"id\":\"" + idOfCreatedNode + "\"}";
+            finalJson = jsonSuccess;
+            //context.result(jsonSuccess);
+        } catch (JsonSyntaxException jsonEx) {
+            jsonEx.printStackTrace();
+            finalJson = errJson;
+            //context.result(errJson);
+        }
+        return finalJson;
+    }
+
+    /**
+     * Does the real grunt work of tryCreateEdge
+     * @param edgeJson
+     * @return
+     */
+    private static String createEdgeSendId(String edgeJson){
+        String finalJson = "";
+        String errJson = "{\"id\":\"-1\"}";
+        try {
+
+            JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
+            if(jsonObject.has("id")){
+                jsonObject.remove("id");
+            }
+            Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            String tableName = jsonObject.get("type").getAsString();
+            int fromNodeId = jsonObject.get("from_node_id").getAsInt();
+            String fromNodeType = jsonObject.get("from_node_type").getAsString();
+            int toNodeId = jsonObject.get("to_node_id").getAsInt();
+            String toNodeType = jsonObject.get("to_node_type").getAsString();
+
+            EdgeFactory edgeFactory = new EdgeFactory();
+            AbstractEdge newEdge = edgeFactory.buildEdge(tableName, fromNodeId, fromNodeType, toNodeId, toNodeType);
+            newEdge.createIt();
+
+
+            for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
+                //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
+                newEdge.set(entry.getKey().replaceAll("\"", ""), entry.getValue().toString().replaceAll("\"", ""));
+            }
+            String idOfCreatedEdge = newEdge.getString("id"); //id of initialized edge
+            String jsonSuccess = "{\"id\":\"" + idOfCreatedEdge + "\"}";
+            finalJson = jsonSuccess;
+            //context.result(jsonSuccess);
+        } catch (JsonSyntaxException jsonEx) {
+            jsonEx.printStackTrace();
+            // context.result(errJson);
+            finalJson = errJson;
+
+        } catch (ClassCastException c) {
+            c.printStackTrace();
+            //context.result(errJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //context.result(errJson);
+        }
+        return finalJson;
     }
 
 }
