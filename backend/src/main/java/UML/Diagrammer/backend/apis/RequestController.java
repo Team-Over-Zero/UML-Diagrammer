@@ -221,7 +221,13 @@ public final class RequestController {
 
         try {
             JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
+            if(jsonObject.has("id")) {
+                jsonObject.remove("id");
+               // System.out.println("SUCCESSFUL ID REMOVAl");
+            }
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
+            CustomJsonHelper jHelper = new CustomJsonHelper();
+            //jHelper.replaceId()
             String tableName = jsonObject.get("type").getAsString();
             NodeFactory nodeFactory = new NodeFactory();
             AbstractNode newNode = nodeFactory.buildNode(tableName, 0, 0, 0, 0);
@@ -240,7 +246,7 @@ public final class RequestController {
             //context.result(jsonSuccess);
         } catch (JsonSyntaxException jsonEx) {
             jsonEx.printStackTrace();
-            finalJson =errJson;
+            finalJson = errJson;
             //context.result(errJson);
         }
         return finalJson;
@@ -255,7 +261,7 @@ public final class RequestController {
     public static void tryCreateEdge(Context context) {
         String edgeJson = context.queryParam("edge");
         if(edgeJson!=null) {
-            createEdge(edgeJson);
+           context.result( createEdge(edgeJson));
         }
         else{
             context.status(499);
@@ -269,6 +275,9 @@ public final class RequestController {
         try {
 
             JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
+            if(jsonObject.has("id")){
+                jsonObject.remove("id");
+            }
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
             String tableName = jsonObject.get("type").getAsString();
             int fromNodeId = jsonObject.get("from_node_id").getAsInt();
@@ -279,6 +288,7 @@ public final class RequestController {
             EdgeFactory edgeFactory = new EdgeFactory();
             AbstractEdge newEdge = edgeFactory.buildEdge(tableName, fromNodeId, fromNodeType, toNodeId, toNodeType);
             newEdge.createIt();
+
 
             for (Map.Entry<String, JsonElement> entry : testEntrySet) { //Sets the updateNode's values to be the hydrated node map's values
                 //System.out.print("Key = {" + entry.getKey().toString() +"} "+", Value = {" + entry.getValue().toString()+"}");
@@ -765,7 +775,6 @@ public final class RequestController {
             case "normal_edges" -> NormalEdge.where("id = ?", edgeId);
             default -> DefaultEdge.where("id = ?", edgeId);
         };
-
         return dfList;
 
     }
