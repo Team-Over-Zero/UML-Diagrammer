@@ -24,6 +24,7 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
@@ -108,7 +109,7 @@ public class ObjectRequester {
             //AbstractNode savedNode = saveNodeToDB(newNode);
             StackPane newUIShape = UIClassRequest(newNode);
             newNode.toJson();
-            //saveNewNodeToDB(newNode);
+            saveNewNodeToDB(newNode);
             support.firePropertyChange("newNodeCreation", null, newUIShape);
         }
         catch (Exception e){
@@ -282,7 +283,7 @@ public class ObjectRequester {
     }
 
     /**
-     * Talored stackpane request since we need a loop liable on the top left.
+     * Talored stackpane request since we need a loop label on the top left.
      * @param node the associated data node.
      * @return UI StackPane
      */
@@ -299,18 +300,19 @@ public class ObjectRequester {
             System.out.println("about to gson");
             Gson gson = new Gson();
 
-            NodeFactory nF = new NodeFactory();
-            AbstractNode testNode = nF.buildNode();
+            //NodeFactory nF = new NodeFactory();
+            //DefaultNode testNode = nF.buildNode();
 
             String jsonString = gson.toJson(node, UINode.class);
             //System.out.println(jsonString);
             String dbString = HTTPClient.sendNodeCreateRequest(jsonString);// THIS IS RETURNING NOTHING, Internal server error
             System.out.println("dbString: "+dbString);
-            JsonObject dbObject = gson.fromJson(dbString, JsonObject.class);
+
+            //JsonObject dbObject = gson.fromJson(dbString, JsonObject.class);
 
             //Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
-            String returnedID = dbObject.get("id").getAsString();
-            node.setId(Integer.valueOf(returnedID));
+            //String returnedID = dbObject.get("id").getAsString();
+            //node.setId(Integer.valueOf(returnedID));
         }
         catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
     }
