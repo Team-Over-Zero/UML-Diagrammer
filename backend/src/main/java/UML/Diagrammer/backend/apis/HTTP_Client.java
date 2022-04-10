@@ -202,7 +202,7 @@ public class HTTP_Client {
      */
     public String sendNodeCreateRequest(String nodeJson) throws URISyntaxException, IOException {
 
-        String returnString = genericPutRequestOneParam("/trycreatenode/","node", nodeJson);
+        String returnString = genericPutRequestOneParam("/createnodeonpage/","node", nodeJson);
         return returnString;
     }
 

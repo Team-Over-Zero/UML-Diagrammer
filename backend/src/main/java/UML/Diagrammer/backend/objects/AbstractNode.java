@@ -73,6 +73,7 @@ public abstract class AbstractNode extends Model {
     public void setSize(int w, int h) {
         set("width", w);
         set("height", h);
+
     }
 
     /**
