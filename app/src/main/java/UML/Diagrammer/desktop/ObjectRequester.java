@@ -302,8 +302,10 @@ public class ObjectRequester {
             Gson gson = new Gson();
 
             UIPage page = new UIPage(0, "page0");
-            String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), page.getPageIDAsJSon());
-            System.out.println(newID);
+            String pageJson = gson.toJson(page, UIPage.class);
+            String pgStr = HTTPClient.sendCreatePage(pageJson);
+            //String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), page.getPageIDAsJSon());
+            //System.out.println(newID);
 
 
             //String jsonString = gson.toJson(node, UINode.class);
