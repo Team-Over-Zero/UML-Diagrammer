@@ -623,6 +623,7 @@ public final class RequestController {
         if(userJson!=null) {
             try {
                 User user = new User(); //Activejdbc user.
+                user.saveIt();
                 int userDatabaseId = user.getInteger("id");
                 CustomJsonHelper jHelper = new CustomJsonHelper();
                 Iterator<Map.Entry<String, JsonElement>> iterator = jHelper.getIterator(userJson);
@@ -636,6 +637,8 @@ public final class RequestController {
                 user.set("id",userDatabaseId);
                 user.saveIt();
                 //context.result(successMsg);
+                String jsonSuccess = "{\"id\":\"" + userDatabaseId + "\"}";
+                context.result(jsonSuccess);
             }
             catch (Exception e){
                 e.printStackTrace();
