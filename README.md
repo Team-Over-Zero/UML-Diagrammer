@@ -16,16 +16,18 @@ To use the project:
 First make sure that you have gradle installed on your machine
 
 1. Clone the github repository to a directory on your machine
-2. navigate to the directory and run "gradle build" to ensure it builds
+2. Navigate to the directory and run `gradle build` to ensure it builds
+3. Launch the backend sever to communicate with the database with `gradle server:run`
+4. To launch the app use `gradle app:run` while the server is running in a diffrent window/terminal.
+4b. To use the web app enter `http://localhost:7777/` into your chosen browser, the sever needs to be running for this to work(step 3). 
 
 ## Usage
+There are two main applications in the project currently, the first is a JavaFX client, and the other is a Vue webserver.
+First be sure to have the server running with `gradle server:run`
 
-There are two main applications in the project currently, the first is
-a JavaFX client, and the other is a Vue webserver.
+To run the JavaFX, run the command: `gradle app:run` while the afromentioned server is running
 
-To run the JavaFX, run the command: "gradle :app:run"
-
-To run the webserver run the command: "gradle :webserver:run"
+To run the webserver to to `http://localhost:7777/` in your preffered webbrowser
 
 ## Credit
 This project is created by:

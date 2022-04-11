@@ -3,7 +3,19 @@
 
 ## [Unreleased]
 
-## [0.2.0] - 2033-03-21
+## [0.3.0] - 2022-04-10
+### Added
+ - Refactored database backend with working post, put, and get request
+ 
+ - App UI edge connections, updated SVGs, editable nodes, moving edges
+
+ - Various test for the backend, sever, and UI
+
+ - Wiki documentation refactored to reflect system 
+
+ - Refactored web app to use a diffrent library
+
+## [0.2.0] - 2022-03-21
 ### Added
  - Working UI with object interation for both web and app
 
