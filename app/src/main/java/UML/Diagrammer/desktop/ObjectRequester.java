@@ -30,6 +30,7 @@ import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
 import UML.Diagrammer.backend.objects.UINode.*;
 import UML.Diagrammer.backend.objects.UIPage;
+import UML.Diagrammer.backend.objects.UIUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -110,7 +111,7 @@ public class ObjectRequester {
             //AbstractNode savedNode = saveNodeToDB(newNode);
             StackPane newUIShape = UIClassRequest(newNode);
             newNode.toJson();
-            saveNewNodeToDB(newNode);
+            //saveNewNodeToDB(newNode);
             support.firePropertyChange("newNodeCreation", null, newUIShape);
         }
         catch (Exception e){
@@ -296,14 +297,38 @@ public class ObjectRequester {
         return stack;
     }
 
+    /**
+     * Creates a new user and gets their ID from the database
+     * @param name name of the user
+     */
+    private UIUser createNewUser(String name){
+        try {
+            UIUser newUser = new UIUser(-1, name);
+            String dbUserString = HTTPClient.usercreaterequest(newUser.getIDAsJson());
+            //newUser.setId(dbUserString.matches("\\d+")); // regex gets on the integers that were returned(ID)
+            return newUser;
+        }
+        catch (Exception e){e.printStackTrace();}
+        return null;
+    }
+
+    /*private UIPage createNewPage(UIUser user, ){
+    }*/
+
+    /**
+     * WIP of testing database connection
+     * @param node
+     */
     private void saveNewNodeToDB(UINode node) {
         try {
-            System.out.println("about to gson");
-            Gson gson = new Gson();
+            //System.out.println("about to gson");
+            //Gson gson = new Gson();
 
-            UIPage page = new UIPage(0, "page0");
-            String pageJson = gson.toJson(page, UIPage.class);
-            String pgStr = HTTPClient.sendCreatePage(pageJson);
+            UIUser newUser = new UIUser(-1, "user0");
+
+            String pgStr = HTTPClient.usercreaterequest(newUser.getIDAsJson());
+
+            System.out.println("returned string is: " + pgStr);
             //String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), page.getPageIDAsJSon());
             //System.out.println(newID);
 

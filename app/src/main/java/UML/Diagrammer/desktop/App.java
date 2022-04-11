@@ -57,7 +57,7 @@ public class App extends Application{
      * @param stage current main stage of the application
      */
     public void start(Stage stage) throws Exception {
-        database.openConnection(); //This should be deprecated when ObjectRequester can start sending http_requests in favor of dbConnect.
+        //database.openConnection(); //This should be deprecated when ObjectRequester can start sending http_requests in favor of dbConnect.
 //        dbConnect = new Database_Client();
 //        dbConnect.spinUp();
 
@@ -78,7 +78,7 @@ public class App extends Application{
     public void stop(){
         System.out.println("Stage is closing");
         //dbConnect.spinDown();
-        database.closeConnection();
+        //database.closeConnection();
     }
 
 }

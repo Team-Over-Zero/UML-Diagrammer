@@ -18,6 +18,6 @@ public class UIPage {
     }
 
     public String getPageIDAsJSon(){
-        return "{\"id\":\"" + id + "\"}";
+        return "{\"pageid\":\"" + id + "\"}";
     }
 }

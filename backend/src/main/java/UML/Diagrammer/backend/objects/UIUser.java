@@ -6,13 +6,16 @@ import lombok.Setter;
 @Getter @Setter
 public class UIUser {
     int id;
+    String name;
 
-    UIUser(int id){
+    public UIUser(int id, String name){
         this.id = id;
+        this.name = name;
     }
 
-    UIUser(){
+    public UIUser(){
         this.id = -1;
+        this.name = "Default Name";
     }
 
     public String getIDAsJson(){
