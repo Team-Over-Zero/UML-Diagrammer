@@ -5,7 +5,7 @@
  */
 
 
-package UML.Diagrammer.backend.objects;
+package UML.Diagrammer.backend.objects.tools;
 import UML.Diagrammer.backend.objects.EdgeFactory.DefaultEdge;
 import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
 import UML.Diagrammer.backend.objects.NodeFactory.*;
@@ -14,8 +14,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Getter @Setter 
 public class TypeRegistry {
@@ -68,8 +66,6 @@ public class TypeRegistry {
         nodeClassList.add(SquareNode.class);
         nodeClassList.add(StickFigureNode.class);
         nodeClassList.add(TextBoxNode.class);
-
-
 
         //This adds list of edge class names to our lookup list.
         edgeClassList.add(DefaultEdge.class);

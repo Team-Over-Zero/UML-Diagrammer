@@ -19,10 +19,6 @@ import lombok.Setter;
 
 @Getter @Setter
 public abstract class UINode {
-    // instance variable
-    // no id on creating until i make a db call
-    // toJSON func -> HTTP_Client
-    //hydrate function???
     public String name;
     public String type;
     public String desc;
@@ -65,5 +61,9 @@ public abstract class UINode {
                 "SVG " + SVGImage + "\n" +
                 "(x, y): " + "(" + x + ", " + y + ")" + "\n" +
                 "(Width, Height): " + "(" + w + ", " + h + ")";
+    }
+
+    public String getIDAsJson(){
+        return "{\"id\":\"" + id + "\"}";
     }
 }

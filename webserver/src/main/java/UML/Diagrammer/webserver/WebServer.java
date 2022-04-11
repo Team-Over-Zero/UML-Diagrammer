@@ -30,6 +30,9 @@ import org.javalite.activejdbc.connection_config.DBConfiguration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 
 public class WebServer {
@@ -60,6 +63,12 @@ public class WebServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
 

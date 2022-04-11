@@ -89,6 +89,8 @@ public class Database_Client {
         {config.enableDevLogging();}).start(javalinPort);
 
          //initializes javalin listeners
+
+        //dev listeners
          devGetParamInit();
          devGetDefaultNode();
          devGetAnyNode();
@@ -100,7 +102,23 @@ public class Database_Client {
          devTestCreateNode();
          devGetObjectsAsMap();
 
-         //This handler will run before every single request handler. This will ensure
+         //main listeners
+        createPage();
+        deletePage();
+
+        createEdgeOnPage();
+        deleteEdgeFromPage();
+        createNodeOnPage();
+        deleteNodeFromPage();
+
+        createUser();
+        addUserToPage();
+        removeUserFromPage();
+
+
+
+
+        //This handler will run before every single request handler. This will ensure
         //that our database
         httpServer.before(ctx -> {
             // calls before("/*", handler)
@@ -121,8 +139,103 @@ public class Database_Client {
     }
 
 
-    //Get requests
+    //Node Methods
+    void devGetDefaultNode(){
 
+        httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
+    }
+    void devTryCreateNode(){
+        httpServer.post("/trycreatenode/",RequestController::tryCreateNode);
+    }
+
+    void devUpdateNode(){
+        httpServer.get("/updatenode/", RequestController::updateNode);
+    }
+
+    /**
+     * Adds a get request handler that takes a link in the form .../getnode/?objectid=x&tablename=y and returns the node
+     * json string if found.
+     */
+    void devGetAnyNode(){
+        httpServer.get("/getnode/",RequestController::getAnyNode);
+    }
+
+
+    /**
+     * this will create a test default node with the name being a user defined query parameter in the post request.
+     */
+    void devTestCreateNode(){
+        httpServer.post("/testpostnode/",RequestController::createTestDefaultNodeWithPost);
+    }
+
+
+
+    //Pageless Edge Methods
+
+    /**
+     * Adds a get request handler that will get an id from a hardcoded default_nodes table.
+     */
+    void devTryCreateEdge(){httpServer.post("/trycreateedge/",RequestController::tryCreateEdge);}
+
+
+    void devGetAnyEdge(){httpServer.get("/getedge/",RequestController::getAnyEdge);}
+
+
+
+
+    //Page requests
+    void createPage(){
+        httpServer.post("/createpage/",RequestController::createPage);
+    }
+    void deletePage(){
+        httpServer.post("/deletepage/",RequestController::deletePage);
+    }
+    void createNodeOnPage(){
+        httpServer.post("/pagecreatenode/",RequestController::createNodeOnPage);
+    }
+    void deleteNodeFromPage(){
+        httpServer.post("/pageremovenode/",RequestController::removeNodeFromPage);
+    }
+    void createEdgeOnPage(){
+        httpServer.post("/pagecreateedge/",RequestController::createEdgeOnPage);
+    }
+    void deleteEdgeFromPage(){
+        httpServer.post("/pageremoveedge/",RequestController::removeEdgeFromPage);
+    }
+    void addUserToPage(){
+        httpServer.post("/addusertopage/",RequestController::addUserToPage);
+    }
+    void removeUserFromPage(){
+        httpServer.post("/removeuserfrompage/",RequestController::removeUserFromPage);
+    }
+
+    //User Requests
+    void createUser(){
+        httpServer.post("/createuser/", RequestController::createUser);
+    }
+
+
+
+
+
+    //Misc.
+
+    //DEPRECATED. Use carefully.
+    void devGetObjectsAsMap(){
+        httpServer.get("/getobjectsasmap/",RequestController::getObjsAsMapWithIdandTable);
+    }
+
+    /**
+     * Status code test
+     */
+    void devPostStatusCodeInit(){
+
+        httpServer.post("/status/", ctx -> {
+            // some code
+            ctx.status(201);
+            ctx.result("STATUS 201");
+        });
+    }
     /**
      * This handler uses lambda expressions, most of the following methods pass off the context duties to RequestController methods
      * This will take a url get request in the form .../paramtest/foo and return the result "foo" to the requester, with a status code for good measure.
@@ -136,61 +249,6 @@ public class Database_Client {
         //retString = "Hello: "+ctx.pathParam("name");
 
     }
-
-    /**
-     * Adds a get request handler that will get an id from a hardcoded default_nodes table.
-     */
-    void devGetDefaultNode(){
-
-        httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
-    }
-
-    void devTryCreateNode(){
-        httpServer.post("/trycreatenode/",RequestController::tryCreateNode);
-    }
-
-    void devTryCreateEdge(){httpServer.post("/trycreateedge/",RequestController::tryCreateEdge);}
-
-    void devUpdateNode(){
-        httpServer.get("/updatenode/", RequestController::updateNode);
-    }
-    /**
-     * Adds a get request handler that takes a link in the form .../getnode/?objectid=x&tablename=y and returns the node
-     * json string if found.
-     */
-    void devGetAnyNode(){
-        httpServer.get("/getnode/",RequestController::getAnyNode);
-    }
-
-    void devGetAnyEdge(){httpServer.get("/getedge/",RequestController::getAnyEdge);}
-
-
-
-    void devGetObjectsAsMap(){
-        httpServer.get("/getobjectsasmap/",RequestController::getObjsAsMapWithIdandTable);
-    }
-
-    //Post Requests
-
-    /**
-     * Status code test
-     */
-    void devPostStatusCodeInit(){
-
-        httpServer.post("/status/", ctx -> {
-            // some code
-            ctx.status(201);
-            ctx.result("STATUS 201");
-        });
-    }
-
-    /**
-     * this will create a test default node with the name being a user defined query parameter in the post request.
-     */
-    void devTestCreateNode(){
-        httpServer.post("/testpostnode/",RequestController::createTestDefaultNodeWithPost);
-    }
-
 
 
 

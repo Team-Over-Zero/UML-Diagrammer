@@ -2,6 +2,7 @@ import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.javalite.activejdbc.test.DBSpec;
 
 import UML.Diagrammer.backend.objects.*;
@@ -20,58 +21,313 @@ import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * For most tests, C1 is that you have given a valid choice of object
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Database_ClientTest extends DBSpec {
     private EdgeFactory factory;
     private NodeFactory nodeFactory;
+    private HTTP_Client http_client;
+    private Database_Client dbClient;
+
 
     @BeforeAll
-    public void setUp(){
+    public void setUp() {
         factory = new EdgeFactory();
-        nodeFactory= new NodeFactory();
-
-    }
-
-    @Test
-    /*
-    This test is god awful btw, it actually updates the default node at position 1 instead of creating a new node, saving it
-    and then updating that new node with new attributes. Plz Fix O-o
-     */
-    public void testUpdateNode(){
-        HTTP_Client http_client = new HTTP_Client();
+        nodeFactory = new NodeFactory();
+        http_client = new HTTP_Client();
         String jUnitUrl = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/junit?useSSL=false";
         String databaseUser = "root";
         String databasePassword = "TeamOverZero";
         int javalinPort = 8888;
-        Database_Client dbClient = new Database_Client(jUnitUrl,databaseUser,databasePassword,javalinPort);
+        dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
         dbClient.spinUp();
-        DefaultNode node = nodeFactory.buildNode();
-       // DefaultNode node2 = nodeFactory.buildNode();
-        node.createIt();
-        node.set("name","testUpdateNode");
-        node.saveIt();
-        System.out.println("Id = "+node.getId());
-        node.set("id",1);
-        String nodeJson = node.toJson(true);
-        System.out.println(nodeJson);
-        String response = "";
-        try {
-           response = http_client.sendNodeUpdateRequest(nodeJson);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
-        assertEquals("SUCCESS",response);
-
 
     }
+
+    @Test
+
+    public void testCreateUserC1True() throws IOException, URISyntaxException, InterruptedException {
+
+        User user = new User();
+        String userJ = user.toJson(true);
+        String s = "";
+        try {
+            http_client.sendCreateUser(userJ);
+            s = "SUCCESS";
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals("SUCCESS", s);
+
+    }
+    /*@Test
+    public void testCreateUserC1False() throws IOException, URISyntaxException, InterruptedException {
+
+        DefaultNode node = nodeFactory.buildNode();
+        String userJ = node.toJson(true);
+        String s = "";
+        try {
+            http_client.sendCreateUser(userJ);
+            s = "SUCCESS";
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        //assert that the attempt failed
+        fail();
+
+    }*/
+
+    @Test
+    public void testCreatePageC1True() {
+        Page page = new Page();
+        String pageJ = page.toJson(true);
+        String s = "";
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+            s = "SUCCESS";
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        assertEquals("SUCCESS",s);
+    }
+
+    /*@Test
+    public void testCreateC1False() {
+        User page = new User();
+        String pageJ = page.toJson(true);
+        String s = "";
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+            s = "SUCCESS";
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        //assert that the attempt failed
+    }*/
+
+    @Test
+    public void testDeletePageC1True(){
+        Page page = new Page();
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        boolean success = false;
+        try
+
+        {
+            http_client.sendRemovePage(pageJ);
+            success = true;
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        assertTrue(success);
+    }
+
+   /* @Test
+    public void testDeletePageC1False(){
+        String shouldntWork = "This should throw an exeption"
+
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+            //assert that an exception is thrown
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        boolean success = false;
+        try
+
+        {
+            http_client.sendRemovePage(pageJ);
+            success = true;
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        fail();
+    }*/
+
+    @Test
+    public void testAddUserToPageC1True(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        boolean success = false;
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,pageJ);
+            success = true;
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        assertTrue(success);
+    }
+
+    /*@Test
+    public void testAddUserToPageC1False(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        boolean success = false;
+        try
+
+        {
+            http_client.sendAddUserToPage(pageJ,pageJ);
+            //assert that this throws an exception
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        fail();
+    }*/
+
+
+    @Test
+    public void testRemoveUserFromPageC1True(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        boolean success = false;
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,pageJ);
+
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        try
+
+        {
+            http_client.sendRemoveUserFromPage(userJ,pageJ);
+            success = true;
+
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        assertTrue(success);
+
+    }
+
+    /*@Test
+    public void testRemoveUserFromPageC1False(){
+        Page page = new Page();
+        DefaultNode user = nodeFactory.buildNode();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        boolean success = false;
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,pageJ);
+
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        try
+
+        {
+            http_client.sendRemoveUserFromPage(userJ,pageJ);
+            //assert that this throws an exception
+
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+        assertTrue(success);
+
+    }*/
+
+
 
 
 }

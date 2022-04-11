@@ -26,8 +26,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +42,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -52,12 +59,14 @@ public class HTTP_Client {
         address = "127.0.0.1";
         port = "8888";
         serverString = String.format("https://%s:%s",address,port);
+
     }
 
     public HTTP_Client(String addr, String p){
         address = addr;
         port = p;
         serverString = String.format("https://%s:%s",address,port);
+        //serverString = serverString;
     }
 
     /**
@@ -139,6 +148,16 @@ public class HTTP_Client {
     }
 
     /**
+     * Takes a passed in user Json object with an arbitrary id and returns a user json object with a unique Id
+     * @return
+     */
+    public String usercreaterequest(String userJson) throws URISyntaxException, IOException {
+        String returnString = genericPutRequestOneParam("/createuser/","user", userJson);
+        return returnString;
+    }
+
+    /**
+     * @implNote NOT IMPLEMENTED
      * Simple get Request that asks for a gson of a page object given a pagename.
      * @param pageName name of UML page the user is requesting to edit
      * @return
@@ -148,6 +167,7 @@ public class HTTP_Client {
     }
 
     /**
+     * @implNote NOT IMPLEMENTED
      * Should return a list of names of all of the pages the user has created.
      * @return
      */
@@ -157,11 +177,21 @@ public class HTTP_Client {
         return userPageList;
     }
 
+    public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        String returnString = genericPutRequestTwoParams("/createpage/","page", pageJson,"userid",userId);
+        return returnString;
+    }
+
+
+
     /**
      * Should send a post req to the database with the current page state.
      * May want to change from void return to test errors and such.
      */
     public void sendCurrentPageState(String page){}
+
+
+    //Dev Node Requests
 
     /**
      *
@@ -172,20 +202,7 @@ public class HTTP_Client {
      */
     public String sendNodeCreateRequest(String nodeJson) throws URISyntaxException, IOException {
 
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-
-        HttpPut httpPut = new HttpPut("http://127.0.0.1:8888/trycreatenode/");
-
-        URI uri = new URIBuilder(httpPut.getURI())
-                .addParameter("node", nodeJson)
-                .build();
-        ((HttpRequestBase) httpPut).setURI(uri);
-        CloseableHttpResponse response = client.execute(httpPut);
-        HttpEntity resStr = response.getEntity();
-        InputStream iS=resStr.getContent();
-        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
-        client.close();
-
+        String returnString = genericPutRequestOneParam("/createnodeonpage/","node", nodeJson);
         return returnString;
     }
 
@@ -197,12 +214,267 @@ public class HTTP_Client {
      * @throws InterruptedException
      * @throws URISyntaxException
      */
-    public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException {
+    public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        String returnString = genericGetRequestOneParam("/updatenode/","node",nodeJson);
+        return returnString;
+    }
+
+    //Dev Edge requests.
+    public String sendEdgeCreateRequest(String edgeJson) throws IOException,InterruptedException,URISyntaxException{
+        String paramName = "edge";
+        String returnString = genericPutRequestOneParam(("/trycreateedge/"),paramName, edgeJson);
+        return returnString;
+    }
+
+    //Page Requests
+
+
+    public String sendCreatePage(String pageJson){
+        String returnString = "";
+        try {
+            returnString = genericPutRequestOneParam("/createpage/","page",pageJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    /**
+     * Not yet implemented.
+     * @param pageJson
+     * @return
+     */
+    public String sendRemovePage(String pageJson){return "";}; //may not be implemented yet
+
+    public String sendAddNodeToPage(String nodeJson, String pageIdJson){
+        String returnString = "";
+        try {
+            returnString = genericPutRequestTwoParams("/pagecreatenode/","node",nodeJson,"pageid",pageIdJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    public String sendRemoveNodeFromPage(String nodeJson, String pageIdJson){
+        String returnString = "";
+
+        try {
+            returnString = genericPutRequestTwoParams("/pageremovenode/","node",nodeJson,"pageid",pageIdJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    public String sendAddEdgeToPage(String edgeJson, String pageIdJson){
+        String returnString = "";
+
+        try {
+            returnString = genericPutRequestTwoParams("/pagecreateedge/","edge",edgeJson,"pageid",pageIdJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    public String sendRemoveEdgeFromPage(String edgeJson, String pageIdJson){
+        String returnString = "";
+        try {
+            returnString = genericPutRequestTwoParams("/pageremoveedge/","edge",edgeJson,"pageid",pageIdJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    public String sendAddUserToPage(String userJson, String pageIdJson){
+        String returnString = "";
+
+        try {
+            returnString = genericPutRequestTwoParams("/addusertopage/","user",userJson,"pageid",pageIdJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    /**
+     *
+     *
+     * @param userJson user object (UserUI)
+     * @param pageIdJson json representation of an id
+     * @return Server context.result() string.
+     */
+    public String sendRemoveUserFromPage(String userJson, String pageIdJson){
+        String returnString = "";
+        try {
+            returnString = genericPutRequestTwoParams("/removenodefrompage/","user",userJson,"pageid",pageIdJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    //User Requests
+    public String sendCreateUser(String userJson){
+        String returnString = "";
+        try {
+            returnString = genericPutRequestOneParam("/createuser/","user",userJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
+    /**
+     * May not be properly implemented yet.
+     * @param userJson
+     * @return
+     */
+    public String sendDeleteUser(String userJson){
+        String returnString = "";
+        try {
+            returnString = genericPutRequestOneParam("/deleteuser/","user",userJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+      }
+
+
+
+    /**
+     *  This method can be used to send a single parameter put request to our database_client.
+     *
+     *
+     * @param relPath the path parameter, ie. /createnode/
+     * @param param1Name the name of the parameter, ie. node
+     * @param param1 a passed in json object. ie. {"id:1","type: default_nodes"}
+     * @return
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    public String genericPutRequestOneParam(String relPath,String param1Name,String param1) throws URISyntaxException, IOException {
+
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        HttpGet httpGet = new HttpGet("http://127.0.0.1:8888/updatenode/");
+        HttpPut httpPut = new HttpPut(serverString+relPath);
+
+        URI uri = new URIBuilder(httpPut.getURI())
+                .addParameter(param1Name, param1)
+                .build();
+        ((HttpRequestBase) httpPut).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpPut);
+        HttpEntity resStr = response.getEntity();
+        InputStream iS=resStr.getContent();
+        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
+        client.close();
+        return returnString;
+    }
+
+    /**
+     * This method can be used to send a dual parameter put request to our database_client.
+     * A query in the format  genericPutRequestTwoParams("/addnodetopage/", "pageid", pageJson, "node", nodeJson) would
+     * attempt to instantiate a node on the passed in page.
+     *
+     * @param relPath the path parameter, ie. /createnode/
+     * @param param1Name the name of the first parameter, ie. node
+     * @param param1 a passed in json object. ie. {"id:1","type: default_nodes"}
+     * @param param2Name the name of the second parameter
+     * @param param2 a second passed in json object.
+     * @return
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    public String genericPutRequestTwoParams(String relPath, String param1Name, String param1, String param2Name, String param2) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        CloseableHttpClient client = HttpClients
+                .custom()
+                .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                .build();
+
+        HttpPut httpPut = new HttpPut(serverString+relPath);
+
+        URI uri = new URIBuilder(httpPut.getURI())
+                .addParameter(param1Name, param1)
+                .addParameter(param2Name,param2)
+                .build();
+        ((HttpRequestBase) httpPut).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpPut);
+        HttpEntity resStr = response.getEntity();
+        InputStream iS=resStr.getContent();
+        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
+        client.close();
+        return returnString;
+
+    }
+
+    public String genericGetRequestOneParam(String relPath, String param1name,String param1) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+
+        CloseableHttpClient client = HttpClients
+                .custom()
+                .setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build())
+                .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                .build();
+        HttpGet httpGet = new HttpGet(serverString+ relPath);
         URI uri = new URIBuilder(httpGet.getURI())
-                .addParameter("node", nodeJson)
+                .addParameter(param1name, param1)
                 .build();
         ((HttpRequestBase) httpGet).setURI(uri);
         CloseableHttpResponse response = client.execute(httpGet);
@@ -212,31 +484,13 @@ public class HTTP_Client {
 
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
         client.close();
-
         return returnString;
+
     }
 
 
-    public String sendEdgeCreateRequest(String edgeJson) throws IOException,InterruptedException,URISyntaxException{
-
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-
-        HttpPut httpPut = new HttpPut("http://127.0.0.1:8888/trycreateedge/");
-
-        URI uri = new URIBuilder(httpPut.getURI())
-                .addParameter("edge", edgeJson)
-                .build();
-        ((HttpRequestBase) httpPut).setURI(uri);
-        CloseableHttpResponse response = client.execute(httpPut);
-        HttpEntity resStr = response.getEntity();
-        InputStream iS=resStr.getContent();
-        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
-        client.close();
-
-        return returnString;
 
 
-    }
 
 }
 
