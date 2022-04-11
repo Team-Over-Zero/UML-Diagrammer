@@ -6,11 +6,18 @@
 
 
 import UML.Diagrammer.backend.objects.*;
+import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
+import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
-import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.connection_config.DBConfiguration;
+import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class NodeTest extends DBSpec {
@@ -81,4 +88,45 @@ public class NodeTest extends DBSpec {
     public void testHashCode() {
 
     }
-}
+
+    @Test
+    /**
+     * Based off of : https://www.baeldung.com/gson-list
+     * @Author Alex
+     * ALEX NOTE: Can someone figure out how to do TypeTokens of a list? ie. TypeToken<List<AbstractNode>>
+     */
+    public void nodeHydrationTest(){
+        //node.set("id",1);
+        node.saveIt();
+        System.out.println("id="+node.getId());
+        String gsonStrDefNode = node.toJson(true);
+        ClassNode classNode = factory.buildNode("class_nodes",2,1,1,1);
+        String gsonStrClassNode = classNode.toJson(false);
+
+        List<String> gsonStrList = new ArrayList<String>();
+        gsonStrList.add(gsonStrDefNode);
+        gsonStrList.add(gsonStrClassNode);
+
+        NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
+
+        customNodeDeserializer.registerSubtype( "default_nodes",DefaultNode.class);
+        customNodeDeserializer.registerSubtype( "class_nodes", ClassNode.class);
+
+        Gson gBuilder = new GsonBuilder()
+                .registerTypeAdapter(AbstractNode.class,customNodeDeserializer)
+                .create();
+
+
+        List<AbstractNode> aList= new ArrayList<>();
+
+        for (String n : gsonStrList) {
+            aList.add(gBuilder.fromJson(n, new TypeToken<AbstractNode>(){}.getType())); //adds a hydrated string to our list
+            System.out.println(n.toString());
+        }
+                //gBuilder.fromJson(arrStr, new TypeToken<AbstractNode>(){}.getType());
+       // assertEquals("{}",gsonStrDefNode);
+        assertTrue(aList.get(0) instanceof DefaultNode);
+        assertTrue(aList.get(1) instanceof ClassNode);
+
+    }
+    }

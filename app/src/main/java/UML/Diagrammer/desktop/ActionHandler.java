@@ -1,12 +1,36 @@
+/*Copyright 2022 Team OverZero
+<p>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+<p>
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+the Software.
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.UINode.UINode;
+import com.google.gson.Gson;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.stage.Popup;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to handle the most UI event handing like editing text, deleting, moving etc.
@@ -17,6 +41,19 @@ public class ActionHandler {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     StackPane currentFocusedUIElement = null;
+    public static List<StackPane> selectedNodesForEdgeCreation = new ArrayList<>();
+
+    /**
+     * Observer boilerplate, see Object requester for more information
+     */
+    private final PropertyChangeSupport support;
+    ActionHandler(){
+        support = new PropertyChangeSupport(this);
+    }
+    public void addPropertyChangeListener(PropertyChangeListener listener){
+        support.addPropertyChangeListener(listener);}
+    public void removePropertyChangeListener(PropertyChangeListener listener){
+        support.removePropertyChangeListener(listener);}
 
 
     /**
@@ -52,11 +89,39 @@ public class ActionHandler {
         // Sets the new coordinates of the that we moved.
         Object nodeObject = t.getSource();
         if (nodeObject instanceof StackPane) {
-            AbstractNode node = (AbstractNode) ((StackPane) nodeObject).getUserData();
-            node.set("x_coord", (int)newTranslateX);
-            node.set("y_coord", (int)newTranslateY); // Updates the object with the new coordinates
+            UINode node = (UINode) ((StackPane) nodeObject).getUserData();
+            node.setX((int)newTranslateX);
+            node.setY((int)newTranslateY); // Updates the object with the new coordinates
         }
+    }
 
+    /**
+     * Finished the object movement. Send a request to see if any edges need to be updated.
+     * @param t the mouse action(mouse release in this case)
+     */
+    public void releaseObject(MouseEvent t){
+        StackPane nodeUIObject = (StackPane) t.getSource();
+        support.firePropertyChange("finishedDragUpdateEdges", null, nodeUIObject);
+        ((StackPane) t.getSource()).getUserData();
+    }
+
+
+    /**
+     * Sets action for when a item on the UI is clicked or double-clicked.
+     * Sets focus for a click and context menu for double click.
+     * @param e The mouse event(a primary mouse click in this case.)
+     */
+    public void clickObject(MouseEvent e){
+        StackPane uIElement = (StackPane) e.getSource();
+        if (e.getButton().equals(MouseButton.PRIMARY)) {
+            if (e.getClickCount() == 1) {
+                setFocus(uIElement);
+            }
+
+            else if (e.getClickCount() == 2) {
+                makePopUpEditTextBox(uIElement, (int)e.getScreenX(), (int)e.getSceneY());
+            }
+        }
     }
 
     /**
@@ -65,25 +130,28 @@ public class ActionHandler {
      */
     public void makePopUpEditTextBox(StackPane uIElement, int x, int y) {
         if (uIElement == null){ uIElement = currentFocusedUIElement;}
+
+        UINode node = (UINode) uIElement.getUserData();
+
         Popup popUp = new Popup();
-        popUp.setHeight(100);    // Might want to scale this to the size of the node in the future
+        popUp.setHeight(100);
         popUp.setWidth(100);
         popUp.setX(x - (uIElement.getWidth() / 2));
         popUp.setY(y);
 
         Label label = new Label("Enter a new name");
 
-        TextField textField = new TextField();
+        TextField textField = new TextField(node.getName());
         textField.setPrefWidth(200);
         textField.setPrefHeight(50);
 
         Button button = new Button("Confirm");
         StackPane finalUIElement = uIElement;
         button.setOnAction(e -> {
-            // Should be careful here, since I am completely clearing all labels and such in the UI element.
-            finalUIElement.getChildren().clear();
-            finalUIElement.getChildren().add(new Label(textField.getText()));
-            ((AbstractNode) finalUIElement.getUserData()).set("Name", textField.getText());
+            int elIndex = findString(finalUIElement, String.valueOf(node.getName()));
+            Label textEl = (Label) finalUIElement.getChildren().get(elIndex);
+            textEl.setText(textField.getText());
+            ((UINode) finalUIElement.getUserData()).setName(textField.getText());
             popUp.hide();
         });
 
@@ -98,6 +166,25 @@ public class ActionHandler {
         popUp.show(App.primaryStage);
         button.setDefaultButton(true); // Lets you press enter to confirm
         popUp.setAutoHide(true);
+    }
+
+    /**
+     * Gets the string value from the stack Pane and returns it's index for removal/editing.
+     * @param UIElement The StackPane that you'd like to search in
+     * @param elementToFind The string value you want to find
+     * @return The index of the string that matches. -1 if no match.
+     */
+    public int findString(StackPane UIElement, String elementToFind){
+        for (Object curItem: UIElement.getChildren()) {
+            try {
+                Label curText = (Label) curItem;
+                if (curText.getText().equals(elementToFind)) {
+                    return UIElement.getChildren().indexOf(curItem);
+                }
+            }
+            catch (Exception e){}
+        }
+        return -1;
     }
 
     /**
@@ -126,24 +213,51 @@ public class ActionHandler {
     }
 
     /**
-     * Removes the UI Element from the UI(The main pane)
+     * Right click to delete edges. This is seperate from the nodes due to how the UI is set up, it could use the same
+     * function with a bit of reformatting though.
+     * @param lineElement What line to delete
+     * @param canvasPane What parent does the line belong to
+     * @param x x coord of the mouse
+     * @param y y coord of the mouse
+     */
+    public void makeEdgeContextMenu(Line lineElement, Pane canvasPane, int x, int y){
+        ContextMenu menu = new ContextMenu();
+        menu.setAutoHide(true);
+        MenuItem deleteItem = new MenuItem("Delete");
+
+        deleteItem.setOnAction(e-> {
+            canvasPane.getChildren().remove(lineElement);
+            //DATABASE DELETE EDGE REQUEST
+        });
+        menu.getItems().addAll(deleteItem);
+        menu.setX(x); menu.setY(y);
+        menu.show(App.primaryStage);
+
+    }
+
+    /**
+     * Removes the node Element from the UI(The main pane)
      * @param uIElement The UI piece that we would like to remove
      * @param canvasPane the main pane of the UI
      */
     public void deleteObject(StackPane uIElement, Pane canvasPane){
+        if (uIElement == null ){ // for deleting current focused node. E.G button press rather than context menu.
+            uIElement = currentFocusedUIElement;
+        }
         canvasPane.getChildren().remove(uIElement);
-        // DATABASE DELETE REQUEST
-        // Or if we only save via sending the whole page to the database, then I can translate the
-        // canvas pane to a Page before save.
-    }
 
-    /**
-     * Overridden, if we use delete via the button rather than a right click.
-     * Deletes the currently focused UI element
-     * @param canvasPane The main pane of the UI
-     */
-    public void deleteObject(Pane canvasPane){
-        canvasPane.getChildren().remove(currentFocusedUIElement);
+        ArrayList<Line> linesToRemove = new ArrayList<>(); // A list of all the lines to be deleted
+        // Checks if the node had any nodes associated with it so those lines can also be deleted.
+        for (Object obj: canvasPane.getChildren()) {
+            if (obj instanceof Line curLine) {
+                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
+                if (curLineConnectedNodes[0] == uIElement || curLineConnectedNodes[1] == uIElement){
+                    linesToRemove.add(curLine);
+                }
+            }
+        }
+        canvasPane.getChildren().removeAll(linesToRemove);
+        // DATABASE NODE AND EDGE DELETE REQUEST
     }
 
     /**
@@ -158,7 +272,58 @@ public class ActionHandler {
         currentFocusedUIElement = uIElement;
         currentFocusedUIElement.setStyle("-fx-border-color: blue");
         uIElement.requestFocus();
-        System.out.println();
+    }
+
+    /**
+     * Sets up the action for clicking on nodes so that the lines knows where to draw.
+     * @param parentPane The parent pane where all the nodes/edges lie.
+     */
+    public void connectNodes(Pane parentPane){
+        for (Node curElement : parentPane.getChildren()) {
+            if(curElement instanceof StackPane curStackPane){
+                curStackPane.setOnMouseClicked(setOnMouseClickedForEdgeCreation);
+            }
+        }
+    }
+
+    /**
+     * Setting the action on a node clicked
+     */
+    EventHandler<MouseEvent> setOnMouseClickedForEdgeCreation =
+            this::selectNodesToConnect;
+
+    /**
+     * We have a global array that is filled with up to 2 nodes. When the array reaches 2 we draw a line between the two
+     * nodes and clear the array. We also disable further clicking for creating lines.
+     * @param e Mouse action event
+     */
+    private void selectNodesToConnect(MouseEvent e){
+        if (selectedNodesForEdgeCreation.size() == 1 && // Error checking to connect an edge to itself
+                selectedNodesForEdgeCreation.get(0) == e.getSource()){
+            return;
+        }
+
+        selectedNodesForEdgeCreation.add((StackPane)e.getSource());
+
+        if(selectedNodesForEdgeCreation.size() == 2){
+            StackPane n0 = selectedNodesForEdgeCreation.get(0);
+            StackPane n1 = selectedNodesForEdgeCreation.get(1);
+
+            FXMLController.objectRequesterObservable.makeEdgeRequest(n0,n1);
+            selectedNodesForEdgeCreation.clear();
+            support.firePropertyChange("clearLineCreationActions", null, null);
+        }
+
+    }
+
+    private void updateNodeInDB(UINode node){
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(node);
+    }
+
+    public void clearFocusedElement(){
+        currentFocusedUIElement.setStyle("-fx-border-color: ");
+        currentFocusedUIElement = null;
     }
 
 }

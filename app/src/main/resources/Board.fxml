@@ -23,7 +23,7 @@
       </MenuButton>
       <MenuButton fx:id="loadMenuButton1" layoutX="120.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Export">
          <items>
-            <MenuItem mnemonicParsing="false" text="PNG" />
+            <MenuItem mnemonicParsing="false" onAction="#exportToPNG" text="PNG" />
             <MenuItem mnemonicParsing="false" text="SVG" />
          </items>
       </MenuButton>
@@ -40,9 +40,9 @@
             <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#lifeLineButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/LifeLine.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Life Line" />
             <Button layoutX="810.0" layoutY="10.0" mnemonicParsing="false" onAction="#loopButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Loop.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Loop" />
          </children></HBox>
-      <Label fx:id="testLabel" layoutX="30.0" layoutY="150.0">
+      <Label fx:id="ActionLabel" layoutX="400.0" prefHeight="26.0" prefWidth="568.0" visible="false">
          <font>
-            <Font size="24.0" />
+            <Font size="14.0" />
          </font></Label>
       <Separator layoutY="26.0" prefHeight="10.0" prefWidth="1000.0">
          <effect>
@@ -53,10 +53,7 @@
          <effect>
             <Blend />
          </effect></Separator>
-      <Pane fx:id="canvasPane" layoutY="126.0" prefHeight="675.0" prefWidth="1000.0">
-         <children>
-            <Label layoutX="288.0" layoutY="14.0" prefHeight="43.0" prefWidth="424.0" text="Double click a node/ right click a node to see some neat stuff" />
-         </children></Pane>
+      <Pane fx:id="canvasPane" layoutY="126.0" prefHeight="675.0" prefWidth="1000.0" />
       <Button layoutX="269.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
       <Button layoutX="223.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
       <Label fx:id="noElementSelectedErrorLabel" layoutX="338.0" layoutY="5.0" text="No item selected, select an item then press edit/delete" textFill="RED" visible="false" />

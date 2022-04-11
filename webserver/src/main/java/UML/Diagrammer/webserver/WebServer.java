@@ -1,3 +1,17 @@
+/*Copyright 2022 Team OverZero
+<p>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+<p>
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+the Software.
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 /**
  * Client.java
  *
@@ -7,10 +21,18 @@
  * @author Michael
  */
 package UML.Diagrammer.webserver;
-import UML.Diagrammer.backend.objects.HTTP_Client;
+import UML.Diagrammer.backend.apis.Database_Client;
+import UML.Diagrammer.backend.apis.HTTP_Client;
 import io.javalin.Javalin;
 import io.javalin.plugin.rendering.vue.VueComponent;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.connection_config.DBConfiguration;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 
 public class WebServer {
@@ -24,12 +46,31 @@ public class WebServer {
 
     private void init(){
 
-
-        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-        String databaseUser = "root";
-        String databasePassword = "TeamOverZero";
-        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
         http_client = new HTTP_Client();
+        Database_Client db = new Database_Client();
+        db.spinUp();
+
+        String testNode ="{\"description\":\"DEFAULT DESCRIPTION\",\"height\":3,\"id\":1,\"name\":\"GET SHREKED\",\"svg_image\":\"DEFAULT IMAGE\",\"type\":\"default_nodes\",\"width\":3,\"x_coord\":0,\"y_coord\":0}";
+        try {
+            String response1 = http_client.exampleGetRequest();
+           // System.out.println("example get response: "+response1);
+           String response2 = http_client.sendNodeUpdateRequest(testNode);
+            //System.out.println("Response: "+response2);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("web client started");
         client = Javalin.create(config ->
@@ -39,10 +80,22 @@ public class WebServer {
             ctx.result(http_client.exampleGetRequest());
         });
         client.get("/", new VueComponent("uml-editor"));
+        client.get("/api/nodeCreate", ctx -> {
+            ctx.result("Slow Hello World");
+        });
+    }
+
+    private String sendNodeCreateRequest(String node){
+        try{
+            return http_client.sendNodeCreateRequest(node);
+        }catch(Exception e){
+            return "";
+        }
+
     }
 
     public void close(){
-        Base.close();
+        //Base.close();
         client.close();
     }
 

@@ -1,3 +1,17 @@
+/*Copyright 2022 Team OverZero
+<p>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+<p>
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+the Software.
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 /**
  * FXMLController.java
  *
@@ -9,19 +23,26 @@
 
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.AbstractEdge;
+import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
+import javafx.stage.FileChooser;
 import lombok.Getter;
 import org.apache.batik.transcoder.TranscoderException;
 
+import javax.imageio.ImageIO;
+import java.awt.image.RenderedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 
 
@@ -30,14 +51,15 @@ public class FXMLController extends App implements PropertyChangeListener{
     /**
      * Observer object for references
      */
-    @Getter private final ObjectRequester objectRequesterObservable = new ObjectRequester();
-    private static ActionHandler action = new ActionHandler();
+    @Getter public static final ObjectRequester objectRequesterObservable = new ObjectRequester();
+    public static final ActionHandler action = new ActionHandler();
 
     /**
      * Constructor to set this class as the observer for the observable objects
      */
     public FXMLController(){
         objectRequesterObservable.addPropertyChangeListener(this);
+        action.addPropertyChangeListener(this);
     }
 
     /**
@@ -49,19 +71,19 @@ public class FXMLController extends App implements PropertyChangeListener{
     public void propertyChange(PropertyChangeEvent event){
     	switch(event.getPropertyName()) {
     	case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
-    	case "newEdgeCreation" -> this.updateUINewEdge((AbstractEdge) event.getNewValue());
+    	case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
     	case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
-    	}
+    	case "clearLineCreationActions" -> this.clearLineCreationActions();
+    	case "finishedDragUpdateEdges" -> this.updateEdgesAfterDrag((StackPane) event.getNewValue());
+        }
     }
 
     /**
      * Label for the UI to display object changes
      */
-    @FXML private Label testLabel;
-    @FXML private Label circleObject;
-    @FXML @Getter public Label noElementSelectedErrorLabel;
+    @FXML private Label ActionLabel;
+    @FXML public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
-
 
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).
@@ -72,8 +94,6 @@ public class FXMLController extends App implements PropertyChangeListener{
         objectRequesterObservable.makeOvalRequest();}
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest();}
-    @FXML private void edgeButtonPressed() {
-        objectRequesterObservable.makeEdgeRequest();}
     @FXML private void folderButtonPressed() {
         objectRequesterObservable.makeFolderRequest();}
     @FXML private void lifeLineButtonPressed() {
@@ -89,8 +109,19 @@ public class FXMLController extends App implements PropertyChangeListener{
     @FXML private void SquareButtonPressed() {
         objectRequesterObservable.makeSquareRequest();}
 
+    /**
+     * Have this jump to ActionHandler, AH will return the two stackpanes I need to create the line.
+     * Then it calls ObjectRequester with those stackpanes and makes the edge, both UI and data.
+     * Need to update the movement method in AH to updates edges as well(If there is one.)
+     */
+    @FXML private void edgeButtonPressed() {
+        ActionLabel.setText("Select 2 items to draw a line between them");
+        ActionLabel.setVisible(true);
+        action.connectNodes(canvasPane);
+    }
+
     @FXML private void deleteButtonPressed(){
-        action.deleteObject(canvasPane);
+        action.deleteObject(null, canvasPane);
     }
     @FXML private void editButtonPressed(){
         action.makePopUpEditTextBox(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
@@ -104,25 +135,89 @@ public class FXMLController extends App implements PropertyChangeListener{
     private void updateUINewNode(StackPane newNodeUIRepresentation){
         canvasPane.getChildren().add(newNodeUIRepresentation);
     }
-    
+
     /**
      * Just displays the edge's info to the screen via a label for now.
      */
-    private void updateUINewEdge(AbstractEdge newEdge){
-        testLabel.setText(newEdge.toString());
+    private void updateUINewEdge(Line newLine){
+        canvasPane.getChildren().add(newLine);
+        newLine.setOnContextMenuRequested(e ->
+                action.makeEdgeContextMenu(newLine, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
 
     /**
      * Sets the action for a double click on an object to edit it.
-     *
      * @param fxObject the StackPane associated with the object.
      */
     private void setMouseActions(StackPane fxObject) {
         fxObject.setOnMouseClicked(clickNodeEventHandler);
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
+        fxObject.setOnMouseReleased(nodeOnMouseReleased);
         fxObject.setOnContextMenuRequested(e -> // Right click
                 action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
+    }
+
+    /**
+     * Changes the mouse action from creating a line back to the default action.
+     */
+    private void clearLineCreationActions(){
+        for (Node curElement : canvasPane.getChildren()) {
+            if (curElement instanceof StackPane curStackPane){
+                curStackPane.setOnMouseClicked(clickNodeEventHandler);
+                ActionLabel.setVisible(false);
+            }
+        }
+    }
+
+    /**
+     * After an node is dragged, it checks every edge and updates it if it's end/starting node matches the line.
+     * There is no need to update anything on the backend, since the only data for an edge is its nodes.
+     * @param movedElement The UI Element that was moved
+     */
+    private void updateEdgesAfterDrag(StackPane movedElement){
+        for (Object obj: canvasPane.getChildren()) {
+            if (obj instanceof Line curLine) {
+                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
+                if(curLineConnectedNodes[0] == movedElement){
+                    curLine.setStartX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
+                    curLine.setStartY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
+                }
+                else if(curLineConnectedNodes[1] == movedElement){
+                    curLine.setEndX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
+                    curLine.setEndY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
+                }
+            }
+        }
+    }
+
+    /**
+     * Takes a screenshot of the current scene when you press the png export button
+     */
+    @FXML
+    private void exportToPNG() {
+        action.clearFocusedElement();
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+
+        //Prompt user to select a file
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                //Pad the capture area
+                WritableImage writableImage = new WritableImage((int) App.primaryStage.getWidth() + 20,
+                        (int) App.primaryStage.getHeight() - 120);
+                canvasPane.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                //Write the snapshot to the chosen file
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -130,25 +225,16 @@ public class FXMLController extends App implements PropertyChangeListener{
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
 \     */
     EventHandler<MouseEvent> clickNodeEventHandler =
-            t -> { // Double click
-                StackPane uIElement = (StackPane) t.getSource();
-                if (t.getButton().equals(MouseButton.PRIMARY)) {
-                    if (t.getClickCount() == 1) {
-                        action.setFocus(uIElement);
-                    }
-
-                    else if (t.getClickCount() == 2) {
-                        action.makePopUpEditTextBox(uIElement, (int)t.getScreenX(), (int)t.getSceneY());
-                    }
-                }
-            };
+            action::clickObject;
 
     /**
      * These two function together allow for dragging of shapes across the canvas
      */
     EventHandler<MouseEvent> nodeOnMouseGrabEventHandler =
-            t -> action.grabObject(t);
-
+            action::grabObject;
     EventHandler<MouseEvent> nodeOnMouseDragEventHandler =
-            t -> action.moveObject(t);
+            action::moveObject;
+
+    EventHandler<MouseEvent> nodeOnMouseReleased =
+            action::releaseObject;
 }

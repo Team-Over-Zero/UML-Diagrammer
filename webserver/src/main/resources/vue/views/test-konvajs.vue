@@ -62,8 +62,8 @@ Vue.component("test-konvajs", {
       list: [],
       dragItemId: null,
       configKonva: {
-        width: width,
-        height: height
+        width: 400,
+        height: 400
       }
     };
   },

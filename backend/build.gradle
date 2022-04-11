@@ -19,6 +19,8 @@ plugins {
     //Griffith ActiveJDBC plugin
     id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
 
+    //license checker
+    id "com.github.hierynomus.license" version "0.16.1"
 
 }
 
@@ -51,10 +53,25 @@ dependencies {
     implementation "org.javalite:activejdbc:3.0-j11"
     implementation "org.javalite:javalite-common:3.0-j11"
 
-    
+    //Javalin
+    implementation group: 'io.javalin', name: 'javalin', version: '4.3.0'
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    //Apache HTTP
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+
+
+
     compileOnly 'org.javalite:activejdbc:1.4.1'
     compileOnly 'org.javalite:activejdbc-instrumentation:1.4.1'
-    
+    //WireMock
+    testImplementation "com.github.tomakehurst:wiremock-jre8:2.32.0"
+
+
 }
 
 tasks.named('test') {
@@ -92,4 +109,17 @@ jacocoTestReport {
 }
 activejdbc {
     toolVersion = '3.0-j11'
+}
+
+// license checker rules
+license {
+    header rootProject.file('LICENSE')
+    excludes(["**/*.png", "**/*.svg", "**/*.fxml", "**/*.css", "**/*Test.java"])
+    include("**/*.java")
+    ignoreFailures true
+    skipExistingHeaders true
+
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
 }

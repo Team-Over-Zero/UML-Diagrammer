@@ -22,6 +22,9 @@ plugins {
     //Griffith ActiveJDBC plugin
     id "com.empirilytics.activejdbc-gradle-plugin" version "3.0-j11"
 
+    //license checker
+    id "com.github.hierynomus.license" version "0.16.1"
+
 }
 
 repositories {
@@ -60,6 +63,10 @@ dependencies {
     implementation "org.javalite:activejdbc:3.0-j11"
     implementation "org.javalite:javalite-common:3.0-j11"
 
+
+// https://mvnrepository.com/artifact/org.webjars/fabric.js
+    implementation group: 'org.webjars', name: 'fabric.js', version: '1.4.12'
+
 }
 
 application {
@@ -81,3 +88,15 @@ activejdbc {
     toolVersion = '3.0-j11'
 }
 
+// license checker rules
+license {
+    header rootProject.file('LICENSE')
+    excludes(["**/*.png", "**/*.svg", "**/*.fxml", "**/*.css", "**/*Test.java"])
+    include("**/*.java")
+    ignoreFailures true
+    skipExistingHeaders true
+
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}

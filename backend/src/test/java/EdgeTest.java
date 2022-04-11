@@ -55,8 +55,8 @@ public class EdgeTest extends DBSpec{
         edgar.setNodes(nodeOne,nodeTwo);
         edgar.saveIt();
         assertTrue(edgar.exists());
-        assertEquals(nodeOne,edgar.getN1());
-        assertEquals(nodeTwo,edgar.getN2());
+        assertEquals(nodeOne.getInteger("id"),edgar.getInteger("from_node_id"));
+        assertEquals(nodeTwo.getInteger("id"),edgar.getInteger("to_node_id"));
 
 
     }
@@ -65,7 +65,13 @@ public class EdgeTest extends DBSpec{
     @Test
     public void testGetID() {
 
-        DefaultEdge edge = edgey.buildEdge();
+        DefaultNode node1 = factory.buildNode();
+        DefaultNode node2 = factory.buildNode();
+        node1.saveIt();
+        node2.saveIt();
+        DefaultEdge edge = new DefaultEdge();
+        edge.setNodes(node1.getInteger("id"),node1.getString("type"),node2.getInteger("id"),node2.getString("type"));
+       // DefaultEdge edge = edgey.buildEdge(node1,node2); //Alex note: trouble with creating a node without first creating nodes atm
         edge.saveIt();
         edge.setId(100);
         assertEquals(100,edge.getId());
@@ -76,13 +82,15 @@ public class EdgeTest extends DBSpec{
         DefaultEdge edge = edgey.buildEdge();
         DefaultNode nodeOne = factory.buildNode();
         DefaultNode nodeTwo = factory.buildNode();
-
-        edge.setN1(nodeOne);
-        edge.setN2(nodeTwo);
+        nodeOne.createIt();
+        nodeTwo.createIt();
+        int node1Id = nodeOne.getId();
+        int node2Id = nodeTwo.getId();
+        edge.setNodes(nodeOne,nodeTwo);
         edge.saveIt();
 
-        assertEquals(nodeOne,edge.getN1());
-        assertEquals(nodeTwo,edge.getN2());
+        assertEquals(node1Id,edge.get("from_node_id"));
+        assertEquals(node2Id,edge.get("to_node_id"));
 
     }
 
@@ -97,16 +105,17 @@ public class EdgeTest extends DBSpec{
         DefaultEdge edgar = edgey.buildEdge();
         edgar.setNodes(nodeOne,nodeTwo);
         edgar.saveIt();
-        String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1: " + nodeOne.getId() + "\n" + "Node 2: " + nodeTwo.getId();
+        String string = "Edge has attributes:" + "\n" + "ID: " + edgar.getId() + "\n" + "Node 1 ID: " + nodeOne.getId() + "\n" + "Node 2 ID: " + nodeTwo.getId()+"\n"+
+                "Node 1 Type: "+edgar.getString("from_node_type")+"\n"+"Node 2 Type: "+edgar.getString("to_node_type");
         assertEquals(string,edgar.toString());
     }
 
-    @Test
-    public void testEquals(){
-        DefaultEdge nullEdge = null;
-        DefaultEdge nonNullEdge = edgey.buildEdge();
-        assertEquals(false,nonNullEdge.equals(nullEdge));
-        assertEquals(true,nonNullEdge.equals(nonNullEdge));
-
-    }
+//    @Test
+//    public void testEquals(){
+//        DefaultEdge nullEdge = null;
+//        DefaultEdge nonNullEdge = edgey.buildEdge();
+//        assertEquals(false,nonNullEdge.equals(nullEdge));
+//        assertEquals(true,nonNullEdge.equals(nonNullEdge));
+//
+//    }
 }
