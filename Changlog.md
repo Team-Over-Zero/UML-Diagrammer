@@ -5,15 +5,37 @@
 
 ## [0.3.0] - 2022-04-10
 ### Added
- - Refactored database backend with working post, put, and get request
- 
- - App UI edge connections, updated SVGs, editable nodes, moving edges
+ - Refactored database backend with working post, put, and get requests 
+   - Added Database_Client and RequestController. Database_Client is a javalin
+   server that listens to get and post requests and initiates and manages database connections 
+   and allows frontends to save and load data from our hardcoded project database. RequestController
+   is a helper class that does the grunt work of the listener logic. These will soon
+   be spun out into their own package (or used by a distinct service) as this pair of classes creates 
+   a distinct microservice. 
+   - Added HTTP_Client. This class essentially wraps the HttpClient apache library and creates specific
+   methods that our frontends can use for their purposes. This includes object instantiation, fetch, and 
+   deletion, and will eventually including object updating request as well. Frontends can call methods like
+   - "createNodeOnPage()" and send in their page ids and node json strings as parameters and HTTP_Client
+   will deal with the connections and return a response string to the fronted for it to process.
+   
+ - JavaFx now has UI edge connections, updated SVGs, editable nodes, moving edges
 
- - Various test for the backend, sever, and UI
+ - Various tests for the backend, sever, and UI were implemented. Initial testing of microservice 
+connections was done, and javafx now has UI tests. 
 
- - Wiki documentation refactored to reflect system 
+ - Wiki documentation refactored to reflect system.
+   - Class Diagram Updated
+   - Wiki Updated
 
- - Refactored web app to use a diffrent library
+ - Refactored web app to use a different library
+ - Reworked Objects to have a frontend "UI" Copy. Since we do not want to instantiate ActiveJDBC objects
+on the frontend, we store details of nodes and edges in UI objects that hold data and have json functions.
+For every Object in our backend, there is now a UI copy of it that doesn't implement ActiveJDBC. 
+ - Added A multitude of backend helper objects
+   - Created CustomJsonDeserializer. This class helps with the parsing and hydration of json objects
+   and is heavily used by RequestController. 
+   - Created TypeRegistry, EdgeTypeDeserializer, and NodeTypeDeserializer. These are not really used at 
+   the moment but if refactored could be a different way to approach deserialization.
 
 ## [0.2.0] - 2022-03-21
 ### Added
