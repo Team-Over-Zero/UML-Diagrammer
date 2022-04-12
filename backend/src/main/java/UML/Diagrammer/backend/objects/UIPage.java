@@ -12,7 +12,7 @@ public class UIPage {
         this.id = id;
         this.name = name;
     }
-    UIPage(){
+    public UIPage(){
         this.id = -1;
         this.name = "DEFAULT NAME";
     }

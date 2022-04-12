@@ -91,23 +91,23 @@ public class FXMLController extends App implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
-        objectRequesterObservable.makeOvalRequest();}
+        objectRequesterObservable.makeOvalRequest(-1, -1, null, null);}
     @FXML private void classButtonPressed() {
-        objectRequesterObservable.makeClassRequest();}
+        objectRequesterObservable.makeClassRequest(-1, -1, null, null, null);}
     @FXML private void folderButtonPressed() {
-        objectRequesterObservable.makeFolderRequest();}
+        objectRequesterObservable.makeFolderRequest(-1, -1, null, null);}
     @FXML private void lifeLineButtonPressed() {
-        objectRequesterObservable.makeLifeLineRequest();}
+        objectRequesterObservable.makeLifeLineRequest(-1, -1, null, null);}
     @FXML private void loopButtonPressed() {
-        objectRequesterObservable.makeLoopRequest();}
+        objectRequesterObservable.makeLoopRequest(-1, -1, null, null);}
     @FXML private void noteButtonPressed() {
-        objectRequesterObservable.makeNoteRequest();}
+        objectRequesterObservable.makeNoteRequest(-1, -1, null, null);}
     @FXML private void stickFigureButtonPressed() {
-        objectRequesterObservable.makeStickFigureRequest();}
+        objectRequesterObservable.makeStickFigureRequest(-1, -1, null, null);}
     @FXML private void TextBoxButtonPressed() {
-        objectRequesterObservable.makeTextBoxRequest();}
+        objectRequesterObservable.makeTextBoxRequest(-1, -1, null, null);}
     @FXML private void SquareButtonPressed() {
-        objectRequesterObservable.makeSquareRequest();}
+        objectRequesterObservable.makeSquareRequest(-1, -1, null, null);}
 
     /**
      * Have this jump to ActionHandler, AH will return the two stackpanes I need to create the line.

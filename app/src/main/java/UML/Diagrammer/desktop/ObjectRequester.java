@@ -23,34 +23,25 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.HTTP_Client;
-import UML.Diagrammer.backend.objects.AbstractNode;
-import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
-import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
+import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
 import UML.Diagrammer.backend.objects.UINode.*;
-import UML.Diagrammer.backend.objects.UIPage;
 import UML.Diagrammer.backend.objects.UIUser;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
-import netscape.javascript.JSObject;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
 
 
 public class ObjectRequester {
@@ -93,25 +84,29 @@ public class ObjectRequester {
      * Creates a class object along with a rectangle and ties them together.
      * Then returns these objects to the UI via the support.firePropertyChange call.
      * All makeXRequest function should look really similar to this function, the difference being the image and node type.
+     * @param x if a node is being loaded, we need it's position and will set it accordingly.
+     *          Otherwise x is -1 to represent new node. Set in it's default position
+     * @param y the y coordinate of the object, -1 if it's a new object(default position)
+     * @param text the name that is given to the object, default if not loading.
      */
-    public void makeOvalRequest() {
-        UIOvalNode newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 3, 3);
+    public void makeOvalRequest(int x, int y, String text, UIOvalNode newNode) {
+        if (x == -1){
+            newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 3, 3);
+        }
         String image = "Oval_UseCase.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    /**
-     * Creates a class object along with a stackpane and ties them together.
-     * Then returns these objects to the UI via the support.firePropertyChange call.
-     */
-    public void makeClassRequest() {
+    // Currently my test button for testing db connection.
+    public void makeClassRequest(int x, int y, String name, String desc, UIClassNode newNode) {
         try {
-            UIClassNode newNode = nodeFactory.buildNode("class_nodes", 3, 3, 3, 3);
+            newNode = nodeFactory.buildNode("class_nodes", 3, 3, 3, 3);
             //AbstractNode savedNode = saveNodeToDB(newNode);
-            StackPane newUIShape = UIClassRequest(newNode);
+            StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
             newNode.toJson();
-            //saveNewNodeToDB(newNode);
+            if (x == -1){saveNewNodeToDB(newNode);}
             support.firePropertyChange("newNodeCreation", null, newUIShape);
         }
         catch (Exception e){
@@ -119,54 +114,74 @@ public class ObjectRequester {
         }
     }
 
-    public void makeFolderRequest() {
-        UIFolderNode newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 3, 3);
+    public void makeFolderRequest(int x, int y, String text, UIFolderNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 3, 3);
+        }
         String image = "Folder.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     //unique
-    public void makeLifeLineRequest() {
-        UILifeLineNode newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 3, 3);
+    public void makeLifeLineRequest(int x, int y, String text, UILifeLineNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 3, 3);
+        }
         String image = "/LifeLine.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 80, 430, Pos.TOP_CENTER);
-
+        StackPane newUIShape = UIBasicRequest(newNode, image, 80, 430, Pos.TOP_CENTER, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     //unique
-    public void makeLoopRequest() {
-        UILoopNode newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 3, 3);
-        StackPane newUIShape = UILoopRequest(newNode);
+    public void makeLoopRequest(int x, int y, String text, UILoopNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 3, 3);
+        }
+        StackPane newUIShape = UILoopRequest(newNode, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    public void makeNoteRequest() {
-        UINoteNode newNode = nodeFactory.buildNode("note_nodes", 3, 3, 3, 3);
+    public void makeNoteRequest(int x, int y, String text, UINoteNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("note_nodes", 3, 3, 3, 3);
+        }
         String image = "/Note.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 200, 150, Pos.TOP_LEFT);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 200, 150, Pos.TOP_LEFT, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    public void makeStickFigureRequest() {
-        UIStickFigureNode newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 3, 3);
+    public void makeStickFigureRequest(int x, int y, String text, UIStickFigureNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 3, 3);
+        }
         String image = "/StickFigure.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 220, 150, Pos.BOTTOM_CENTER);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 220, 150, Pos.BOTTOM_CENTER, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    public void makeTextBoxRequest() {
-        UITextBoxNode newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 3, 3);
+    public void makeTextBoxRequest(int x, int y, String text, UITextBoxNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 3, 3);
+        }
         String image = "TextBox_Square_Interface.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.TOP_LEFT);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.TOP_LEFT, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    public void makeSquareRequest() {
-        UISquareNode newNode = nodeFactory.buildNode("square_nodes", 3, 3, 3, 3);
+    public void makeSquareRequest(int x, int y, String text, UISquareNode newNode) {
+        if (x == -1) {
+            newNode = nodeFactory.buildNode("square_nodes", 3, 3, 3, 3);
+        }
         String image = "TextBox_Square_Interface.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER);
+        StackPane newUIShape = UIBasicRequest(newNode, image, 300, 150, Pos.CENTER, x, y, text);
+        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
@@ -247,13 +262,19 @@ public class ObjectRequester {
      * @param node the associated data node.
      * @return UI StackPane
      */
-    public StackPane UIClassRequest(UINode node) {
+    public StackPane UIClassRequest(UINode node, int x, int y, String givenName, String givenDesc) {
         StackPane stack = makeStackPane(node, "Class.svg");
         stack.setPrefWidth(300);
         stack.setPrefHeight(150);
 
         Label name = new Label((String) node.getName());
         Label desc = new Label((String) node.getDesc());
+        if (x != -1){       // For loading in a new node
+            stack.setTranslateX(x);
+            stack.setTranslateY(y);
+            name.setText(givenName);
+            desc.setText(givenDesc);
+        }
         name.setWrapText(true); desc.setWrapText(true);
         stack.getChildren().addAll(name, desc);
         StackPane.setAlignment(name, Pos.TOP_LEFT);
@@ -268,17 +289,25 @@ public class ObjectRequester {
      * @param w width of your pane
      * @param h height of your pane
      * @param namePos the position you'd like the name to appear.
+     * @param x x coordinate, if loadin a node. -1 if a new node
+     * @param y y coordinate, if loading a node.
+     * @param text the loaded name of the node.
      * @return UI StackPane
      */
-    public StackPane UIBasicRequest(UINode node, String image, int w, int h, Pos namePos) {
+    public StackPane UIBasicRequest(UINode node, String image, int w, int h, Pos namePos, int x, int y, String text) {
         StackPane stack = makeStackPane(node, image);
         stack.setPrefWidth(w);
         stack.setPrefHeight(h);
 
         Label name = new Label((String) node.getName());
         name.setWrapText(true);
-        //name.setWrappingWidth(stack.getWidth());
-
+        stack.setPrefHeight(h);
+        stack.setPrefHeight(w);
+        if (x != -1){       // For loading in a new node
+            stack.setTranslateX(x);
+            stack.setTranslateX(y);
+            name.setText(text);
+        }
         stack.getChildren().addAll(name);
         StackPane.setAlignment(name, namePos);
         return stack;
@@ -289,8 +318,8 @@ public class ObjectRequester {
      * @param node the associated data node.
      * @return UI StackPane
      */
-    public StackPane UILoopRequest(UINode node){
-        StackPane stack = UIBasicRequest(node, "Loop.svg", 300, 150, Pos.TOP_CENTER);
+    public StackPane UILoopRequest(UINode node, int x, int y, String name){
+        StackPane stack = UIBasicRequest(node, "Loop.svg", 300, 150, Pos.TOP_CENTER, x, y, name);
         Label loopLabel = new Label("Loop");
         stack.getChildren().add(loopLabel);
         StackPane.setAlignment(loopLabel, Pos.TOP_LEFT);
@@ -305,6 +334,7 @@ public class ObjectRequester {
         try {
             UIUser newUser = new UIUser(-1, name);
             String dbUserString = HTTPClient.usercreaterequest(newUser.getIDAsJson());
+            newUser.setId(Integer.valueOf(dbUserString));
             //newUser.setId(dbUserString.matches("\\d+")); // regex gets on the integers that were returned(ID)
             return newUser;
         }
@@ -324,18 +354,22 @@ public class ObjectRequester {
             //System.out.println("about to gson");
             //Gson gson = new Gson();
 
+            //UIUser newUser = createNewUser("testUser");
             UIUser newUser = new UIUser(-1, "user0");
+            //UIPage newPage = new UIPage(-1, "page0");
 
-            String pgStr = HTTPClient.usercreaterequest(newUser.getIDAsJson());
+            //System.out.println("usercreaterrequest was given: " + newUser.getIDAsJson());
 
-            System.out.println("returned string is: " + pgStr);
-            //String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), page.getPageIDAsJSon());
+            //String pgStr = HTTPClient.usercreaterequest(newUser.getIDAsJson());
+
+            //System.out.println("returned string is: " + pgStr);
+            //String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), newPage.getPageIDAsJSon());
             //System.out.println(newID);
 
 
             //String jsonString = gson.toJson(node, UINode.class);
             //System.out.println(jsonString);
-            //String dbString = HTTPClient.sendNodeCreateRequest(jsonString);// THIS IS RETURNING NOTHING, Internal server error
+            //String dbString = HTTPClient.sendNodeCreateRequest(jsonString);
             //System.out.println("dbString: "+dbString);
 
             //JsonObject dbObject = gson.fromJson(dbString, JsonObject.class);
@@ -345,5 +379,49 @@ public class ObjectRequester {
             //node.setId(Integer.valueOf(returnedID));
         }
         catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
+    }
+
+    public void loadPage(ArrayList<UINode> nodes/*, UIEdge[] edge*/){
+        for (UINode curNode: nodes) {
+            loadNode(curNode);
+        }
+        /*for (UIEdge curEdge: edge){
+            loadEdge(curEdge);
+        }*/
+    }
+
+    /**
+     * Calls the appropriate make method based on the node type.
+     * Uses the given nodes attributes as a reference to create it in the specified area with loaded names.
+     * @param node The node you are loading in.
+     */
+    private void loadNode(UINode node){
+        switch (node.getType()){
+            case "oval_nodes" -> makeOvalRequest(node.getX(), node.getY(), node.getName(), (UIOvalNode) node);
+            case "class_nodes" -> makeClassRequest(node.getX(), node.getY(), node.getName(), node.getDesc(), (UIClassNode) node);
+            case "folder_nodes" -> makeFolderRequest(node.getX(), node.getY(), node.getName(), (UIFolderNode) node);
+            case "life_line_nodes" -> makeLifeLineRequest(node.getX(), node.getY(), node.getName(), (UILifeLineNode) node);
+            case "loop_nodes" -> makeLoopRequest(node.getX(), node.getY(), node.getName(),(UILoopNode) node);
+            case "note_nodes" -> makeNoteRequest(node.getX(), node.getY(), node.getName(), (UINoteNode) node);
+            case "stick_figure_nodes" -> makeStickFigureRequest(node.getX(), node.getY(), node.getName(), (UIStickFigureNode) node);
+            case "text_box_nodes" -> makeTextBoxRequest(node.getX(), node.getY(), node.getName(), (UITextBoxNode) node);
+            case "square_nodes" -> makeSquareRequest(node.getX(), node.getY(), node.getName(), (UISquareNode) node);
+        }
+    }
+
+    private void loadeEdge(UIEdge edge, Pane canvasPane){}
+
+    /**
+     * Test function to make sure that the loading works. Will remove in the future.
+     */
+    private void loadNodesTest(){
+        UIOvalNode ovalTestNode = nodeFactory.buildNode("oval_nodes", 150, 600, 3, 3);
+        UIFolderNode folderTestNode = nodeFactory.buildNode("folder_nodes", 500, 150, 3, 3);
+        ovalTestNode.setName("NAME WORKS!!!");
+        folderTestNode.setName("I FOLDER I WORK");
+        ArrayList<UINode> testArray = new ArrayList<UINode>();
+        testArray.add(ovalTestNode);
+        testArray.add(folderTestNode);
+        loadPage(testArray);
     }
 }
