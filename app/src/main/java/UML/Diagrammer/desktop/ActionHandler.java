@@ -14,6 +14,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UINode.UINode;
 import com.google.gson.Gson;
 import javafx.event.EventHandler;
@@ -102,7 +103,7 @@ public class ActionHandler {
     public void releaseObject(MouseEvent t){
         StackPane nodeUIObject = (StackPane) t.getSource();
         support.firePropertyChange("finishedDragUpdateEdges", null, nodeUIObject);
-        ((StackPane) t.getSource()).getUserData();
+        //((StackPane) t.getSource()).getUserData();
     }
 
 
@@ -244,14 +245,19 @@ public class ActionHandler {
         if (uIElement == null ){ // for deleting current focused node. E.G button press rather than context menu.
             uIElement = currentFocusedUIElement;
         }
+
+        UINode connectedNode = (UINode) uIElement.getUserData();
+        int nodeToRemoveId = connectedNode.getId();
         canvasPane.getChildren().remove(uIElement);
 
         ArrayList<Line> linesToRemove = new ArrayList<>(); // A list of all the lines to be deleted
         // Checks if the node had any nodes associated with it so those lines can also be deleted.
         for (Object obj: canvasPane.getChildren()) {
             if (obj instanceof Line curLine) {
-                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
-                if (curLineConnectedNodes[0] == uIElement || curLineConnectedNodes[1] == uIElement){
+                UIEdge curUIEdge = (UIEdge) curLine.getUserData();
+                int curLineConnectedNode1 = curUIEdge.getN1().getId();
+                int curLineConnectedNode2 = curUIEdge.getN2().getId();
+                if (curLineConnectedNode1 == nodeToRemoveId || curLineConnectedNode2 == nodeToRemoveId){
                     linesToRemove.add(curLine);
                 }
             }
@@ -309,7 +315,7 @@ public class ActionHandler {
             StackPane n0 = selectedNodesForEdgeCreation.get(0);
             StackPane n1 = selectedNodesForEdgeCreation.get(1);
 
-            FXMLController.objectRequesterObservable.makeEdgeRequest(n0,n1);
+            FXMLController.objectRequesterObservable.makeEdgeRequest(n0,n1, null);
             selectedNodesForEdgeCreation.clear();
             support.firePropertyChange("clearLineCreationActions", null, null);
         }

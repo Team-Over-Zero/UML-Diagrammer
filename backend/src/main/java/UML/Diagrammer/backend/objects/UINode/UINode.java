@@ -17,6 +17,8 @@ package UML.Diagrammer.backend.objects.UINode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Random;
+
 @Getter @Setter
 public abstract class UINode {
     public String name;
@@ -28,9 +30,10 @@ public abstract class UINode {
     public int w;
     public int h;
     public int id;
+    Random ran = new Random();
 
     public UINode(String name, String type, String desc, String SVGImage, int x, int y, int w, int h){
-        id = -1;
+        id = ran.nextInt(1000); // random num until I get db connection up
         this.name = name;
         this.type = type;
         this.desc = desc;
@@ -42,7 +45,7 @@ public abstract class UINode {
     }
 
     public UINode(){
-        this.id = -1;
+        this.id = ran.nextInt(1000);
         this.name = "DEFAULT NAME";
         this.type = "DEFAULT TYPE";
         this.desc = "DEFAULT DESCRIPTION";

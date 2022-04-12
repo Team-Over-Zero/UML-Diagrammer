@@ -23,6 +23,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
+import UML.Diagrammer.backend.objects.UINode.UINode;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
@@ -69,12 +71,12 @@ public class FXMLController extends App implements PropertyChangeListener{
      * @param event The event that was changed that needs to be reflected in the UI.
      */
     public void propertyChange(PropertyChangeEvent event){
-    	switch(event.getPropertyName()) {
-    	case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
-    	case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
-    	case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
-    	case "clearLineCreationActions" -> this.clearLineCreationActions();
-    	case "finishedDragUpdateEdges" -> this.updateEdgesAfterDrag((StackPane) event.getNewValue());
+        switch(event.getPropertyName()) {
+            case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
+            case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
+            case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
+            case "clearLineCreationActions" -> this.clearLineCreationActions();
+            case "finishedDragUpdateEdges" -> this.updateEdgesAfterDrag((StackPane) event.getNewValue());
         }
     }
 
@@ -91,23 +93,23 @@ public class FXMLController extends App implements PropertyChangeListener{
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
     @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
-        objectRequesterObservable.makeOvalRequest();}
+        objectRequesterObservable.makeOvalRequest(-1, -1, null, null);}
     @FXML private void classButtonPressed() {
-        objectRequesterObservable.makeClassRequest();}
+        objectRequesterObservable.makeClassRequest(-1, -1, null, null, null);}
     @FXML private void folderButtonPressed() {
-        objectRequesterObservable.makeFolderRequest();}
+        objectRequesterObservable.makeFolderRequest(-1, -1, null, null);}
     @FXML private void lifeLineButtonPressed() {
-        objectRequesterObservable.makeLifeLineRequest();}
+        objectRequesterObservable.makeLifeLineRequest(-1, -1, null, null);}
     @FXML private void loopButtonPressed() {
-        objectRequesterObservable.makeLoopRequest();}
+        objectRequesterObservable.makeLoopRequest(-1, -1, null, null);}
     @FXML private void noteButtonPressed() {
-        objectRequesterObservable.makeNoteRequest();}
+        objectRequesterObservable.makeNoteRequest(-1, -1, null, null);}
     @FXML private void stickFigureButtonPressed() {
-        objectRequesterObservable.makeStickFigureRequest();}
+        objectRequesterObservable.makeStickFigureRequest(-1, -1, null, null);}
     @FXML private void TextBoxButtonPressed() {
-        objectRequesterObservable.makeTextBoxRequest();}
+        objectRequesterObservable.makeTextBoxRequest(-1, -1, null, null);}
     @FXML private void SquareButtonPressed() {
-        objectRequesterObservable.makeSquareRequest();}
+        objectRequesterObservable.makeSquareRequest(-1, -1, null, null);}
 
     /**
      * Have this jump to ActionHandler, AH will return the two stackpanes I need to create the line.
@@ -137,11 +139,11 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
-     * Just displays the edge's info to the screen via a label for now.
+     * Added the given line to the Pane to display it to the user.
      */
     private void updateUINewEdge(Line newLine){
         canvasPane.getChildren().add(newLine);
-        newLine.setOnContextMenuRequested(e ->
+        newLine.setOnContextMenuRequested(e -> // Right click for deletion on line
                 action.makeEdgeContextMenu(newLine, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
 
@@ -176,14 +178,20 @@ public class FXMLController extends App implements PropertyChangeListener{
      * @param movedElement The UI Element that was moved
      */
     private void updateEdgesAfterDrag(StackPane movedElement){
+        UINode movedElementNode = (UINode) movedElement.getUserData();
+        int movedElementId = movedElementNode.getId();
         for (Object obj: canvasPane.getChildren()) {
             if (obj instanceof Line curLine) {
-                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
-                if(curLineConnectedNodes[0] == movedElement){
+                UIEdge curEdge = (UIEdge) curLine.getUserData();
+                UINode n1 = (UINode) curEdge.getN1();
+                UINode n2 = (UINode) curEdge.getN2();
+                int n1Id = n1.getId();
+                int n2Id = n2.getId();
+                if(n1Id == movedElementId){
                     curLine.setStartX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
                     curLine.setStartY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
                 }
-                else if(curLineConnectedNodes[1] == movedElement){
+                else if(n2Id == movedElementId){
                     curLine.setEndX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
                     curLine.setEndY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
                 }
@@ -223,7 +231,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     /**
      * Double click event handler for editing text on a node.
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
-\     */
+     \     */
     EventHandler<MouseEvent> clickNodeEventHandler =
             action::clickObject;
 
@@ -237,4 +245,8 @@ public class FXMLController extends App implements PropertyChangeListener{
 
     EventHandler<MouseEvent> nodeOnMouseReleased =
             action::releaseObject;
+
+    @FXML private void testLoadButton(){
+        objectRequesterObservable.loadNodesTest(canvasPane);
+    }
 }

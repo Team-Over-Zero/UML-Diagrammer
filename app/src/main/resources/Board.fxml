@@ -57,5 +57,6 @@
       <Button layoutX="269.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
       <Button layoutX="223.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
       <Label fx:id="noElementSelectedErrorLabel" layoutX="338.0" layoutY="5.0" text="No item selected, select an item then press edit/delete" textFill="RED" visible="false" />
+      <Button layoutX="385.0" layoutY="2.0" mnemonicParsing="false" onAction="#testLoadButton" text="generate" />
    </children>
 </AnchorPane>
