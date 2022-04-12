@@ -80,8 +80,8 @@ public class WebServer {
             ctx.result(http_client.exampleGetRequest());
         });
         client.get("/", new VueComponent("uml-editor"));
-        client.get("/api/nodeCreate", ctx -> {
-            ctx.result("Slow Hello World");
+        client.get("/testGet", ctx -> {
+            ctx.result("{id: 42}");
         });
     }
 

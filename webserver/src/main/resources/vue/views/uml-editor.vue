@@ -22,7 +22,7 @@
     </div>
     <div>
       <button v-on:click="addNode">Square</button>
-      <button>Class</button>
+      <button v-on:click="testGet">Class</button>
       <button>Note</button>
       <button>Folder</button>
       <button>Text Box</button>
@@ -31,7 +31,7 @@
       <button>User</button>
       <button>Oval</button>
     </div>
-    <canvas id="c" width="300" height="300"></canvas>
+    <canvas id="c" width="800" height="800" class="display-canvas"></canvas>
 
   </div>
 </template>
@@ -51,17 +51,12 @@
 
   function registerCanvas(){
     canvas = new fabric.Canvas('c');
-  }
-
-  function addShapes(){
-    let circle = new fabric.Circle({
-      radius: 20, fill: 'green', left: 100, top: 100, opacity: 1
+    canvas.setDimensions({
+      width: '100%',
+      height: '100%'
+    },{
+      cssOnly: true
     });
-    let triangle = new fabric.Triangle({
-      width: 20, height: 30, fill: 'blue', left: 50, top: 50
-    });
-
-    canvas.add(circle, triangle);
   }
 
   function addNode(){
@@ -74,20 +69,14 @@
       name: "DefaultName",
       svg_image: "",
       type: "default_nodes",
-      id: "so there",
-    };
-    alert(getId());
-    alert("got id of: " + n.id);
-  }
+      id: -1,
 
-  async function getId() {
-    let url = '/api/nodeCreate';
-    try {
-      let res = await fetch(url);
-      return await res.json();
-    } catch (error) {
-      console.log(error);
-    }
+    };
+
+    nodes.push(n);
+
+    canvas.add(n.image);
+
   }
 
   Vue.component("uml-editor", {
@@ -105,12 +94,16 @@
 
     methods: {
 
-      addSquare: function(){
-        addShapes();
-      },
       addNode: function(){
         addNode();
       },
+
+      testGet: function(){
+        fetch("/api/testGet")
+            .then(res => res.json())
+            .then(res => alert(res.id))
+            .catch(() => alert("Error while fetching users"));
+      }
 
 
     },
@@ -129,5 +122,9 @@
 <style>
 .uml-editor {
 
+}
+
+.display-canvas{
+  display: block;
 }
 </style>
