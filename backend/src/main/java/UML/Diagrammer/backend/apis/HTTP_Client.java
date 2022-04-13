@@ -21,10 +21,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  */
 package UML.Diagrammer.backend.apis;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustAllStrategy;
@@ -413,13 +410,16 @@ public class HTTP_Client {
 
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        HttpPut httpPut = new HttpPut(serverString+relPath);
+        HttpPost httpPost = new HttpPost(serverString+relPath);
 
-        URI uri = new URIBuilder(httpPut.getURI())
+        URI uri = new URIBuilder(httpPost.getURI())
                 .addParameter(param1Name, param1)
                 .build();
-        ((HttpRequestBase) httpPut).setURI(uri);
-        CloseableHttpResponse response = client.execute(httpPut);
+
+        System.out.println(uri.getQuery());
+        System.out.println(uri.toString());
+        ((HttpRequestBase) httpPost).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpPost);
         HttpEntity resStr = response.getEntity();
         InputStream iS=resStr.getContent();
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
@@ -448,14 +448,14 @@ public class HTTP_Client {
                 .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                 .build();
 
-        HttpPut httpPut = new HttpPut(serverString+relPath);
+        HttpPost httpPost = new HttpPost(serverString+relPath);
 
-        URI uri = new URIBuilder(httpPut.getURI())
+        URI uri = new URIBuilder(httpPost.getURI())
                 .addParameter(param1Name, param1)
                 .addParameter(param2Name,param2)
                 .build();
-        ((HttpRequestBase) httpPut).setURI(uri);
-        CloseableHttpResponse response = client.execute(httpPut);
+        ((HttpRequestBase) httpPost).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpPost);
         HttpEntity resStr = response.getEntity();
         InputStream iS=resStr.getContent();
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);

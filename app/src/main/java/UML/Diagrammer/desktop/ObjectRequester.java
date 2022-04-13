@@ -340,7 +340,7 @@ public class ObjectRequester {
             UIUser newUser = new UIUser(-1, name);
             System.out.print("Sending to HTTP: " + newUser.getIDAsJson());
             String dbUserString = HTTPClient.usercreaterequest(newUser.getIDAsJson());
-            newUser.setId(Integer.valueOf(dbUserString));
+            //newUser.setId(Integer.valueOf(dbUserString));
             //newUser.setId(dbUserString.matches("\\d+")); // regex gets on the integers that were returned(ID)
             return newUser;
         }
