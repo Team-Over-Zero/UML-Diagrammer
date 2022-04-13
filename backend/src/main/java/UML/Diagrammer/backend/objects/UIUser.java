@@ -1,5 +1,6 @@
 package UML.Diagrammer.backend.objects;
 
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,9 @@ public class UIUser {
     }
 
     public String getIDAsJson(){
-        return "{\"id\":\"" + id + "\"}";
+        Gson gson = new Gson();
+        String jsonStr = gson.toJson(this);
+        return jsonStr;
+        //return "{\"id\":\"" + id + "\"}";
     }
 }

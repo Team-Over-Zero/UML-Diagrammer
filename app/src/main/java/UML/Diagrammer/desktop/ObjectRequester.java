@@ -105,6 +105,7 @@ public class ObjectRequester {
     public void makeClassRequest(int x, int y, String name, String desc, UIClassNode newNode) {
         try {
             newNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
+            UIUser newUser = createNewUser("user0");
             //AbstractNode savedNode = saveNodeToDB(newNode);
             StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
             if (x == -1){/*saveNewNodeToDB(newNode);*/}
@@ -327,6 +328,9 @@ public class ObjectRequester {
         return stack;
     }
 
+    // Putting either of these strings in postman work properly
+    // http://127.0.0.1:8888/createuser/?user={"id":"-1","name":"newName"}
+    // http://127.0.0.1:8888/createpage/?page={"name":"TESTPAGE"}&userid={"id":"1"}
     /**
      * Creates a new user and gets their ID from the database
      * @param name name of the user
@@ -334,6 +338,7 @@ public class ObjectRequester {
     private UIUser createNewUser(String name){
         try {
             UIUser newUser = new UIUser(-1, name);
+            System.out.print("Sending to HTTP: " + newUser.getIDAsJson());
             String dbUserString = HTTPClient.usercreaterequest(newUser.getIDAsJson());
             newUser.setId(Integer.valueOf(dbUserString));
             //newUser.setId(dbUserString.matches("\\d+")); // regex gets on the integers that were returned(ID)
