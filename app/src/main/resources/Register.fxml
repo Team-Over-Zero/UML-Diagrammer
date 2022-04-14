@@ -5,18 +5,16 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLLoginController">
    <children>
-      <TextField layoutX="193.0" layoutY="122.0" prefHeight="25.0" prefWidth="259.0" promptText="New UserName" />
-      <TextField layoutX="193.0" layoutY="188.0" prefHeight="25.0" prefWidth="259.0" promptText="New Password" />
-      <TextField layoutX="193.0" layoutY="242.0" prefHeight="25.0" prefWidth="259.0" promptText="Confrim Password" />
-      <Text layoutX="101.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New UserName" />
-      <Text layoutX="101.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Password" />
-      <Text layoutX="92.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password" />
-      <Button layoutX="101.0" layoutY="302.0" mnemonicParsing="false" text="Register" />
-      <Button layoutX="361.0" layoutY="302.0" mnemonicParsing="false" text="Reset All Fields" />
-      <Button layoutX="526.0" layoutY="14.0" mnemonicParsing="false" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Cancel" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <TextField fx:id="registerUserName" layoutX="193.0" layoutY="122.0" prefHeight="25.0" prefWidth="259.0" promptText="New UserName" />
+      <TextField fx:id="registerNewPassword" layoutX="193.0" layoutY="188.0" prefHeight="25.0" prefWidth="259.0" promptText="New Password" />
+      <TextField fx:id="registerConfirmPassword" layoutX="193.0" layoutY="242.0" prefHeight="25.0" prefWidth="259.0" promptText="Confirm Password" />
+      <Text layoutX="87.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New UserName" />
+      <Text layoutX="90.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Password" />
+      <Text layoutX="78.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password" />
+      <Button layoutX="286.0" layoutY="299.0" mnemonicParsing="false" onAction="#registerButtonPressed" text="Register" />
+      <Button layoutX="526.0" layoutY="14.0" mnemonicParsing="false" onAction="#exitAppPressed" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#registerCancelButtonPressed" text="Cancel" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

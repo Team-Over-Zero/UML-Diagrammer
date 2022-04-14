@@ -28,6 +28,7 @@ import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
 import UML.Diagrammer.backend.objects.UIEdge.UINormalEdge;
 import UML.Diagrammer.backend.objects.UINode.*;
+import UML.Diagrammer.backend.objects.UIPage;
 import UML.Diagrammer.backend.objects.UIUser;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -101,19 +102,13 @@ public class ObjectRequester {
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
-    // Currently my test button for testing db connection.
     public void makeClassRequest(int x, int y, String name, String desc, UIClassNode newNode) {
-        try {
+        if(x == -1) {
             newNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
-            UIUser newUser = createNewUser("user0");
-            //AbstractNode savedNode = saveNodeToDB(newNode);
-            StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
-            if (x == -1){/*saveNewNodeToDB(newNode);*/}
-            support.firePropertyChange("newNodeCreation", null, newUIShape);
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+        StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
+        if (x == -1){/*saveNewNodeToDB(newNode);*/}
+        support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeFolderRequest(int x, int y, String text, UIFolderNode newNode) {
@@ -328,6 +323,11 @@ public class ObjectRequester {
         return stack;
     }
 
+    public void testDBConnections(){
+        UIUser newUser = createNewUser("myNewUser");
+        createNewPage(newUser, "newPage");
+    }
+
     // Putting either of these strings in postman work properly
     // http://127.0.0.1:8888/createuser/?user={"id":"-1","name":"newName"}
     // http://127.0.0.1:8888/createpage/?page={"name":"TESTPAGE"}&userid={"id":"1"}
@@ -338,18 +338,27 @@ public class ObjectRequester {
     private UIUser createNewUser(String name){
         try {
             UIUser newUser = new UIUser(-1, name);
-            System.out.print("Sending to HTTP: " + newUser.getIDAsJson());
             String dbUserString = HTTPClient.usercreaterequest(newUser.getIDAsJson());
-            //newUser.setId(Integer.valueOf(dbUserString));
-            //newUser.setId(dbUserString.matches("\\d+")); // regex gets on the integers that were returned(ID)
+            dbUserString = dbUserString.replaceAll("\\D", ""); // Strips everything but the id int
+            newUser.setId(Integer.valueOf(dbUserString));
             return newUser;
         }
         catch (Exception e){e.printStackTrace();}
         return null;
     }
 
-    /*private UIPage createNewPage(UIUser user, ){
-    }*/
+    private UIPage createNewPage(UIUser userId, String pageName){
+    try{
+        UIPage newPage = new UIPage(-1, pageName);
+        String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), userId.getIDAsJson());
+        dbPageString = dbPageString.replaceAll("\\D", ""); // Strips everything but the id int
+        newPage.setId(Integer.valueOf(dbPageString));
+        System.out.println("newPageId is now: "+newPage.getId());
+        return newPage;
+    }
+    catch (Exception e){e.printStackTrace();}
+    return null;
+    }
 
     /**
      * WIP of testing database connection

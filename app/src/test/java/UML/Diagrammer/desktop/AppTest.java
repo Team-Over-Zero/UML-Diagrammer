@@ -49,6 +49,8 @@ class AppTest {
     @Test
     public void largeTest() {
 
+        robo.clickOn("Log In");
+
         verifyThat(robo.lookup("Save"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Delete"), (Button b) -> b.isVisible());

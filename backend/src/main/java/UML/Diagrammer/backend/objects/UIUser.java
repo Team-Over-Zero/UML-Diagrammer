@@ -22,7 +22,7 @@ public class UIUser {
     public String getIDAsJson(){
         Gson gson = new Gson();
         String jsonStr = gson.toJson(this);
-        return jsonStr;
-        //return "{\"id\":\"" + id + "\"}";
+        //return jsonStr;
+        return "{\"id\":\"" + id + "\"}";
     }
 }

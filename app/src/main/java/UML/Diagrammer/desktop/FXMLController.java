@@ -92,7 +92,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * Sends a request to ObjectRequester to make a UML object(Just a node right now).
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
-    @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
+    @FXML private void ovalButtonPressed() {
         objectRequesterObservable.makeOvalRequest(-1, -1, null, null);}
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest(-1, -1, null, null, null);}
@@ -246,7 +246,10 @@ public class FXMLController extends App implements PropertyChangeListener{
     EventHandler<MouseEvent> nodeOnMouseReleased =
             action::releaseObject;
 
-    @FXML private void testLoadButton(){
-        objectRequesterObservable.loadNodesTest(canvasPane);
+    /**
+     * A test button to test db connection like making a new user, page etc.
+     */
+    @FXML private void testDB(){
+        objectRequesterObservable.testDBConnections();
     }
 }

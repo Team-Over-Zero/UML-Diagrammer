@@ -7,21 +7,20 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UserLogIn">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLLoginController">
    <children>
-      <TextField layoutX="216.0" layoutY="126.0" promptText="UserName" />
-      <TextField layoutX="215.0" layoutY="150.0" promptText="Password" />
-      <Button layoutX="216.0" layoutY="188.0" mnemonicParsing="false" text="Log In" />
-      <Button layoutX="216.0" layoutY="230.0" mnemonicParsing="false" text="Register New Account" />
+      <TextField fx:id="UserNameTextField" layoutX="216.0" layoutY="126.0" promptText="UserName" />
+      <TextField fx:id="PasswordTextField" layoutX="215.0" layoutY="150.0" promptText="Password" />
+      <Button layoutX="216.0" layoutY="188.0" mnemonicParsing="false" onAction="#loginButtonPressed" text="Log In" />
+      <Button layoutX="216.0" layoutY="230.0" mnemonicParsing="false" onAction="#loginRegisterNewUserPressed" text="Register New Account" />
       <Label fx:id="ErrorLabel" layoutX="215.0" layoutY="98.0" text="Error" textFill="RED" visible="false" />
-      <Button layoutX="275.0" layoutY="188.0" mnemonicParsing="false" text="Forgot Your Password?" />
       <Text layoutX="159.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UML Diagrammer 2.5">
          <font>
             <Font size="33.0" />
          </font>
       </Text>
-      <Button blendMode="SRC_ATOP" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Button layoutX="290.0" layoutY="277.0" mnemonicParsing="false" text="Read Me" />
-      <Button layoutX="214.0" layoutY="277.0" mnemonicParsing="false" text="Credits" />
+      <Button blendMode="SRC_ATOP" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" onAction="#exitAppPressed" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Button layoutX="290.0" layoutY="277.0" mnemonicParsing="false" onAction="#loginReadMePressed" text="Read Me" />
+      <Button layoutX="214.0" layoutY="277.0" mnemonicParsing="false" onAction="#loginCreditButtonPressed" text="Credits" />
    </children>
 </AnchorPane>

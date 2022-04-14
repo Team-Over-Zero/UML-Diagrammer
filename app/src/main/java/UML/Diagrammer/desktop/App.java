@@ -26,6 +26,7 @@ package UML.Diagrammer.desktop;
 import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -62,12 +63,13 @@ public class App extends Application{
 //        dbConnect.spinUp();
 
 
-        Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
         stage.setTitle("UML Diagrammer");
-        stage.setScene(new Scene(root, 1000, 800));
+        stage.setScene(new Scene(root, 600, 400));
         stage.show();
         primaryStage = stage;
-        primaryStage.setAlwaysOnTop(true);
+        //primaryStage.setAlwaysOnTop(true);
     }
 
     /**
