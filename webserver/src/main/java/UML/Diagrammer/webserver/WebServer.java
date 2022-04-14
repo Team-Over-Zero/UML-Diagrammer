@@ -28,11 +28,18 @@ import io.javalin.plugin.rendering.vue.VueComponent;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.connection_config.DBConfiguration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
 
 
 public class WebServer {
@@ -80,8 +87,34 @@ public class WebServer {
             ctx.result(http_client.exampleGetRequest());
         });
         client.get("/", new VueComponent("uml-editor"));
+
+        client.get("/svg/{file}", ctx -> {
+
+            Path filePath = Paths.get("src/main/resources/Images/" + ctx.pathParam("file"));
+            Path absPath = filePath.toAbsolutePath();
+            String svgString = Files.readString(absPath);
+
+
+            /*URL url = getClass().getClassLoader().getResource("Images/" + ctx.pathParam("file"));
+
+            String ans = "";
+            try {
+                File myObj = new File(url.getFile());
+                Scanner myReader = new Scanner(myObj);
+                while (myReader.hasNextLine()) {
+                    String data = myReader.nextLine();
+                    ans += ' ' + data;
+                }
+                myReader.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }*/
+            ctx.result(svgString);
+        });
+
         client.get("/testGet", ctx -> {
-            ctx.result("{id: 42}");
+            ctx.result("{\"name\":\"John\"}");
         });
     }
 
