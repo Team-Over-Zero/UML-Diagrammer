@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import java.net.URI;
 
 import java.awt.*;
@@ -63,10 +64,17 @@ public class FXMLLoginController extends App{
         App.primaryStage.setScene(new Scene(root, 600, 400));
     }
 
-    @FXML private void registerButtonPressed(){}
+    @FXML private void registerButtonPressed(){
+        if (registerNewPassword.getText().equals(registerNewPassword.getText())){
+            registerErrorLabel.setText("Passwords do not match");
+            registerErrorLabel.setVisible(true);
+        }
+        System.out.println(registerNewPassword.getText().equals(registerNewPassword.getText()));
+    }
 
     @FXML TextField registerUserName;
     @FXML TextField registerNewPassword;
     @FXML TextField registerConfirmPassword;
+    @FXML Label registerErrorLabel;
 
 }
