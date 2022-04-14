@@ -135,7 +135,7 @@ public class Database_ClientTest extends DBSpec {
         try
 
         {
-            http_client.sendRemovePage(pageJ);
+            http_client.sendDeletePage(pageJ);
             success = true;
 
         } catch(
