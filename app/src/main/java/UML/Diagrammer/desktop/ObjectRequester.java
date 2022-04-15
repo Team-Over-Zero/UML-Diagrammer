@@ -356,15 +356,15 @@ public class ObjectRequester {
      * @return A new page for the user to add things to.
      */
     private UIPage createNewPage(UIUser user, String pageName){
-    try{
-        UIPage newPage = new UIPage(-1, pageName);
-        String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), user.getIDAsJson());
-        newPage.setId(stripNum(dbPageString));
-        System.out.println("newPageId is now: "+newPage.getId());
-        return newPage;
-    }
-    catch (Exception e){e.printStackTrace();}
-    return null;
+        try{
+            UIPage newPage = new UIPage(-1, pageName);
+            String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), user.getIDAsJson());
+            newPage.setId(stripNum(dbPageString));
+            System.out.println("newPageId is now: "+newPage.getId());
+            return newPage;
+        }
+        catch (Exception e){e.printStackTrace();}
+        return null;
     }
 
     /**
