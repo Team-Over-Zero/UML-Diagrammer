@@ -9,6 +9,10 @@ import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
+import UML.Diagrammer.backend.objects.UINode.UIClassNode;
+import UML.Diagrammer.backend.objects.UINode.UIDefaultNode;
+import UML.Diagrammer.backend.objects.UINode.UINode;
+import UML.Diagrammer.backend.objects.UINode.UINodeFactory;
 import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -91,17 +95,20 @@ public class NodeTest extends DBSpec {
 
     @Test
     /**
+     * Test UI Node Hydration.
      * Based off of : https://www.baeldung.com/gson-list
      * @Author Alex
-     * ALEX NOTE: Can someone figure out how to do TypeTokens of a list? ie. TypeToken<List<AbstractNode>>
      */
-    public void nodeHydrationTest(){
+    public void UInodeHydrationTest(){
         //node.set("id",1);
-        node.saveIt();
-        System.out.println("id="+node.getId());
-        String gsonStrDefNode = node.toJson(true);
-        ClassNode classNode = factory.buildNode("class_nodes",2,1,1,1);
-        String gsonStrClassNode = classNode.toJson(false);
+       // node.saveIt();
+        UINodeFactory uiNodeFactory = new UINodeFactory();
+        UIDefaultNode uiNode =uiNodeFactory.buildNode();
+        Gson gson = new Gson();
+        System.out.println("id="+uiNode.getId());
+        String gsonStrDefNode = gson.toJson(uiNode);
+        UIClassNode uiClassNode = uiNodeFactory.buildNode("class_nodes",2,1,1,1);
+        String gsonStrClassNode = gson.toJson(uiClassNode);
 
         List<String> gsonStrList = new ArrayList<String>();
         gsonStrList.add(gsonStrDefNode);
@@ -109,24 +116,25 @@ public class NodeTest extends DBSpec {
 
         NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
 
-        customNodeDeserializer.registerSubtype( "default_nodes",DefaultNode.class);
-        customNodeDeserializer.registerSubtype( "class_nodes", ClassNode.class);
+        customNodeDeserializer.registerSubtype( "default_nodes",UIDefaultNode.class);
+        customNodeDeserializer.registerSubtype( "class_nodes", UIClassNode.class);
 
         Gson gBuilder = new GsonBuilder()
-                .registerTypeAdapter(AbstractNode.class,customNodeDeserializer)
+                .registerTypeAdapter(UINode.class,customNodeDeserializer)
                 .create();
 
 
-        List<AbstractNode> aList= new ArrayList<>();
+        List<UINode> aList= new ArrayList<>();
 
         for (String n : gsonStrList) {
-            aList.add(gBuilder.fromJson(n, new TypeToken<AbstractNode>(){}.getType())); //adds a hydrated string to our list
             System.out.println(n.toString());
+
+            aList.add(gBuilder.fromJson(n, new TypeToken<UINode>(){}.getType())); //adds a hydrated string to our list
         }
                 //gBuilder.fromJson(arrStr, new TypeToken<AbstractNode>(){}.getType());
        // assertEquals("{}",gsonStrDefNode);
-        assertTrue(aList.get(0) instanceof DefaultNode);
-        assertTrue(aList.get(1) instanceof ClassNode);
+        assertTrue(aList.get(0) instanceof UIDefaultNode);
+        assertTrue(aList.get(1) instanceof UIClassNode);
 
     }
     }

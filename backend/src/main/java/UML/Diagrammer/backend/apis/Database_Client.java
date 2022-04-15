@@ -44,8 +44,6 @@ public class Database_Client {
     private String databasePassword;
     private int javalinPort;
     private Javalin httpServer;
-
-
     /**
      * The default Database constructor. Since this is an internal API I am hardcoding our dev server connection in the
      * default constructor.
@@ -67,7 +65,6 @@ public class Database_Client {
      * @param password  the mysql password
      */
     public Database_Client(String url, String userName, String password,int port ){
-
         //initializes ActiveJDBC
         databaseURL = url;
         databaseUser = userName;
@@ -110,12 +107,11 @@ public class Database_Client {
         deleteEdgeFromPage();
         createNodeOnPage();
         deleteNodeFromPage();
+        updateNodeOnPage();
 
         createUser();
         addUserToPage();
         removeUserFromPage();
-
-
 
 
         //This handler will run before every single request handler. This will ensure
@@ -141,7 +137,6 @@ public class Database_Client {
 
     //Node Methods
     void devGetDefaultNode(){
-
         httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
     }
     void devTryCreateNode(){
@@ -183,7 +178,8 @@ public class Database_Client {
 
 
 
-    //Page requests
+    //Page requests. the "paths" of these represent the paths that must be called by a http client or postman.
+    //Note that all of these are post request listeners.
     void createPage(){
         httpServer.post("/createpage/",RequestController::createPage);
     }
@@ -196,12 +192,11 @@ public class Database_Client {
     void deleteNodeFromPage(){
         httpServer.post("/pageremovenode/",RequestController::removeNodeFromPage);
     }
-    void createEdgeOnPage(){
-        httpServer.post("/pagecreateedge/",RequestController::createEdgeOnPage);
-    }
+    void createEdgeOnPage(){ httpServer.post("/pagecreateedge/",RequestController::createEdgeOnPage);}
     void deleteEdgeFromPage(){
         httpServer.post("/pageremoveedge/",RequestController::removeEdgeFromPage);
     }
+    void updateNodeOnPage(){httpServer.post("/pageupdatenode/",RequestController::updateNodeOnPage);}
     void addUserToPage(){
         httpServer.post("/addusertopage/",RequestController::addUserToPage);
     }
@@ -213,9 +208,6 @@ public class Database_Client {
     void createUser(){
         httpServer.post("/createuser/", RequestController::createUser);
     }
-
-
-
 
 
     //Misc.
@@ -249,8 +241,5 @@ public class Database_Client {
         //retString = "Hello: "+ctx.pathParam("name");
 
     }
-
-
-
 
 }

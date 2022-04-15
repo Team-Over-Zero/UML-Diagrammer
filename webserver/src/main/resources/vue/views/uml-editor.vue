@@ -21,19 +21,20 @@
       </select>
     </div>
     <div>
-      <button v-on:click="addNode">Square</button>
-      <button v-on:click="testGet">Class</button>
-      <button>Note</button>
-      <button>Folder</button>
-      <button>Text Box</button>
-      <button>Lifeline</button>
-      <button>Loop</button>
-      <button>User</button>
-      <button>Oval</button>
+      <button v-on:click="addNode('TextBox_Square_Interface')">Square</button>
+      <button v-on:click="addNode('Class')">Class</button>
+      <button v-on:click="addNode('Note')">Note</button>
+      <button v-on:click="addNode('Folder')">Folder</button>
+      <button v-on:click="addNode('TextBox_Square_Interface')">Text Box</button>
+      <button v-on:click="addNode('LifeLine')">Lifeline</button>
+      <button v-on:click="addNode('Loop')">Loop</button>
+      <button v-on:click="addNode('StickFigure')">User</button>
+      <button v-on:click="addNode('Oval_UseCase')">Oval</button>
     </div>
     <canvas id="c" width="800" height="800" class="display-canvas"></canvas>
 
   </div>
+
 </template>
 
 <script src="https://unpkg.com/konva@8/konva.min.js"></script>
@@ -59,7 +60,7 @@
     });
   }
 
-  function addNode(){
+  function addNode(path){
     let n = {
       description: "Default Description",
       height: 30,
@@ -70,12 +71,20 @@
       svg_image: "",
       type: "default_nodes",
       id: -1,
-
     };
 
     nodes.push(n);
 
-    canvas.add(n.image);
+    let shape = new fabric.Path(path, {
+      left: 10,
+      top: 10
+    });
+
+
+
+
+
+    canvas.add(shape);
 
   }
 
@@ -94,16 +103,26 @@
 
     methods: {
 
-      addNode: function(){
-        addNode();
+      addNode: function(file){
+        fetch('/svg/' + file + '.svg')
+            .then(result => result.text())
+            .then((output) => {
+              addNode(output)
+            }).catch(err => console.error(err));
       },
 
       testGet: function(){
-        fetch("/api/testGet")
-            .then(res => res.json())
-            .then(res => alert(res.id))
-            .catch(() => alert("Error while fetching users"));
-      }
+        fetch('/testGet')
+            .then(result => result.json())
+            .then((output) => {
+              console.log('Output: ', output);
+
+            }).catch(err => console.error(err));
+      },
+
+      loadSVG: function(){
+
+      },
 
 
     },

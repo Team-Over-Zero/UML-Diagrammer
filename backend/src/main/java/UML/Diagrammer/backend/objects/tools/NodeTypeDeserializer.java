@@ -16,8 +16,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *
  * Ripped straight from: https://www.baeldung.com/gson-list
  *
- *  * DEPRECATED. USING A DIFFERENT DESERIALIZATION STANDARD
  *
+ * This can be used for deserializing UINodes as show in the NodeTest test. Allows for Hydration without switch statements.
  * @author Alex
  */
 
@@ -26,17 +26,18 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.backend.objects.tools;
 
 import UML.Diagrammer.backend.objects.AbstractNode;
+import UML.Diagrammer.backend.objects.UINode.UINode;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NodeTypeDeserializer implements JsonDeserializer<AbstractNode> {
+public class NodeTypeDeserializer implements JsonDeserializer<UINode> {
 
         private String nodeTypeElementName;
         private Gson gson;
-        private Map<String, Class<? extends AbstractNode>> nodeTypeRegistry;
+        private Map<String, Class<? extends UINode>> nodeTypeRegistry;
 
         public NodeTypeDeserializer(String nodeTypeElementName) {
             this.nodeTypeElementName = nodeTypeElementName;
@@ -44,15 +45,15 @@ public class NodeTypeDeserializer implements JsonDeserializer<AbstractNode> {
             this.nodeTypeRegistry = new HashMap<>();
         }
 
-        public void registerSubtype(String nodeTypeName, Class<? extends AbstractNode> nodeType) {
+        public void registerSubtype(String nodeTypeName, Class<? extends UINode> nodeType) {
             nodeTypeRegistry.put(nodeTypeName, nodeType);
         }
 
-        public AbstractNode deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+        public UINode deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
             JsonObject nodeObject = json.getAsJsonObject();
             JsonElement nodeTypeElement = nodeObject.get(nodeTypeElementName);
 
-            Class<? extends AbstractNode> nodeType = nodeTypeRegistry.get(nodeTypeElement.getAsString());
+            Class<? extends UINode> nodeType = nodeTypeRegistry.get(nodeTypeElement.getAsString());
             return gson.fromJson(nodeObject, nodeType);
         }
     }

@@ -338,7 +338,7 @@ public class ObjectRequester {
     private UIUser createNewUser(String name){
         try {
             UIUser newUser = new UIUser(-1, name);
-            String dbUserString = HTTPClient.usercreaterequest(newUser.getIDAsJson());
+            String dbUserString = HTTPClient.sendCreateUser(newUser.getIDAsJson());
             dbUserString = dbUserString.replaceAll("\\D", ""); // Strips everything but the id int
             newUser.setId(Integer.valueOf(dbUserString));
             return newUser;
