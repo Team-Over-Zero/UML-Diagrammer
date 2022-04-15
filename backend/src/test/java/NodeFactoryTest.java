@@ -20,7 +20,26 @@ public class NodeFactoryTest extends DBSpec{
     /**
      * Basic tests to ensure objects are being created correctly
      * Since they all share the same attributes the assertions are repeated
+     * C1: Coords, C2: height, C3: width
      */
+
+    /**
+     * This test should capture incorrect behavior witht the generation of a node with any bad info
+     *
+     */
+    @Test
+    public void testC1TrueC2FalseC3True(){
+
+        TextBoxNode test = factory.buildNode("text_box_nodes",1,2,3,4);
+        Exception ex = assertThrows(IllegalArgumentException.class,()->{
+            test.setSize(-1,0);});
+        assertEquals(IllegalArgumentException.class,ex.getClass());
+    }
+
+
+
+
+
      @Test
     public void testTEXTBOX(){
          TextBoxNode test = factory.buildNode("text_box_nodes",1,2,3,4);

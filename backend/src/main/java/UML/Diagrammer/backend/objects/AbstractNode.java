@@ -71,6 +71,9 @@ public abstract class AbstractNode extends Model {
      * @param h height of node
      */
     public void setSize(int w, int h) {
+        if (w < 0 || h < 0){
+            throw new IllegalArgumentException();
+        }
         set("width", w);
         set("height", h);
 
