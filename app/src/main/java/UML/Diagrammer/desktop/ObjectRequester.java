@@ -347,10 +347,10 @@ public class ObjectRequester {
         return null;
     }
 
-    private UIPage createNewPage(UIUser userId, String pageName){
+    private UIPage createNewPage(UIUser user, String pageName){
     try{
         UIPage newPage = new UIPage(-1, pageName);
-        String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), userId.getIDAsJson());
+        String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), user.getIDAsJson());
         dbPageString = dbPageString.replaceAll("\\D", ""); // Strips everything but the id int
         newPage.setId(Integer.valueOf(dbPageString));
         System.out.println("newPageId is now: "+newPage.getId());
