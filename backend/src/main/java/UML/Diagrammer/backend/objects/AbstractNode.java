@@ -74,6 +74,7 @@ public abstract class AbstractNode extends Model {
         set("width", w);
         set("height", h);
 
+
     }
 
     /**
@@ -121,6 +122,7 @@ public abstract class AbstractNode extends Model {
 
         return getInteger("id");
     }
+
 
     /**
      * This just adds an alias for saveIt so that we can move saveIt calls out of constructors.

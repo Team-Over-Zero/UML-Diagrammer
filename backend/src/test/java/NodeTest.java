@@ -36,6 +36,9 @@ public class NodeTest extends DBSpec {
      * dbspec test works. This does NOT use the junit database for its calls but instead the dev database. This means that data can
      * persist. Additional work would have to be done by the tester to remove created rows. Should deprecate this soon, as we dont want test data being
      * stored in the same place as user data.
+     * 4/15 DBSpec added a while back now, David updating tests on 4/15
+     * Conditions are either true or false(valid or invalid, ie true means the test uses valid values, etc)
+     * C1: coords, C2: Id
      */
     @BeforeEach
     public void setup(){
@@ -56,7 +59,7 @@ public class NodeTest extends DBSpec {
     }*/
     /*Node test for setCoords method*/
     @Test
-    public void setCoords() {
+    public void testSetCoordsC1True() {
         node.setCoords(1,1);
         node.setCoords(123,123);
         node.saveIt();
@@ -64,18 +67,33 @@ public class NodeTest extends DBSpec {
         assertEquals(123,node.get("y_coord"));
     }
 
+    @Test
+    public void testSetCoordsC1False(){
+        Integer j = null;
+        assertThrows(NullPointerException.class,()->{node.setCoords(j,j);});
+
+
+
+    }
+
     /**
      * Test for the getID method
      * Alex Note: be careful setting ID's. Probably should check if a row exists first.
      */
     @Test
-    public void getID() {
+    public void getIDC1True() {
         node.setId(1000);
         node.setId(9999);
         node.saveIt();
 
         assertEquals(9999,node.getId());
     }
+
+    @Test
+    public void setIDC1False() {
+        //assertThrows(Exception.class,node.setId("a"));
+    }
+
 
     /*Testing for the getDescription method*/
     @Test
