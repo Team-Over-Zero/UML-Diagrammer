@@ -18,6 +18,10 @@ public class UIPage {
     }
 
     public String getPageNameAsJSon(){
-        return "{\"name\":\"" + id + "\"}";
+        return "{\"name\":\"" + name + "\"}";
+    }
+
+    public String getPageIdAsJSon(){
+        return "{\"id\":\"" + id + "\"}";
     }
 }

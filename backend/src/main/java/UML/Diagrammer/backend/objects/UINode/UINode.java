@@ -14,6 +14,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.backend.objects.UINode;
 
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,5 +69,18 @@ public abstract class UINode {
 
     public String getIDAsJson(){
         return "{\"id\":\"" + id + "\"}";
+    }
+
+    public String getNodeAsJSon(){
+        return "{\"description\":\"" + desc + "\"," +
+                "\"height\":\"" + h + "\"," +
+                "\"id\":\"" + id + "\"," +
+                "\"name\":\"" + name + "\"," +
+                "\"svg_image\":\"" + SVGImage + "\"," +
+                "\"type\":\"" + type + "\"," +
+                "\"width\":\"" + w + "\"," +
+                "\"x_coord\":\"" + x + "\"," +
+                "\"y_coord\":\"" + y + "\"" +
+                "}";
     }
 }

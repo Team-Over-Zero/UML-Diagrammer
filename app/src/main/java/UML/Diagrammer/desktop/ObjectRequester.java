@@ -325,7 +325,9 @@ public class ObjectRequester {
 
     public void testDBConnections(){
         UIUser newUser = createNewUser("myNewUser");
-        createNewPage(newUser, "newPage");
+        UIPage newPage = createNewPage(newUser, "newPage");
+        UIClassNode newUIClassNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
+        saveNewNodeToDB(newUIClassNode, newPage);
     }
 
     // Putting either of these strings in postman work properly
@@ -339,20 +341,25 @@ public class ObjectRequester {
         try {
             UIUser newUser = new UIUser(-1, name);
             String dbUserString = HTTPClient.sendCreateUser(newUser.getIDAsJson());
-            dbUserString = dbUserString.replaceAll("\\D", ""); // Strips everything but the id int
-            newUser.setId(Integer.valueOf(dbUserString));
+            newUser.setId(stripNum(dbUserString));
+            System.out.println("newUserId is now: " + newUser.getId());
             return newUser;
         }
         catch (Exception e){e.printStackTrace();}
         return null;
     }
 
+    /**
+     * creates a new page given an associated user.
+     * @param user The user that this page should belong to.
+     * @param pageName The name of the page that the user has specified.
+     * @return A new page for the user to add things to.
+     */
     private UIPage createNewPage(UIUser user, String pageName){
     try{
         UIPage newPage = new UIPage(-1, pageName);
         String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), user.getIDAsJson());
-        dbPageString = dbPageString.replaceAll("\\D", ""); // Strips everything but the id int
-        newPage.setId(Integer.valueOf(dbPageString));
+        newPage.setId(stripNum(dbPageString));
         System.out.println("newPageId is now: "+newPage.getId());
         return newPage;
     }
@@ -361,39 +368,26 @@ public class ObjectRequester {
     }
 
     /**
-     * WIP of testing database connection
-     * @param node
+     * Saves a node to the database via a page.
+     * @param node The node you'd like to save to a page.
+     * @param page The page that the user is currently on.
      */
-    private void saveNewNodeToDB(UINode node) {
+    private void saveNewNodeToDB(UINode node, UIPage page) {
         try {
-            //System.out.println("about to gson");
-            //Gson gson = new Gson();
-
-            //UIUser newUser = createNewUser("testUser");
-            UIUser newUser = new UIUser(-1, "user0");
-            //UIPage newPage = new UIPage(-1, "page0");
-
-            //System.out.println("usercreaterrequest was given: " + newUser.getIDAsJson());
-
-            //String pgStr = HTTPClient.usercreaterequest(newUser.getIDAsJson());
-
-            //System.out.println("returned string is: " + pgStr);
-            //String newID = HTTPClient.sendAddNodeToPage(node.getIDAsJson(), newPage.getPageIDAsJSon());
-            //System.out.println(newID);
-
-
-            //String jsonString = gson.toJson(node, UINode.class);
-            //System.out.println(jsonString);
-            //String dbString = HTTPClient.sendNodeCreateRequest(jsonString);
-            //System.out.println("dbString: "+dbString);
-
-            //JsonObject dbObject = gson.fromJson(dbString, JsonObject.class);
-
-            //Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
-            //String returnedID = dbObject.get("id").getAsString();
-            //node.setId(Integer.valueOf(returnedID));
+            String returnedString = HTTPClient.sendAddNodeToPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
+            node.setId(stripNum(returnedString));
+            System.out.println("Successfully saved node to db with new id of: " + node.getId());
         }
         catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
+    }
+
+    /**
+     * Strips everything but integers from a string, should be used to get an Id from a JSon string
+     * @param stringToStrip the string you'd like to strip
+     * @return the numeber in the string
+     */
+    public int stripNum(String stringToStrip){
+        return Integer.parseInt(stringToStrip.replaceAll("\\D", ""));
     }
 
     /**
