@@ -94,24 +94,14 @@ public class WebServer {
             Path absPath = filePath.toAbsolutePath();
             String svgString = Files.readString(absPath);
 
-
-            /*URL url = getClass().getClassLoader().getResource("Images/" + ctx.pathParam("file"));
-
-            String ans = "";
-            try {
-                File myObj = new File(url.getFile());
-                Scanner myReader = new Scanner(myObj);
-                while (myReader.hasNextLine()) {
-                    String data = myReader.nextLine();
-                    ans += ' ' + data;
-                }
-                myReader.close();
-            } catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }*/
             ctx.result(svgString);
         });
+
+        client.get("/node/{id}", ctx -> {
+           ctx.result("{\"description\":\"Default Description\",\"height\":201,\"width\":201,\"x_coord\":640.8970099667774,\"y_coord\":197.74834437086093,\"name\":\"This is to see if I have this \",\"svg_image\":\"Note.svg\",\"type\":\"note_nodes\",\"id\":-1}");
+        });
+
+
 
         client.get("/testGet", ctx -> {
             ctx.result("{\"name\":\"John\"}");
