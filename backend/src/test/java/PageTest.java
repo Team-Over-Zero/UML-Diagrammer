@@ -64,6 +64,7 @@ public class PageTest extends DBSpec {
         page = new Page();
         factory = new NodeFactory();
         DefaultNode node = factory.buildNode();
+        node.saveIt();
         page.add(node);
         DefaultNode testNode = (DefaultNode) page.getNodes().get(0).get(0);
 
