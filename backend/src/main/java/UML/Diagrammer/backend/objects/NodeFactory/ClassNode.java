@@ -26,9 +26,6 @@ import UML.Diagrammer.backend.objects.*;
          saveIt();
      }
      public ClassNode(int x, int y, int w, int h){
-        super("Class Name","class_nodes", "Class Description", "CLASS_SVG", x, y, w, h);
-     }
-     public void testFunc(){
-         System.out.println("subclassing stuffs is working alright");
+        super("Class Name","classnodes", "Class Description", "CLASS_SVG", x, y, w, h);
      }
 }

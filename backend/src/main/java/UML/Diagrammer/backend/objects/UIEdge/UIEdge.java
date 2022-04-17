@@ -50,4 +50,18 @@ public abstract class UIEdge {
                 "Node 2 Type: "+ n2.getType();
     }
 
+    /**
+     * Makes a JSon String in a way the db likes.
+     * @return A String that is the database will take.
+     */
+    public String getEdgeAsJSon(){
+        return "{\"id\":\"" + id + "\"," +
+                "\"type\":\"" + "default_edges" + "\"," + // I only use normal edges for UI. Otherwise, I would need to add a type to edge.
+                "\"from_node_id\":\"" + n1.getId() + "\"," +
+                "\"from_node_type\":\"" + n1.getType() + "\"," +
+                "\"to_node_id\":\"" + n2.getId() + "\"," +
+                "\"to_node_type\":\"" + n2.getType() + "\"" +
+                "}";
+    }
+
 }
