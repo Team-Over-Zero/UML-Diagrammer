@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UINoteNode extends UINode{
     UINoteNode(int x, int y, int w, int h){
-        super("Note Name","note_nodes", "Note Description", "NOTE_SVG", x, y, w, h);
+        super("Note Name","notenodes", "Note Description", "NOTE_SVG", x, y, w, h);
     }
 }

@@ -22,6 +22,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class FolderNode extends AbstractNode {
     public FolderNode(int x, int y, int w, int h){
-        super("Folder Name","folder_nodes",null, "FOLDER_SVG", x, y, w, h);
+        super("Folder Name","foldernodes",null, "FOLDER_SVG", x, y, w, h);
     }
 }

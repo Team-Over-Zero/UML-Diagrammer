@@ -36,7 +36,7 @@ public class FactoryTest extends DBSpec {
 
             //assertTrue(testDB.hasConnection());
             AbstractNode node = factory.buildNode();
-            ClassNode node2 = factory.buildNode("class_nodes",2,2,2,2);
+            ClassNode node2 = factory.buildNode("classnodes",2,2,2,2);
             String nameSet = "TESTFACTORY CLASSNODE";
             node2.set("name",nameSet);
             node.saveIt();
@@ -119,7 +119,7 @@ public class FactoryTest extends DBSpec {
     /*Tests the factory's classNodeSubclass method in this function*/
     @Test
     public void testClassNodeSubclass(){
-        ClassNode node = factory.buildNode("class_nodes", 0, 0, 3, 3);
+        ClassNode node = factory.buildNode("classnodes", 0, 0, 3, 3);
         assertEquals("Class Name", node.get("name"));
         assertEquals("Class Description", node.get("description"));
         assertEquals(0, node.get("x_coord"));

@@ -31,7 +31,7 @@ public class UIEdgeFactoryTest extends DBSpec {
     public void testNormalEdge(){
         UIDefaultNode node = nodeFactory.buildNode();
         UIDefaultNode node2 = nodeFactory.buildNode();
-        UINormalEdge edge = factory.buildEdge("normal_edges", node, node2);
+        UINormalEdge edge = factory.buildEdge("normaledges", node, node2);
         assertEquals( node.getId(), edge.getN1().getId());
         assertEquals((node2.getId()), edge.getN2().getId());
     }

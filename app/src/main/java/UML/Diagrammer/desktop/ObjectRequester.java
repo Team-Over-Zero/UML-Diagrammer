@@ -94,7 +94,7 @@ public class ObjectRequester {
      */
     public void makeOvalRequest(int x, int y, String text, UIOvalNode newNode) {
         if (x == -1){
-            newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
         }
         String image = "Oval_UseCase.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
@@ -104,7 +104,7 @@ public class ObjectRequester {
 
     public void makeClassRequest(int x, int y, String name, String desc, UIClassNode newNode) {
         if(x == -1) {
-            newNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
         }
         StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
         if (x == -1){/*saveNewNodeToDB(newNode);*/}
@@ -113,7 +113,7 @@ public class ObjectRequester {
 
     public void makeFolderRequest(int x, int y, String text, UIFolderNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
         }
         String image = "Folder.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
@@ -124,7 +124,7 @@ public class ObjectRequester {
     //unique
     public void makeLifeLineRequest(int x, int y, String text, UILifeLineNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 30, 500);
+            newNode = nodeFactory.buildNode("lifelinenodes", 3, 3, 30, 500);
         }
         String image = "/LifeLine.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_CENTER, x, y, text);
@@ -137,7 +137,7 @@ public class ObjectRequester {
     //unique
     public void makeLoopRequest(int x, int y, String text, UILoopNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 750, 450);
+            newNode = nodeFactory.buildNode("loopnodes", 3, 3, 750, 450);
         }
         StackPane newUIShape = UILoopRequest(newNode, x, y, text);
         if (x == -1){/*database save call*/}
@@ -146,7 +146,7 @@ public class ObjectRequester {
 
     public void makeNoteRequest(int x, int y, String text, UINoteNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("note_nodes", 3, 3, 200, 200);
+            newNode = nodeFactory.buildNode("notenodes", 3, 3, 200, 200);
         }
         String image = "/Note.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
@@ -156,7 +156,7 @@ public class ObjectRequester {
 
     public void makeStickFigureRequest(int x, int y, String text, UIStickFigureNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 100, 200);
+            newNode = nodeFactory.buildNode("stickfigurenodes", 3, 3, 100, 200);
         }
         String image = "/StickFigure.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.BOTTOM_CENTER, x, y, text);
@@ -166,7 +166,7 @@ public class ObjectRequester {
 
     public void makeTextBoxRequest(int x, int y, String text, UITextBoxNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
         }
         String image = "TextBox_Square_Interface.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
@@ -176,7 +176,7 @@ public class ObjectRequester {
 
     public void makeSquareRequest(int x, int y, String text, UISquareNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("square_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
         }
         String image = "TextBox_Square_Interface.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
@@ -189,7 +189,7 @@ public class ObjectRequester {
      */
     public void makeEdgeRequest(StackPane n0, StackPane n1, UIEdge newEdge) {
         if (newEdge == null) { // Check for loading
-            newEdge = edgeFactory.buildEdge("normal_edges", (UINode) n0.getUserData(), (UINode) n1.getUserData());
+            newEdge = edgeFactory.buildEdge("normaledges", (UINode) n0.getUserData(), (UINode) n1.getUserData());
         }
         Line newLine = UIEdgeRequest(n0, n1, newEdge);
         support.firePropertyChange("newEdgeCreation", null, newLine);
@@ -326,8 +326,38 @@ public class ObjectRequester {
     public void testDBConnections(){
         UIUser newUser = createNewUser("myNewUser");
         UIPage newPage = createNewPage(newUser, "newPage");
-        UIClassNode newUIClassNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
+
+        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
         saveNewNodeToDB(newUIClassNode, newPage);
+
+        UITextBoxNode otherNewUIClassNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode, newPage);
+
+        UINoteNode otherNewUIClassNode0 = nodeFactory.buildNode("notenodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode0, newPage);
+
+        UIFolderNode otherNewUIClassNode1 = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode1, newPage);
+
+        UISquareNode otherNewUIClassNode2 = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode2, newPage);
+
+        UIStickFigureNode otherNewUIClassNode3 = nodeFactory.buildNode("stickfigurenodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode3, newPage);
+
+        UIOvalNode otherNewUIClassNode4 = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode4, newPage);
+
+        UILifeLineNode otherNewUIClassNode5 = nodeFactory.buildNode("lifelinenodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode5, newPage);
+
+        UILoopNode otherNewUIClassNode6 = nodeFactory.buildNode("loopnodes", 3, 3, 300, 150);
+        saveNewNodeToDB(otherNewUIClassNode6, newPage);
+
+        // Only works when the edge is default. Change UIEdge.getEdgeAsJSon from normal_edges
+        UINormalEdge newUIEdge = edgeFactory.buildEdge("normaledges", newUIClassNode, otherNewUIClassNode);
+        //System.out.println("EdgeJSON is: " + newUIEdge.getEdgeAsJSon());
+        saveNewEdgeToDB(newUIEdge, newPage);
     }
 
     // Putting either of these strings in postman work properly
@@ -376,9 +406,15 @@ public class ObjectRequester {
         try {
             String returnedString = HTTPClient.sendAddNodeToPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
             node.setId(stripNum(returnedString));
-            System.out.println("Successfully saved node to db with new id of: " + node.getId());
+            System.out.println("Successfully saved node type " + node.getType());
         }
         catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
+    }
+
+    private void saveNewEdgeToDB(UIEdge edge, UIPage page){
+        String returnedString = HTTPClient.sendAddEdgeToPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
+        edge.setId(stripNum(returnedString));
+        System.out.println("Successfully saved \"normal\" edge type: " + edge.getId());
     }
 
     /**
@@ -413,15 +449,15 @@ public class ObjectRequester {
      */
     private void loadNode(UINode node){
         switch (node.getType()){
-            case "oval_nodes" -> makeOvalRequest(node.getX(), node.getY(), node.getName(), (UIOvalNode) node);
-            case "class_nodes" -> makeClassRequest(node.getX(), node.getY(), node.getName(), node.getDesc(), (UIClassNode) node);
-            case "folder_nodes" -> makeFolderRequest(node.getX(), node.getY(), node.getName(), (UIFolderNode) node);
-            case "life_line_nodes" -> makeLifeLineRequest(node.getX(), node.getY(), node.getName(), (UILifeLineNode) node);
-            case "loop_nodes" -> makeLoopRequest(node.getX(), node.getY(), node.getName(),(UILoopNode) node);
-            case "note_nodes" -> makeNoteRequest(node.getX(), node.getY(), node.getName(), (UINoteNode) node);
-            case "stick_figure_nodes" -> makeStickFigureRequest(node.getX(), node.getY(), node.getName(), (UIStickFigureNode) node);
-            case "text_box_nodes" -> makeTextBoxRequest(node.getX(), node.getY(), node.getName(), (UITextBoxNode) node);
-            case "square_nodes" -> makeSquareRequest(node.getX(), node.getY(), node.getName(), (UISquareNode) node);
+            case "ovalnodes" -> makeOvalRequest(node.getX(), node.getY(), node.getName(), (UIOvalNode) node);
+            case "classnodes" -> makeClassRequest(node.getX(), node.getY(), node.getName(), node.getDesc(), (UIClassNode) node);
+            case "foldernodes" -> makeFolderRequest(node.getX(), node.getY(), node.getName(), (UIFolderNode) node);
+            case "lifelinenodes" -> makeLifeLineRequest(node.getX(), node.getY(), node.getName(), (UILifeLineNode) node);
+            case "loopnodes" -> makeLoopRequest(node.getX(), node.getY(), node.getName(),(UILoopNode) node);
+            case "notenodes" -> makeNoteRequest(node.getX(), node.getY(), node.getName(), (UINoteNode) node);
+            case "stickfigurenodes" -> makeStickFigureRequest(node.getX(), node.getY(), node.getName(), (UIStickFigureNode) node);
+            case "textboxnodes" -> makeTextBoxRequest(node.getX(), node.getY(), node.getName(), (UITextBoxNode) node);
+            case "squarenodes" -> makeSquareRequest(node.getX(), node.getY(), node.getName(), (UISquareNode) node);
         }
     }
 
@@ -456,9 +492,9 @@ public class ObjectRequester {
      * Test function to make sure that the loading works. Will remove in the future.
      */
     public void loadNodesTest(Pane pane){
-        UIOvalNode ovalTestNode = nodeFactory.buildNode("oval_nodes", 150, 600, 300, 150);
-        UIFolderNode folderTestNode = nodeFactory.buildNode("folder_nodes", 500, 150, 300, 150);
-        UISquareNode squareTestNode = nodeFactory.buildNode("square_nodes", 5, 5, 300, 300);
+        UIOvalNode ovalTestNode = nodeFactory.buildNode("ovalnodes", 150, 600, 300, 150);
+        UIFolderNode folderTestNode = nodeFactory.buildNode("foldernodes", 500, 150, 300, 150);
+        UISquareNode squareTestNode = nodeFactory.buildNode("squarenodes", 5, 5, 300, 300);
         ovalTestNode.setName("New name is taken");
         folderTestNode.setName("I folder, I loaded");
         ArrayList<UINode> testArray = new ArrayList<UINode>();
@@ -466,7 +502,7 @@ public class ObjectRequester {
         testArray.add(folderTestNode);
         testArray.add(squareTestNode);
 
-        UINormalEdge testEdge = edgeFactory.buildEdge("normal_edges", ovalTestNode, folderTestNode);
+        UINormalEdge testEdge = edgeFactory.buildEdge("normaledges", ovalTestNode, folderTestNode);
         ArrayList<UIEdge> testEdgeArray = new ArrayList<>();
         testEdgeArray.add(testEdge);
 

@@ -475,7 +475,6 @@ public final class RequestController {
                 String newNodeId = jsonHelper.getObjId(createdNodeJson); // id of database node.
                 String nodeType = jsonHelper.getObjType(createdNodeJson);
 
-
                 LazyList<? extends AbstractNode> foundNodeList = nodeListByIdType(newNodeId,nodeType);
                 AbstractNode foundNode = foundNodeList.get(0);
                 Page page = Page.findById(pageIdInt);

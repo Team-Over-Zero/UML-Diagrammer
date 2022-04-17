@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 
 public class UIClassNode extends UINode{
     public UIClassNode(int x, int y, int w, int h){
-        super("Class Name","class_nodes", "Class Description", "CLASS_SVG", x, y, w, h);
+        super("Class Name","classnodes", "Class Description", "CLASS_SVG", x, y, w, h);
     }
     public String toJson(){
         Gson gson = new Gson();

@@ -39,7 +39,7 @@ public class UIFactoryTest extends DBSpec {
 
         //assertTrue(testDB.hasConnection());
         UINode node = factory.buildNode();
-        UIClassNode node2 = factory.buildNode("class_nodes",2,2,2,2);
+        UIClassNode node2 = factory.buildNode("classnodes",2,2,2,2);
         String nameSet = "TESTFACTORY CLASSNODE";
         node2.setName(nameSet);
         assertEquals("DEFAULT NAME", node.getName());
@@ -109,7 +109,7 @@ public class UIFactoryTest extends DBSpec {
     /*Tests the factory's classNodeSubclass method in this function*/
     @Test
     public void testClassNodeSubclass(){
-        UIClassNode node = factory.buildNode("class_nodes", 0, 0, 3, 3);
+        UIClassNode node = factory.buildNode("classnodes", 0, 0, 3, 3);
         assertEquals("Class Name", node.getName());
         assertEquals("Class Description", node.getDesc());
         assertEquals(0, node.getX());
