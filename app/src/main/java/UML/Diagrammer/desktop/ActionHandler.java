@@ -15,6 +15,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
+import UML.Diagrammer.backend.objects.UINode.UIClassNode;
 import UML.Diagrammer.backend.objects.UINode.UINode;
 import com.google.gson.Gson;
 import javafx.event.EventHandler;
@@ -127,7 +128,7 @@ public class ActionHandler {
             }
 
             else if (e.getClickCount() == 2) {
-                makePopUpEditTextBox(uIElement, (int)e.getScreenX(), (int)e.getSceneY());
+                editNamePopUp(uIElement, (int)e.getScreenX(), (int)e.getSceneY());
             }
         }
     }
@@ -136,7 +137,7 @@ public class ActionHandler {
      * Creates a textbook for the user to input data and edit a node.
      * @param uIElement The stack pane associated with the object
      */
-    public void makePopUpEditTextBox(StackPane uIElement, int x, int y) {
+    public void makePopUpEditTextBox(StackPane uIElement, int x, int y, int type) {
         if (uIElement == null){ uIElement = currentFocusedUIElement;}
 
         UINode node = (UINode) uIElement.getUserData();
@@ -146,21 +147,30 @@ public class ActionHandler {
         popUp.setWidth(100);
         popUp.setX(x - (uIElement.getWidth() / 2));
         popUp.setY(y);
-
-        Label label = new Label("Enter a new name");
-
-        TextField textField = new TextField(node.getName());
+        Label label; TextField textField; int elIndex;
+        if (type == 0) {
+            label = new Label("Enter a new name");
+            textField = new TextField(node.getName());
+            elIndex = findString(uIElement, String.valueOf(node.getName()));
+        }
+        else{
+            label = new Label("Enter a new description");
+            textField = new TextField(node.getDesc());
+            elIndex = findString(uIElement, String.valueOf(node.getDesc()));
+        }
+        //TextField textField = new TextField(node.getName());
         textField.setPrefWidth(200);
         textField.setPrefHeight(50);
 
         Button button = new Button("Confirm");
         StackPane finalUIElement = uIElement;
         button.setOnAction(e -> {
-            int elIndex = findString(finalUIElement, String.valueOf(node.getName()));
+            //int elIndex = findString(finalUIElement, String.valueOf(node.getName()));
             Label textEl = (Label) finalUIElement.getChildren().get(elIndex);
             textEl.setText(textField.getText());
             UINode associatedNode = (UINode) finalUIElement.getUserData();
-            associatedNode.setName(textField.getText());
+            if(type == 0) { associatedNode.setName(textField.getText()); }
+            else{ associatedNode.setDesc(textField.getText()); }
             updateNode(associatedNode);
             popUp.hide();
         });
@@ -176,6 +186,14 @@ public class ActionHandler {
         popUp.show(App.primaryStage);
         button.setDefaultButton(true); // Lets you press enter to confirm
         popUp.setAutoHide(true);
+    }
+
+    public void editNamePopUp(StackPane uIElement, int x, int y){
+        makePopUpEditTextBox(uIElement, x, y, 0);
+    }
+
+    public void editDescPopUp(StackPane uIElement, int x, int y){
+        makePopUpEditTextBox(uIElement, x, y, 1);
     }
 
     /**
@@ -207,15 +225,25 @@ public class ActionHandler {
     public void makeContextMenu(StackPane uIElement, Pane canvasPane, int x, int y){
         ContextMenu menu = new ContextMenu();
         menu.setAutoHide(true);
-        MenuItem editItem = new MenuItem("Edit");
+        MenuItem editItem = new MenuItem("Edit name");
         MenuItem deleteItem = new MenuItem("Delete");
 
         editItem.setOnAction(e -> {
-            makePopUpEditTextBox(uIElement, x, y);
+            editNamePopUp(uIElement, x, y);
         });
         deleteItem.setOnAction(e -> {
             deleteObject(uIElement, canvasPane);
         });
+        UINode associatedNode = (UINode) uIElement.getUserData();
+        System.out.println("UINODE is type: "+associatedNode.getType());
+        if (associatedNode.getType().equals("classnodes")){
+            System.out.println("IS UICLASSNODE           ~");
+            MenuItem editDesc = new MenuItem("Edit Description");
+            menu.getItems().add(editDesc);
+            editDesc.setOnAction(e -> {
+                editDescPopUp(uIElement, x, y);
+            });
+        }
 
         menu.getItems().addAll(editItem, deleteItem);
         menu.setX(x); menu.setY(y);

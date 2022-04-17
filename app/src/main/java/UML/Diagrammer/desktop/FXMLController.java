@@ -145,7 +145,7 @@ public class FXMLController extends App implements PropertyChangeListener{
         action.deleteObject(null, canvasPane);
     }
     @FXML private void editButtonPressed(){
-        action.makePopUpEditTextBox(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
+        action.editNamePopUp(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
     }
 
     /**
