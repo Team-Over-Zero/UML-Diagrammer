@@ -31,8 +31,12 @@ import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -100,6 +104,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     @FXML private Label ActionLabel;
     @FXML public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
+    @FXML public MenuButton loadMenuButton;
 
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).
@@ -243,6 +248,32 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * A test button to test db connection like making a new user, page etc.
+     */
+    @FXML private void testDB(){
+        objectRequesterObservable.testDBConnections();
+    }
+
+    @FXML private void loadButtonPressed(){
+        // Get a list of pages associated with the user and put them in a list (Only need name & id)
+        // Create a MenuItem for each page
+        // Add that MenuItem to the MenuButton
+    }
+
+    /**
+     * When the user hits the log out button it sends them back to the log in page
+     * and clears the canvas and current user/page.
+     * @throws IOException
+     */
+    @FXML private void logOutButtonPressed() throws IOException {
+        canvasPane.getChildren().removeAll();
+        objectRequesterObservable.setCurrentPage(null);
+        objectRequesterObservable.setCurrentUser(null);
+        Parent login = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
+        App.primaryStage.setScene(new Scene(login, 600, 400));
+    }
+
+    /**
      * Double click event handler for editing text on a node.
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
      \     */
@@ -260,10 +291,4 @@ public class FXMLController extends App implements PropertyChangeListener{
     EventHandler<MouseEvent> nodeOnMouseReleased =
             action::releaseObject;
 
-    /**
-     * A test button to test db connection like making a new user, page etc.
-     */
-    @FXML private void testDB(){
-        objectRequesterObservable.testDBConnections();
-    }
 }

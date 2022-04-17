@@ -65,6 +65,12 @@ public class FXMLLoginController extends App{
 
     // Register page actions found from here on
 
+    @FXML TextField registerUserName;
+    @FXML TextField registerNewPassword;
+    @FXML TextField registerConfirmPassword;
+    @FXML Label registerErrorLabel;
+    @FXML Label registerSuccessLabel;
+
     /**
      * When you hit the cancel button on the registration page.
      * Sends to back to the login page.
@@ -76,16 +82,18 @@ public class FXMLLoginController extends App{
     }
 
     @FXML private void registerButtonPressed(){
-        if (registerNewPassword.getText().equals(registerNewPassword.getText())){
+        if (!registerNewPassword.getText().equals(registerConfirmPassword.getText())){
             registerErrorLabel.setText("Passwords do not match");
             registerErrorLabel.setVisible(true);
         }
-        System.out.println(registerNewPassword.getText().equals(registerNewPassword.getText()));
+        else {
+            String newUserName = registerUserName.getText();
+            String newPassword = registerNewPassword.getText();
+            dbConnection.createNewUser(newUserName);
+            registerErrorLabel.setVisible(false);
+            registerSuccessLabel.setVisible(true);
+        }
+        //System.out.println(registerNewPassword.getText().equals(registerNewPassword.getText()));
     }
-
-    @FXML TextField registerUserName;
-    @FXML TextField registerNewPassword;
-    @FXML TextField registerConfirmPassword;
-    @FXML Label registerErrorLabel;
 
 }

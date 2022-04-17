@@ -23,5 +23,10 @@
             <Font size="16.0" />
          </font>
       </Label>
+      <Label fx:id="registerSuccessLabel" layoutX="203.0" layoutY="99.0" prefHeight="20.0" prefWidth="182.0" text="Success! Please login" textAlignment="CENTER" textFill="#02eb0a" visible="false">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
