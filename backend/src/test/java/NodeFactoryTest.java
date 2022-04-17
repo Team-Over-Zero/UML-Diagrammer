@@ -30,7 +30,7 @@ public class NodeFactoryTest extends DBSpec{
     @Test
     public void testC1TrueC2FalseC3TrueC4True(){
 
-        TextBoxNode test = factory.buildNode("text_box_nodes",1,2,3,4);
+        TextBoxNode test = factory.buildNode("textboxnodes",1,2,3,4);
         Exception ex = assertThrows(IllegalArgumentException.class,()->{
             test.setSize(-1,0);});
         assertEquals(IllegalArgumentException.class,ex.getClass());
