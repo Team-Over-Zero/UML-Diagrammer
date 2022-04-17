@@ -81,7 +81,7 @@ public class DatabaseConnection {
         try {
             String returnedString = HTTPClient.sendAddNodeToPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
             node.setId(stripNum(returnedString));
-            System.out.println("Successfully saved node type: " + node.getType() + " to page: " + page.getId());
+            System.out.println("Successfully saved node: " + node.getType() + "-" + node.getId() + " to page: " + page.getId());
         }
         catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
     }
@@ -100,4 +100,23 @@ public class DatabaseConnection {
     public int stripNum(String stringToStrip){
         return Integer.parseInt(stringToStrip.replaceAll("\\D", ""));
     }
+
+    public void updateNode(UINode nodeToUpdate){
+        try {
+            HTTPClient.sendNodeUpdateRequest(nodeToUpdate.getNodeAsJSon());
+            System.out.println("Successfuly updated node " + nodeToUpdate.getId() + "!");
+        }
+        catch (Exception e){e.printStackTrace();}
+    }
+
+    public void removeNodeFromPage(UINode node, UIPage page){
+        HTTPClient.sendRemoveNodeFromPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
+        System.out.println("Successfuly removed node " + node.getId() + " from db!");
+    }
+
+    public void removeEdgeFromPage(UIEdge edge, UIPage page){
+        HTTPClient.sendRemoveEdgeFromPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
+        System.out.println("Successfuly removed edge from db!");
+    }
+
 }

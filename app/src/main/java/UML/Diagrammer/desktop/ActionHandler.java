@@ -18,6 +18,7 @@ import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UINode.UINode;
 import com.google.gson.Gson;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -43,6 +44,7 @@ public class ActionHandler {
     double orgTranslateX, orgTranslateY;
     StackPane currentFocusedUIElement = null;
     public static List<StackPane> selectedNodesForEdgeCreation = new ArrayList<>();
+    DatabaseConnection dbConnection = new DatabaseConnection();
 
     /**
      * Observer boilerplate, see Object requester for more information
@@ -103,7 +105,12 @@ public class ActionHandler {
     public void releaseObject(MouseEvent t){
         StackPane nodeUIObject = (StackPane) t.getSource();
         support.firePropertyChange("finishedDragUpdateEdges", null, nodeUIObject);
-        //((StackPane) t.getSource()).getUserData();
+        UINode associatedNode = (UINode) nodeUIObject.getUserData();
+        //ARE NODES UNIQUE EVEN ACROSS PAGES? If so, then calling dbconnection.updateNode(Node) would be okay,
+        // because it doesn't need a page reference. If it is, then I need to have objectRequest be the middle man and
+        // take the node from action handler get the current page and send it to the dbConnection.
+        // ASSUMING NODES ARE VERY UNIQUE.
+        updateNode(associatedNode);
     }
 
 
@@ -152,7 +159,9 @@ public class ActionHandler {
             int elIndex = findString(finalUIElement, String.valueOf(node.getName()));
             Label textEl = (Label) finalUIElement.getChildren().get(elIndex);
             textEl.setText(textField.getText());
-            ((UINode) finalUIElement.getUserData()).setName(textField.getText());
+            UINode associatedNode = (UINode) finalUIElement.getUserData();
+            associatedNode.setName(textField.getText());
+            updateNode(associatedNode);
             popUp.hide();
         });
 
@@ -228,12 +237,12 @@ public class ActionHandler {
 
         deleteItem.setOnAction(e-> {
             canvasPane.getChildren().remove(lineElement);
-            //DATABASE DELETE EDGE REQUEST
+            UIEdge associatedEdge = (UIEdge) lineElement.getUserData();
+            deleteEdge(associatedEdge);
         });
         menu.getItems().addAll(deleteItem);
         menu.setX(x); menu.setY(y);
         menu.show(App.primaryStage);
-
     }
 
     /**
@@ -263,7 +272,16 @@ public class ActionHandler {
             }
         }
         canvasPane.getChildren().removeAll(linesToRemove);
-        // DATABASE NODE AND EDGE DELETE REQUEST
+
+        // Deletes the node from the db
+        UINode nodeToRemove = (UINode)uIElement.getUserData();
+        deleteNode(nodeToRemove);
+
+        //Iterates through all the edges to delete them from the db.
+        for (Line curLine : linesToRemove){
+            UIEdge curEdge = (UIEdge) curLine.getUserData();
+            deleteEdge(curEdge);
+        }
     }
 
     /**
@@ -322,14 +340,24 @@ public class ActionHandler {
 
     }
 
-    private void updateNodeInDB(UINode node){
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(node);
-    }
-
     public void clearFocusedElement(){
         currentFocusedUIElement.setStyle("-fx-border-color: ");
         currentFocusedUIElement = null;
     }
 
+    /**
+     * Simple function to update a node to the db. This makes it easy to see where I am calling the db to update a node.
+     * @param node The node that you'd like to update
+     */
+    private void updateNode(UINode node){
+        dbConnection.updateNode(node);
+    }
+
+    private void deleteNode(UINode node){
+        FXMLController.objectRequesterObservable.deleteNodeFromPage(node);
+    }
+
+    private void deleteEdge(UIEdge edge){
+        FXMLController.objectRequesterObservable.deleteEdgeFromPage(edge);
+    }
 }

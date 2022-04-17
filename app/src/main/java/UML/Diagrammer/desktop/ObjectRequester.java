@@ -334,8 +334,26 @@ public class ObjectRequester {
         return stack;
     }
 
+    /**
+     * Unfortunately, this function acts as a middle man between action handler and DatabaseConnection due to this removal
+     * needing the current page. The current page is only found in object requster. This is bad form, but it will have
+     * to do for now.
+     * @param node The node you'd like to delete from the db.
+     */
+    public void deleteNodeFromPage(UINode node){
+        dbConnection.removeNodeFromPage(node, currentPage);
+    }
+
+    /**
+     * Again, a middleman function for the same reason as deleteNodeFromPage.
+     * @param edge The edge you'd like to delete from the db.
+     */
+    public void deleteEdgeFromPage(UIEdge edge){
+        dbConnection.removeEdgeFromPage(edge, currentPage);
+    }
+
     public void testDBConnections(){
-        UIUser newUser = dbConnection.createNewUser("myNewUser");
+        /*UIUser newUser = dbConnection.createNewUser("myNewUser");
         UIPage newPage = dbConnection.createNewPage(newUser, "newPage");
 
         UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
@@ -369,6 +387,20 @@ public class ObjectRequester {
         UINormalEdge newUIEdge = edgeFactory.buildEdge("normaledges", newUIClassNode, otherNewUIClassNode);
         //System.out.println("EdgeJSON is: " + newUIEdge.getEdgeAsJSon());
         dbConnection.saveNewEdgeToDB(newUIEdge, newPage);
+
+        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
+
+        newUIClassNode.setName("name changed!");
+        newUIClassNode.setDesc("diffrent desc too");
+        newUIClassNode.setX(666);
+        newUIClassNode.setY(777);
+        dbConnection.updateNode(newUIClassNode);*/
+
+        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
+
+        dbConnection.removeNodeFromPage(newUIClassNode, currentPage);
     }
 
 }
