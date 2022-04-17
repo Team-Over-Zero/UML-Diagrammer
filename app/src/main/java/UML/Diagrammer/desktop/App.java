@@ -37,7 +37,6 @@ public class App extends Application{
 
     public static final DatabaseConnection database = new DatabaseConnection();
     public static Stage primaryStage;
-    public Database_Client dbConnect;
 
 
     public String getGreeting() {

@@ -25,6 +25,8 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UINode.UINode;
+import UML.Diagrammer.backend.objects.UIPage;
+import UML.Diagrammer.backend.objects.UIUser;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
@@ -38,6 +40,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.batik.transcoder.TranscoderException;
 
 import javax.imageio.ImageIO;
@@ -65,8 +68,19 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * Function is called when the board is launched via FXMLLoginController to set up the current user and page
+     * in the ObjectRequester, so the requester knows what to reference for db - client connection.
+     * @param user The user who logged in
+     * @param page The page they are going to use(first page in db or a brand new one if no page is made yet.)
+     */
+    public static void setUpUserPage(UIUser user, UIPage page){
+        objectRequesterObservable.setCurrentUser(user);
+        objectRequesterObservable.setCurrentPage(page);
+    }
+
+    /**
      * This is the function that is called by ObjectRequester(or any observable) to update the UI
-     * newNodeCreation should deal with any of it's subtype of nodes.
+     * newNodeCreation should deal with any of its subtype of nodes.
      * newNodeCreation will require the UI Object (Shape) because the shape has the data(node) associated with it already.
      * @param event The event that was changed that needs to be reflected in the UI.
      */

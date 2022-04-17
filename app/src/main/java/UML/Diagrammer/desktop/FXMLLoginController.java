@@ -1,5 +1,7 @@
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.UIPage;
+import UML.Diagrammer.backend.objects.UIUser;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,14 +20,23 @@ import java.net.URISyntaxException;
  */
 public class FXMLLoginController extends App{
 
+    LoadPage pageLoader = new LoadPage();
+    DatabaseConnection dbConnection = new DatabaseConnection();
+    public FXMLLoginController() throws IOException {
+    }
+
+    //ObjectRequester requester = new ObjectRequester();
     // login page actions found from here on
 
     /**
      * What happens when the login button is pressed. For now just starts the main UML diagrammer app.
      */
     @FXML private void loginButtonPressed() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
-        App.primaryStage.setScene(new Scene(root, 1000, 800));
+        UIUser newUser = dbConnection.createNewUser("newTestUser");
+        UIPage newPageForUser = dbConnection.createNewPage(newUser, "newTestUsersPage");
+        Parent board = FXMLLoader.load(getClass().getResource("/Board.fxml"));
+        App.primaryStage.setScene(new Scene(board, 1000, 800));
+        FXMLController.setUpUserPage(newUser, newPageForUser);
     }
 
     /**
@@ -34,8 +45,8 @@ public class FXMLLoginController extends App{
      * @throws IOException
      */
     @FXML private void loginRegisterNewUserPressed() throws IOException{
-        Parent root = FXMLLoader.load(getClass().getResource("/Register.fxml"));
-        App.primaryStage.setScene(new Scene(root, 600, 400));
+        Parent register = FXMLLoader.load(getClass().getResource("/Register.fxml"));
+        App.primaryStage.setScene(new Scene(register, 600, 400));
     }
 
     /**
@@ -60,8 +71,8 @@ public class FXMLLoginController extends App{
      * @throws IOException
      */
     @FXML private void registerCancelButtonPressed() throws IOException{
-        Parent root = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
-        App.primaryStage.setScene(new Scene(root, 600, 400));
+        Parent login = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
+        App.primaryStage.setScene(new Scene(login, 600, 400));
     }
 
     @FXML private void registerButtonPressed(){
