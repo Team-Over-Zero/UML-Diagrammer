@@ -89,6 +89,9 @@ public class NodeTest extends DBSpec {
         assertEquals(9999,node.getId());
     }
 
+    /**
+     * issue with lombok setter?
+     */
     @Test
     public void setIDC1False() {
         //assertThrows(Exception.class,node.setId("a"));

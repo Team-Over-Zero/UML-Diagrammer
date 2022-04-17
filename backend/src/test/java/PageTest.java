@@ -16,6 +16,9 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * C1:
+ */
 public class PageTest extends DBSpec {
     private NodeFactory factory;
 
@@ -44,24 +47,10 @@ public class PageTest extends DBSpec {
 
     }
 
-//    /**
-//     * This test is to make jacoco shup up about lombok setters
-//     * DEPRECATED BY ALEX
-//     */
-//    @Test
-//    public void garbageTestTwo(){
-//        Page page = new Page();
-//        HashMap nD = new HashMap();
-//        HashMap eD = new HashMap();
-//        page.setEdgeDict(eD);
-//        page.setNodeDict(nD);
-//    }
-
-
-
     @Test
     public void testPageAddNode(){
         page = new Page();
+
         factory = new NodeFactory();
         DefaultNode node = factory.buildNode();
         page.add(node);

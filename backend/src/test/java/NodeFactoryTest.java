@@ -20,7 +20,34 @@ public class NodeFactoryTest extends DBSpec{
     /**
      * Basic tests to ensure objects are being created correctly
      * Since they all share the same attributes the assertions are repeated
+     * C1: Coords, C2: height, C3: width, C4:TableName
      */
+
+    /**
+     * This test should capture incorrect behavior witht the generation of a node with any bad info
+     *
+     */
+    @Test
+    public void testC1TrueC2FalseC3TrueC4True(){
+
+        TextBoxNode test = factory.buildNode("text_box_nodes",1,2,3,4);
+        Exception ex = assertThrows(IllegalArgumentException.class,()->{
+            test.setSize(-1,0);});
+        assertEquals(IllegalArgumentException.class,ex.getClass());
+    }
+
+    /**
+     * Ensures that a default node is made when given a bad table name
+     */
+    @Test
+    public void testC1TrueC2TrueC3TrueC4False(){
+        DefaultNode n  = factory.buildNode("fakeTable",1,2,3,4);
+    }
+
+
+
+
+
      @Test
     public void testTEXTBOX(){
          TextBoxNode test = factory.buildNode("textboxnodes",1,2,3,4);
@@ -43,10 +70,7 @@ public class NodeFactoryTest extends DBSpec{
         assertNotNull(test);
     }
 
-    /**
-     * May need to add error checking to all nodes so they can't have  a height/width of 0
-     */
-    @Test
+
     public void testFOLDER(){
         FolderNode test = factory.buildNode("foldernodes",0,0,0,0);
         test.saveIt();
