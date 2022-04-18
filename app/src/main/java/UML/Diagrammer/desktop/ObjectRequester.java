@@ -53,10 +53,11 @@ public class ObjectRequester {
      * Global observable object to call updates to the UI.
      */
     private final PropertyChangeSupport support;
-    //private static final NodeFactory nodeFactory = new NodeFactory();
     private static final UINodeFactory nodeFactory = new UINodeFactory();
     private static final UIEdgeFactory edgeFactory = new UIEdgeFactory();
-    HTTP_Client HTTPClient = new HTTP_Client();
+    public UIUser currentUser;
+    public UIPage currentPage;
+    public static DatabaseConnection dbConnection = new DatabaseConnection();
 
     /**
      * Constructor, needs to make the PropertyChangeSupport object for to notify listeners
@@ -83,6 +84,15 @@ public class ObjectRequester {
         support.removePropertyChangeListener(listener);
     }
 
+    public void setCurrentUser(UIUser user){
+        currentUser = user;
+        support.firePropertyChange("userChanged", null, currentUser);
+    }
+    public void setCurrentPage(UIPage page){
+        currentPage = page;
+        support.firePropertyChange("pageChanged", null, currentPage);
+    }
+
     /**
      * Creates a class object along with a rectangle and ties them together.
      * Then returns these objects to the UI via the support.firePropertyChange call.
@@ -93,94 +103,94 @@ public class ObjectRequester {
      * @param text the name that is given to the object, default if not loading.
      */
     public void makeOvalRequest(int x, int y, String text, UIOvalNode newNode) {
-        if (x == -1){
-            newNode = nodeFactory.buildNode("oval_nodes", 3, 3, 300, 150);
+        if (x == -1){ // Not loading a node, got to save it to the db
+            newNode = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "Oval_UseCase.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeClassRequest(int x, int y, String name, String desc, UIClassNode newNode) {
         if(x == -1) {
-            newNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
-        if (x == -1){/*saveNewNodeToDB(newNode);*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeFolderRequest(int x, int y, String text, UIFolderNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("folder_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "Folder.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     //unique
     public void makeLifeLineRequest(int x, int y, String text, UILifeLineNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("life_line_nodes", 3, 3, 30, 500);
+            newNode = nodeFactory.buildNode("lifelinenodes", 3, 3, 30, 500);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "/LifeLine.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_CENTER, x, y, text);
         newUIShape.setPrefHeight(430);
         newUIShape.setPrefWidth(80);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     //unique
     public void makeLoopRequest(int x, int y, String text, UILoopNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("loop_nodes", 3, 3, 750, 450);
+            newNode = nodeFactory.buildNode("loopnodes", 3, 3, 750, 450);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         StackPane newUIShape = UILoopRequest(newNode, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeNoteRequest(int x, int y, String text, UINoteNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("note_nodes", 3, 3, 200, 200);
+            newNode = nodeFactory.buildNode("notenodes", 3, 3, 200, 200);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "/Note.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeStickFigureRequest(int x, int y, String text, UIStickFigureNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("stick_figure_nodes", 3, 3, 100, 200);
+            newNode = nodeFactory.buildNode("stickfigurenodes", 3, 3, 100, 200);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "/StickFigure.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.BOTTOM_CENTER, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeTextBoxRequest(int x, int y, String text, UITextBoxNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("text_box_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "TextBox_Square_Interface.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
     public void makeSquareRequest(int x, int y, String text, UISquareNode newNode) {
         if (x == -1) {
-            newNode = nodeFactory.buildNode("square_nodes", 3, 3, 300, 150);
+            newNode = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
+            dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
         String image = "TextBox_Square_Interface.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
-        if (x == -1){/*database save call*/}
         support.firePropertyChange("newNodeCreation", null, newUIShape);
     }
 
@@ -189,7 +199,8 @@ public class ObjectRequester {
      */
     public void makeEdgeRequest(StackPane n0, StackPane n1, UIEdge newEdge) {
         if (newEdge == null) { // Check for loading
-            newEdge = edgeFactory.buildEdge("normal_edges", (UINode) n0.getUserData(), (UINode) n1.getUserData());
+            newEdge = edgeFactory.buildEdge("normaledges", (UINode) n0.getUserData(), (UINode) n1.getUserData());
+            dbConnection.saveNewEdgeToDB(newEdge ,currentPage);
         }
         Line newLine = UIEdgeRequest(n0, n1, newEdge);
         support.firePropertyChange("newEdgeCreation", null, newLine);
@@ -323,153 +334,83 @@ public class ObjectRequester {
         return stack;
     }
 
+    /**
+     * Creates a new page and adds the current user to it.
+     * @param pageName The name of the page that the user specified.
+     */
+    public void createNewPage(String pageName){
+        UIPage newPage = dbConnection.createNewPage(currentUser, pageName);
+        dbConnection.addUserToPage(currentUser, newPage);
+        currentPage = newPage;
+    }
+
+    /**
+     * Unfortunately, this function acts as a middle man between action handler and DatabaseConnection due to this removal
+     * needing the current page. The current page is only found in object requster. This is bad form, but it will have
+     * to do for now.
+     * @param node The node you'd like to delete from the db.
+     */
+    public void deleteNodeFromPage(UINode node){
+        dbConnection.removeNodeFromPage(node, currentPage);
+    }
+
+    /**
+     * Again, a middleman function for the same reason as deleteNodeFromPage.
+     * @param edge The edge you'd like to delete from the db.
+     */
+    public void deleteEdgeFromPage(UIEdge edge){
+        dbConnection.removeEdgeFromPage(edge, currentPage);
+    }
+
     public void testDBConnections(){
-        UIUser newUser = createNewUser("myNewUser");
-        UIPage newPage = createNewPage(newUser, "newPage");
-        UIClassNode newUIClassNode = nodeFactory.buildNode("class_nodes", 3, 3, 300, 150);
-        saveNewNodeToDB(newUIClassNode, newPage);
+        /*UIUser newUser = dbConnection.createNewUser("myNewUser");
+        UIPage newPage = dbConnection.createNewPage(newUser, "newPage");
+
+        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(newUIClassNode, newPage);
+
+        UITextBoxNode otherNewUIClassNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode, newPage);
+
+        UINoteNode otherNewUIClassNode0 = nodeFactory.buildNode("notenodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode0, newPage);
+
+        UIFolderNode otherNewUIClassNode1 = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode1, newPage);
+
+        UISquareNode otherNewUIClassNode2 = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode2, newPage);
+
+        UIStickFigureNode otherNewUIClassNode3 = nodeFactory.buildNode("stickfigurenodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode3, newPage);
+
+        UIOvalNode otherNewUIClassNode4 = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode4, newPage);
+
+        UILifeLineNode otherNewUIClassNode5 = nodeFactory.buildNode("lifelinenodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode5, newPage);
+
+        UILoopNode otherNewUIClassNode6 = nodeFactory.buildNode("loopnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(otherNewUIClassNode6, newPage);
+
+        // Only works when the edge is default. Change UIEdge.getEdgeAsJSon from normal_edges
+        UINormalEdge newUIEdge = edgeFactory.buildEdge("normaledges", newUIClassNode, otherNewUIClassNode);
+        //System.out.println("EdgeJSON is: " + newUIEdge.getEdgeAsJSon());
+        dbConnection.saveNewEdgeToDB(newUIEdge, newPage);
+
+        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
+
+        newUIClassNode.setName("name changed!");
+        newUIClassNode.setDesc("diffrent desc too");
+        newUIClassNode.setX(666);
+        newUIClassNode.setY(777);
+        dbConnection.updateNode(newUIClassNode);*/
+
+        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
+        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
+
+        dbConnection.removeNodeFromPage(newUIClassNode, currentPage);
     }
 
-    // Putting either of these strings in postman work properly
-    // http://127.0.0.1:8888/createuser/?user={"id":"-1","name":"newName"}
-    // http://127.0.0.1:8888/createpage/?page={"name":"TESTPAGE"}&userid={"id":"1"}
-    /**
-     * Creates a new user and gets their ID from the database
-     * @param name name of the user
-     */
-    private UIUser createNewUser(String name){
-        try {
-            UIUser newUser = new UIUser(-1, name);
-            String dbUserString = HTTPClient.sendCreateUser(newUser.getIDAsJson());
-            newUser.setId(stripNum(dbUserString));
-            System.out.println("newUserId is now: " + newUser.getId());
-            return newUser;
-        }
-        catch (Exception e){e.printStackTrace();}
-        return null;
-    }
-
-    /**
-     * creates a new page given an associated user.
-     * @param user The user that this page should belong to.
-     * @param pageName The name of the page that the user has specified.
-     * @return A new page for the user to add things to.
-     */
-    private UIPage createNewPage(UIUser user, String pageName){
-        try{
-            UIPage newPage = new UIPage(-1, pageName);
-            String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), user.getIDAsJson());
-            newPage.setId(stripNum(dbPageString));
-            System.out.println("newPageId is now: "+newPage.getId());
-            return newPage;
-        }
-        catch (Exception e){e.printStackTrace();}
-        return null;
-    }
-
-    /**
-     * Saves a node to the database via a page.
-     * @param node The node you'd like to save to a page.
-     * @param page The page that the user is currently on.
-     */
-    private void saveNewNodeToDB(UINode node, UIPage page) {
-        try {
-            String returnedString = HTTPClient.sendAddNodeToPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
-            node.setId(stripNum(returnedString));
-            System.out.println("Successfully saved node to db with new id of: " + node.getId());
-        }
-        catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
-    }
-
-    /**
-     * Strips everything but integers from a string, should be used to get an Id from a JSon string
-     * @param stringToStrip the string you'd like to strip
-     * @return the numeber in the string
-     */
-    public int stripNum(String stringToStrip){
-        return Integer.parseInt(stringToStrip.replaceAll("\\D", ""));
-    }
-
-    /**
-     * Loads the page by takeing a list of nodes and edges and adds them to the pane with their given information
-     * @param nodes The set of nodes we are loading in
-     * @param edge The set of edges we are loading in
-     * @param pane The parent pane that everything loads into
-     */
-    public void loadPage(ArrayList<UINode> nodes, ArrayList<UIEdge> edge, Pane pane){
-        for (UINode curNode: nodes) {
-            loadNode(curNode);
-        }
-
-        for (UIEdge curEdge: edge){
-            loadEdge(curEdge, pane);
-        }
-    }
-
-    /**
-     * Calls the appropriate make method based on the node type.
-     * Uses the given nodes attributes as a reference to create it in the specified area with loaded names.
-     * @param node The node you are loading in.
-     */
-    private void loadNode(UINode node){
-        switch (node.getType()){
-            case "oval_nodes" -> makeOvalRequest(node.getX(), node.getY(), node.getName(), (UIOvalNode) node);
-            case "class_nodes" -> makeClassRequest(node.getX(), node.getY(), node.getName(), node.getDesc(), (UIClassNode) node);
-            case "folder_nodes" -> makeFolderRequest(node.getX(), node.getY(), node.getName(), (UIFolderNode) node);
-            case "life_line_nodes" -> makeLifeLineRequest(node.getX(), node.getY(), node.getName(), (UILifeLineNode) node);
-            case "loop_nodes" -> makeLoopRequest(node.getX(), node.getY(), node.getName(),(UILoopNode) node);
-            case "note_nodes" -> makeNoteRequest(node.getX(), node.getY(), node.getName(), (UINoteNode) node);
-            case "stick_figure_nodes" -> makeStickFigureRequest(node.getX(), node.getY(), node.getName(), (UIStickFigureNode) node);
-            case "text_box_nodes" -> makeTextBoxRequest(node.getX(), node.getY(), node.getName(), (UITextBoxNode) node);
-            case "square_nodes" -> makeSquareRequest(node.getX(), node.getY(), node.getName(), (UISquareNode) node);
-        }
-    }
-
-    /**
-     * Loads the edge into the pane given a pane and an edge. The edge finds it's connected components via looking at
-     * all the nodes and finds a matching ID.
-     * @param edge The edge we are trying to create
-     * @param pane The parent pane where we are displaying th edge.
-     */
-    private void loadEdge(UIEdge edge, Pane pane){
-        int n1Id = edge.getN1().getId();
-        int n2Id = edge.getN2().getId();
-        ArrayList<StackPane> matchingNodes = new ArrayList<>();
-        for (Node curNode: pane.getChildren()) {
-            if (curNode instanceof StackPane curPane){
-                UINode curUINode = (UINode) curPane.getUserData();
-                int nodeId = curUINode.getId();
-                if (nodeId == n1Id){
-                    matchingNodes.add(curPane);
-                }
-                else if (nodeId == n2Id){
-                    matchingNodes.add(curPane);
-                }
-            }
-            if (matchingNodes.size() == 2){break;} // Leave loop early if both nodes have been found
-        }
-        System.out.println(matchingNodes.get(0).getWidth());
-        makeEdgeRequest(matchingNodes.get(0), matchingNodes.get(1), edge);
-    }
-
-    /**
-     * Test function to make sure that the loading works. Will remove in the future.
-     */
-    public void loadNodesTest(Pane pane){
-        UIOvalNode ovalTestNode = nodeFactory.buildNode("oval_nodes", 150, 600, 300, 150);
-        UIFolderNode folderTestNode = nodeFactory.buildNode("folder_nodes", 500, 150, 300, 150);
-        UISquareNode squareTestNode = nodeFactory.buildNode("square_nodes", 5, 5, 300, 300);
-        ovalTestNode.setName("New name is taken");
-        folderTestNode.setName("I folder, I loaded");
-        ArrayList<UINode> testArray = new ArrayList<UINode>();
-        testArray.add(ovalTestNode);
-        testArray.add(folderTestNode);
-        testArray.add(squareTestNode);
-
-        UINormalEdge testEdge = edgeFactory.buildEdge("normal_edges", ovalTestNode, folderTestNode);
-        ArrayList<UIEdge> testEdgeArray = new ArrayList<>();
-        testEdgeArray.add(testEdge);
-
-        loadPage(testArray, testEdgeArray, pane);
-    }
 }

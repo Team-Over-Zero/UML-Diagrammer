@@ -16,6 +16,9 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * C1:
+ */
 public class PageTest extends DBSpec {
     private NodeFactory factory;
 
@@ -44,24 +47,10 @@ public class PageTest extends DBSpec {
 
     }
 
-//    /**
-//     * This test is to make jacoco shup up about lombok setters
-//     * DEPRECATED BY ALEX
-//     */
-//    @Test
-//    public void garbageTestTwo(){
-//        Page page = new Page();
-//        HashMap nD = new HashMap();
-//        HashMap eD = new HashMap();
-//        page.setEdgeDict(eD);
-//        page.setNodeDict(nD);
-//    }
-
-
-
     @Test
     public void testPageAddNode(){
         page = new Page();
+
         factory = new NodeFactory();
         DefaultNode node = factory.buildNode();
         node.saveIt();
@@ -155,7 +144,7 @@ public class PageTest extends DBSpec {
         page = new Page();
         factory = new NodeFactory();
         DefaultNode defNode = factory.buildNode();
-        ClassNode clsNode = factory.buildNode("class_nodes",1,1,1,1);
+        ClassNode clsNode = factory.buildNode("classnodes",1,1,1,1);
         clsNode.saveIt();
         page.add(defNode);
         page.add(clsNode);
@@ -165,9 +154,9 @@ public class PageTest extends DBSpec {
         ClassNode cl = page.getAll(ClassNode.class).get(0);
 
 
-        assertEquals("class_nodes",clsNode.get("type"));
+        assertEquals("classnodes",clsNode.get("type"));
         assertEquals("default_nodes",def.get("type"));
-        assertEquals("class_nodes",cl.get("type"));
+        assertEquals("classnodes",cl.get("type"));
         //assertEquals(10,page.getNodes().size()); //tests size of dictionary not number of nodes
     }
 }

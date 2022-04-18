@@ -25,19 +25,30 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UINode.UINode;
+import UML.Diagrammer.backend.objects.UIPage;
+import UML.Diagrammer.backend.objects.UIUser;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.TextField;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.batik.transcoder.TranscoderException;
 
 import javax.imageio.ImageIO;
@@ -65,8 +76,19 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * Function is called when the board is launched via FXMLLoginController to set up the current user and page
+     * in the ObjectRequester, so the requester knows what to reference for db - client connection.
+     * @param user The user who logged in
+     * @param page The page they are going to use(first page in db or a brand new one if no page is made yet.)
+     */
+    public static void setUpUserPage(UIUser user, UIPage page){
+        objectRequesterObservable.setCurrentUser(user);
+        objectRequesterObservable.setCurrentPage(page);
+    }
+
+    /**
      * This is the function that is called by ObjectRequester(or any observable) to update the UI
-     * newNodeCreation should deal with any of it's subtype of nodes.
+     * newNodeCreation should deal with any of its subtype of nodes.
      * newNodeCreation will require the UI Object (Shape) because the shape has the data(node) associated with it already.
      * @param event The event that was changed that needs to be reflected in the UI.
      */
@@ -86,6 +108,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     @FXML private Label ActionLabel;
     @FXML public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
+    @FXML public MenuButton loadMenuButton;
 
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).
@@ -126,7 +149,7 @@ public class FXMLController extends App implements PropertyChangeListener{
         action.deleteObject(null, canvasPane);
     }
     @FXML private void editButtonPressed(){
-        action.makePopUpEditTextBox(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
+        action.editNamePopUp(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
     }
 
     /**
@@ -229,6 +252,64 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * A test button to test db connection like making a new user, page etc.
+     */
+    @FXML private void testDB(){
+        objectRequesterObservable.testDBConnections();
+    }
+
+    @FXML private void loadButtonPressed(){
+        // Get a list of pages associated with the user and put them in a list (Only need name & id)
+        // Create a MenuItem for each page
+        // Add that MenuItem to the MenuButton
+    }
+
+    /**
+     * Makes a popup for the user to name the new page they are creating.
+     * It then creates the page in the db, and clears the scene for the new page.
+     */
+    @FXML private void makeNewPageMenuItemPressed(){
+        Popup popUp = new Popup();
+        popUp.setHeight(100);
+        popUp.setWidth(100);
+        popUp.setX((int)App.primaryStage.getX());
+        popUp.setY((int)App.primaryStage.getY());
+        Label label = new Label("Enter a new name");
+        TextField textField = new TextField("New Page");
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(50);
+        Button button = new Button("Confirm");
+        button.setOnAction(e -> {
+            objectRequesterObservable.createNewPage(textField.getText());
+            canvasPane.getChildren().clear();
+        });
+
+        StackPane sp = new StackPane();
+        StackPane.setAlignment(textField, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
+
+        sp.getChildren().addAll(textField, label, button);
+        popUp.getContent().add(sp);
+        popUp.show(App.primaryStage);
+        button.setDefaultButton(true);
+        popUp.setAutoHide(true);
+    }
+
+    /**
+     * When the user hits the log out button it sends them back to the log in page
+     * and clears the canvas and current user/page.
+     * @throws IOException
+     */
+    @FXML private void logOutButtonPressed() throws IOException {
+        canvasPane.getChildren().removeAll();
+        objectRequesterObservable.setCurrentPage(null);
+        objectRequesterObservable.setCurrentUser(null);
+        Parent login = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
+        App.primaryStage.setScene(new Scene(login, 600, 400));
+    }
+
+    /**
      * Double click event handler for editing text on a node.
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
      \     */
@@ -246,10 +327,4 @@ public class FXMLController extends App implements PropertyChangeListener{
     EventHandler<MouseEvent> nodeOnMouseReleased =
             action::releaseObject;
 
-    /**
-     * A test button to test db connection like making a new user, page etc.
-     */
-    @FXML private void testDB(){
-        objectRequesterObservable.testDBConnections();
-    }
 }

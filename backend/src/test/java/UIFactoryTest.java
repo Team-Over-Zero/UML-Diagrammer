@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * These are the same tests that are found in Factory test but for the UI objects. The same tests should be okay
  * because they are extremely similar.
  * @Author Show, David, Alex
+ * C1:node type, C2:width, C3:height
  */
 public class UIFactoryTest extends DBSpec {
 
@@ -28,11 +29,17 @@ public class UIFactoryTest extends DBSpec {
     /*Testing factory for testFactory method*/
 
     @Test
+    public void testFactorcyC1FALSEC2TRUEC3TRUE(){
+        UIDefaultNode node2 = factory.buildNode("n/a",2,2,2,2);
+    }
+
+
+    @Test
     public void testFactory(){
 
         //assertTrue(testDB.hasConnection());
         UINode node = factory.buildNode();
-        UIClassNode node2 = factory.buildNode("class_nodes",2,2,2,2);
+        UIClassNode node2 = factory.buildNode("classnodes",2,2,2,2);
         String nameSet = "TESTFACTORY CLASSNODE";
         node2.setName(nameSet);
         assertEquals("DEFAULT NAME", node.getName());
@@ -102,7 +109,7 @@ public class UIFactoryTest extends DBSpec {
     /*Tests the factory's classNodeSubclass method in this function*/
     @Test
     public void testClassNodeSubclass(){
-        UIClassNode node = factory.buildNode("class_nodes", 0, 0, 3, 3);
+        UIClassNode node = factory.buildNode("classnodes", 0, 0, 3, 3);
         assertEquals("Class Name", node.getName());
         assertEquals("Class Description", node.getDesc());
         assertEquals(0, node.getX());

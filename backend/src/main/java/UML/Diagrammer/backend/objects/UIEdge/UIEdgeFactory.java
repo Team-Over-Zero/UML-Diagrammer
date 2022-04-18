@@ -24,7 +24,7 @@ public class UIEdgeFactory {
     buildEdge(String type, UINode fromNode, UINode toNode){
 
         switch(type){
-            case "normal_edges" -> {return (genericEdge) new UINormalEdge(fromNode, toNode);}
+            case "normaledges" -> {return (genericEdge) new UINormalEdge(fromNode, toNode);}
             default -> {return (genericEdge) new UIDefaultEdge();}
         }
     }

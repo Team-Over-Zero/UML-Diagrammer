@@ -22,6 +22,6 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  */
 public class TextBoxNode extends AbstractNode {
     public TextBoxNode(int x, int y, int w, int h){
-        super("Textbox Name","square_nodes", "Text Box Description", "TEXT_BOX_SVG", x, y, w, h);
+        super("Textbox Name","textboxnodes", "Text Box Description", "TEXT_BOX_SVG", x, y, w, h);
     }
 }

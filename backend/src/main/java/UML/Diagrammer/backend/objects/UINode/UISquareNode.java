@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UISquareNode extends UINode{
     public UISquareNode(int x, int y, int w, int h){
-        super("Square Name","square_nodes", null, "SQUARE_SVG", x, y, w, h);
+        super("Square Name","squarenodes", null, "SQUARE_SVG", x, y, w, h);
     }
 }

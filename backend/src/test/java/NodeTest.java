@@ -89,6 +89,9 @@ public class NodeTest extends DBSpec {
         assertEquals(9999,node.getId());
     }
 
+    /**
+     * issue with lombok setter?
+     */
     @Test
     public void setIDC1False() {
         //assertThrows(Exception.class,node.setId("a"));
@@ -125,7 +128,7 @@ public class NodeTest extends DBSpec {
         Gson gson = new Gson();
         System.out.println("id="+uiNode.getId());
         String gsonStrDefNode = gson.toJson(uiNode);
-        UIClassNode uiClassNode = uiNodeFactory.buildNode("class_nodes",2,1,1,1);
+        UIClassNode uiClassNode = uiNodeFactory.buildNode("classnodes",2,1,1,1);
         String gsonStrClassNode = gson.toJson(uiClassNode);
 
         List<String> gsonStrList = new ArrayList<String>();
@@ -134,8 +137,8 @@ public class NodeTest extends DBSpec {
 
         NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
 
-        customNodeDeserializer.registerSubtype( "default_nodes",UIDefaultNode.class);
-        customNodeDeserializer.registerSubtype( "class_nodes", UIClassNode.class);
+        customNodeDeserializer.registerSubtype( "defaultnodes",UIDefaultNode.class);
+        customNodeDeserializer.registerSubtype( "classnodes", UIClassNode.class);
 
         Gson gBuilder = new GsonBuilder()
                 .registerTypeAdapter(UINode.class,customNodeDeserializer)
