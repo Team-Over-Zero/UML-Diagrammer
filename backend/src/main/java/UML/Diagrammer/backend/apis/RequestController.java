@@ -455,6 +455,21 @@ public final class RequestController {
     }
 
     /**
+     * Searches DB and sends first Page matching the passed in query "name" param. Lazy, possible name conflicts.
+     */
+    public static void getPageIdByName(){};
+
+    /**
+     * Sends a json list of strings where every string is the name of a page.
+     */
+    public static void getAllPageNames(){};
+
+    /**
+     * Given a pageid param, gets a json of that page and all its children.
+     */
+    public static void loadPage(){};
+
+    /**
      * Attaches to the /pagecreatenode/ post request. Given the query params pageid and node where pageid is a string representation of an id
      * and node is a passed in node object, this instantiates that node and adds it to the page associated with pageId. Returns the id object
      * of the create node.
