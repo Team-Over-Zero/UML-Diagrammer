@@ -32,17 +32,21 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.TextField;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.batik.transcoder.TranscoderException;
@@ -258,6 +262,38 @@ public class FXMLController extends App implements PropertyChangeListener{
         // Get a list of pages associated with the user and put them in a list (Only need name & id)
         // Create a MenuItem for each page
         // Add that MenuItem to the MenuButton
+    }
+
+    /**
+     * Makes a popup for the user to name the new page they are creating.
+     * It then creates the page in the db, and clears the scene for the new page.
+     */
+    @FXML private void makeNewPageMenuItemPressed(){
+        Popup popUp = new Popup();
+        popUp.setHeight(100);
+        popUp.setWidth(100);
+        popUp.setX((int)App.primaryStage.getX());
+        popUp.setY((int)App.primaryStage.getY());
+        Label label = new Label("Enter a new name");
+        TextField textField = new TextField("New Page");
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(50);
+        Button button = new Button("Confirm");
+        button.setOnAction(e -> {
+            objectRequesterObservable.createNewPage(textField.getText());
+            canvasPane.getChildren().clear();
+        });
+
+        StackPane sp = new StackPane();
+        StackPane.setAlignment(textField, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
+
+        sp.getChildren().addAll(textField, label, button);
+        popUp.getContent().add(sp);
+        popUp.show(App.primaryStage);
+        button.setDefaultButton(true);
+        popUp.setAutoHide(true);
     }
 
     /**

@@ -335,6 +335,16 @@ public class ObjectRequester {
     }
 
     /**
+     * Creates a new page and adds the current user to it.
+     * @param pageName The name of the page that the user specified.
+     */
+    public void createNewPage(String pageName){
+        UIPage newPage = dbConnection.createNewPage(currentUser, pageName);
+        dbConnection.addUserToPage(currentUser, newPage);
+        currentPage = newPage;
+    }
+
+    /**
      * Unfortunately, this function acts as a middle man between action handler and DatabaseConnection due to this removal
      * needing the current page. The current page is only found in object requster. This is bad form, but it will have
      * to do for now.

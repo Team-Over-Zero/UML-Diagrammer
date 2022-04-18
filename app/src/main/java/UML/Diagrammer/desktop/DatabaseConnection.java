@@ -104,19 +104,24 @@ public class DatabaseConnection {
     public void updateNode(UINode nodeToUpdate){
         try {
             HTTPClient.sendNodeUpdateRequest(nodeToUpdate.getNodeAsJSon());
-            System.out.println("Successfuly updated node " + nodeToUpdate.getId() + "!");
+            System.out.println("Successfully updated node " + nodeToUpdate.getId() + "!");
         }
         catch (Exception e){e.printStackTrace();}
     }
 
     public void removeNodeFromPage(UINode node, UIPage page){
         HTTPClient.sendRemoveNodeFromPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
-        System.out.println("Successfuly removed node " + node.getId() + " from db!");
+        System.out.println("Successfully removed node " + node.getId() + " from db!");
     }
 
     public void removeEdgeFromPage(UIEdge edge, UIPage page){
         HTTPClient.sendRemoveEdgeFromPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
-        System.out.println("Successfuly removed edge from db!");
+        System.out.println("Successfully removed edge from db!");
+    }
+
+    public void addUserToPage(UIUser user, UIPage page){
+        HTTPClient.sendAddUserToPage(user.getIDAsJson(), page.getPageIdAsJSon());
+        System.out.println("Successfully added user: "+user.getName()+ " to page: "+ page.getId());
     }
 
 }
