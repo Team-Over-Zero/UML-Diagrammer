@@ -312,8 +312,9 @@ public class FXMLController extends App implements PropertyChangeListener{
         textField.setPrefHeight(50);
         Button button = new Button("Confirm");
         button.setOnAction(e -> {
-            objectRequesterObservable.createNewPage(textField.getText());
+            UIPage newPage = objectRequesterObservable.createNewPage(textField.getText());
             canvasPane.getChildren().clear();
+            objectRequesterObservable.setCurrentPage(newPage);
             popUp.hide();
             populateLoadButtons();
         });

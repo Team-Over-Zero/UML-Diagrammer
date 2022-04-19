@@ -342,10 +342,11 @@ public class ObjectRequester {
      * Creates a new page and adds the current user to it.
      * @param pageName The name of the page that the user specified.
      */
-    public void createNewPage(String pageName){
+    public UIPage createNewPage(String pageName){
         UIPage newPage = dbConnection.createNewPage(currentUser, pageName);
         dbConnection.addUserToPage(currentUser, newPage);
         currentPage = newPage;
+        return newPage;
     }
 
     /**
