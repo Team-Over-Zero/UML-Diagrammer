@@ -64,22 +64,46 @@ public class Database_ClientTest extends DBSpec {
         assertEquals("SUCCESS", s);
 
     }
-    /*@Test
+    @Test
     public void testCreateUserC1False() throws IOException, URISyntaxException, InterruptedException {
 
         DefaultNode node = nodeFactory.buildNode();
         String userJ = node.toJson(true);
-        String s = "";
-        try {
-            http_client.sendCreateUser(userJ);
-            s = "SUCCESS";
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        //assert that the attempt failed
-        fail();
 
-    }*/
+        try {
+           http_client.sendCreateUser(userJ);
+
+
+        } catch (Exception e){
+
+           assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+
+
+
+
+    }
+
+    @Test
+    public void testCreateUserC1Null() throws IOException, URISyntaxException, InterruptedException {
+
+        String s = null;
+
+        try {
+            http_client.sendCreateUser(s);
+
+
+        } catch (Exception e){
+
+
+        }
+
+
+
+
+
+    }
 
     @Test
     public void testCreatePageC1True() {
@@ -99,23 +123,40 @@ public class Database_ClientTest extends DBSpec {
         assertEquals("SUCCESS",s);
     }
 
-    /*@Test
+    @Test
     public void testCreateC1False() {
         User page = new User();
         String pageJ = page.toJson(true);
-        String s = "";
+
         try
 
         {
             http_client.sendCreatePage(pageJ);
-            s = "SUCCESS";
+
         } catch(
                 Exception e)
         {
-            e.printStackTrace();
+           assertEquals(IllegalArgumentException.class,e.getClass());
         }
-        //assert that the attempt failed
-    }*/
+
+    }
+
+    @Test
+    public void testCreateC1Null() {
+        String s = null;
+
+        try
+
+        {
+            http_client.sendCreatePage(s);
+
+        } catch(
+                Exception e)
+        {
+            //assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+    }
 
     @Test
     public void testDeletePageC1True(){
@@ -146,9 +187,11 @@ public class Database_ClientTest extends DBSpec {
         assertTrue(success);
     }
 
-   /* @Test
+    @Test
     public void testDeletePageC1False(){
-        String shouldntWork = "This should throw an exeption"
+        String shouldntWork = "This should throw an exeption";
+        Page page = new Page("test");
+        String pageJ = page.toJson(true);
 
         try
 
@@ -165,16 +208,16 @@ public class Database_ClientTest extends DBSpec {
         try
 
         {
-            http_client.sendRemovePage(pageJ);
+            http_client.sendDeletePage(shouldntWork);
             success = true;
 
         } catch(
                 Exception e)
         {
-            e.printStackTrace();
+            assertEquals(IllegalArgumentException.class,e.getClass());
         }
-        fail();
-    }*/
+
+    }
 
     @Test
     public void testAddUserToPageC1True(){
@@ -207,11 +250,10 @@ public class Database_ClientTest extends DBSpec {
         assertTrue(success);
     }
 
-    /*@Test
+    @Test
     public void testAddUserToPageC1False(){
         Page page = new Page();
-        User user = new User();
-        String userJ = user.toJson(true);
+
         String pageJ = page.toJson(true);
         try
 
@@ -227,16 +269,18 @@ public class Database_ClientTest extends DBSpec {
         try
 
         {
-            http_client.sendAddUserToPage(pageJ,pageJ);
-            //assert that this throws an exception
+            http_client.sendAddUserToPage("no",pageJ);
+
 
         } catch(
                 Exception e)
         {
             e.printStackTrace();
+            assertEquals(IllegalArgumentException.class,e.getClass());
         }
-        fail();
-    }*/
+
+
+    }
 
 
     @Test
@@ -283,8 +327,9 @@ public class Database_ClientTest extends DBSpec {
 
     }
 
-    /*@Test
-    public void testRemoveUserFromPageC1False(){
+
+    @Test
+    public void testRemoveUserFromPageC1FalseC2TRUE(){
         Page page = new Page();
         DefaultNode user = nodeFactory.buildNode();
         String userJ = user.toJson(true);
@@ -308,14 +353,37 @@ public class Database_ClientTest extends DBSpec {
 
         } catch(
                 Exception e)
+
         {
-            e.printStackTrace();
+            assertEquals(IllegalArgumentException.class,e.getClass());
         }
+
+
+
+
+    }
+
+    @Test
+    public void testRemoveUserFromPageC1TrueC2TrueThenFalse(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
         try
 
         {
-            http_client.sendRemoveUserFromPage(userJ,pageJ);
-            //assert that this throws an exception
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,pageJ);
 
 
         } catch(
@@ -323,9 +391,53 @@ public class Database_ClientTest extends DBSpec {
         {
             e.printStackTrace();
         }
-        assertTrue(success);
+        try
 
-    }*/
+        {
+            http_client.sendRemoveUserFromPage(userJ,"no");
+
+
+        } catch(
+                Exception e)
+        {
+            assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+
+    }
+
+    @Test
+    public void testRemoveUserFromPageC1TrueC2False(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,"no");
+
+
+        } catch(
+                Exception e)
+        {
+            assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+
+
+    }
 
 
 
