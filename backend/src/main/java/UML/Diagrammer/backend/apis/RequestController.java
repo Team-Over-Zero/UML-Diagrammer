@@ -28,6 +28,7 @@ import UML.Diagrammer.backend.objects.NodeFactory.*;
 import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.tools.CustomJsonHelper;
 import com.google.gson.*;
+import kotlin.Lazy;
 import org.javalite.activejdbc.Base;
 
 import java.util.*;
@@ -232,7 +233,6 @@ public final class RequestController {
      * @param context
      */
     public static void deleteEdge(Context context) {
-
         String edgeJson = context.queryParam("edge");
         JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
         String fromId = jsonObject.get("id").getAsString();
@@ -244,7 +244,6 @@ public final class RequestController {
             case "normal_edges" -> NormalEdge.where("id = ?", fromId);
             default -> DefaultEdge.where("id = ?", fromId);
         };
-
         try {
             if (dfList.size() == 0) {
                 context.result("NOT FOUND");
@@ -457,17 +456,93 @@ public final class RequestController {
     /**
      * Searches DB and sends first Page matching the passed in query "name" param. Lazy, possible name conflicts.
      */
-    public static void getPageIdByName(){};
+    public static void getPageIdByName(Context context){
+        String pageName = context.queryParam("pagename");
+        Page foundPage = Page.findFirst("name = ?",pageName);
+        if (foundPage!=null){
+            try {
+                String foundId = foundPage.getString("id");
+                JsonObject jObj = new JsonObject();
+                jObj.addProperty("id",foundId); //makes the json object.
+                String totalStr = jObj.toString();
+                context.result(totalStr); //returns object.
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.status(500);
+                context.result(genericException);
+            }
+        }
+    };
 
     /**
-     * Sends a json list of strings where every string is the name of a page.
+     * Sends a json list of strings where every string is the name of a page associated with a user.
+     * Takes a userid param where userid is an object with an id attribute.
      */
-    public static void getAllPageNames(){};
+    public static void getUserPages(Context context){
+        String userIdParam = context.queryParam("userid");
+        CustomJsonHelper customJsonHelper = new CustomJsonHelper();
+        String userId = customJsonHelper.getObjId(userIdParam);
+        try {
+            User foundUser = User.findById(userId);
+            LazyList<Page> uPages = foundUser.getAll(Page.class);
+            ArrayList<String> lStr = new ArrayList<>();
+            for (Page p:uPages) {
+                lStr.add(p.toJson(true));
+            }
+            Gson gson = new Gson();
+            String pListJson = gson.toJson(lStr);
+
+            context.result(pListJson);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.result(genericException);
+            }
+    }
+
+
 
     /**
-     * Given a pageid param, gets a json of that page and all its children.
+     * Given a pageid param, gets a json (2d arr) of nodes and edges.
      */
-    public static void loadPage(){};
+    public static void loadPageElements(Context context){
+        String pageIdParam = context.queryParam("pageid");
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        try {
+            String pageId = jsonHelper.getObjId(pageIdParam);
+            Page foundPage =Page.findById(pageId);
+            ArrayList<String> nList = new ArrayList<>();
+            ArrayList<LazyList<? extends AbstractNode>> listOfNodeLists = foundPage.getNodes();
+            for (LazyList<? extends AbstractNode> lazyL: listOfNodeLists //for every node table in page
+                 ) {
+                for(AbstractNode n:lazyL){
+                    String tempNode = n.toJson(false); //add an individual node to our node list.
+                    nList.add(tempNode);
+                }
+
+            }
+            ArrayList<String> eList = new ArrayList<>();
+
+            ArrayList<LazyList<? extends AbstractEdge>> listOfEdgeLists = foundPage.getEdges();
+            for (LazyList<? extends AbstractEdge> lazyL: listOfEdgeLists //for every node table in page
+            ) {
+                for(AbstractEdge e:lazyL){
+                    String tempNode = e.toJson(false); //add an individual node to our node list.
+                    eList.add(tempNode);
+                }
+            }
+
+            ArrayList<ArrayList<String>> pList = new ArrayList<>();
+            pList.add(nList);
+            pList.add(eList);
+            Gson gson = new Gson();
+            String resultStr = gson.toJson(pList);
+            context.result(resultStr); //result
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * Attaches to the /pagecreatenode/ post request. Given the query params pageid and node where pageid is a string representation of an id
@@ -700,7 +775,7 @@ public final class RequestController {
      */
     public static void removeUserFromPage(Context context) {
         String userJson = context.queryParam("user");
-        String pageJson = context.queryParam("page");
+        String pageJson = context.queryParam("pageid");
         try {
             if(userJson!=null && pageJson!=null) {
                 CustomJsonHelper jHelper = new CustomJsonHelper();
@@ -725,7 +800,7 @@ public final class RequestController {
 
     public static void addUserToPage(Context context) {
         String userJson = context.queryParam("user");
-        String pageJson = context.queryParam("page");
+        String pageJson = context.queryParam("pageid");
         if(userJson!=null && pageJson!=null){
             CustomJsonHelper jHelper = new CustomJsonHelper();
             String userId = jHelper.getObjId(userJson);
@@ -945,5 +1020,7 @@ public final class RequestController {
         }
         return finalJson;
     }
+
+
 
 }

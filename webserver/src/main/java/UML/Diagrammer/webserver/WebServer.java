@@ -72,12 +72,6 @@ public class WebServer {
             e.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
         }
 
         System.out.println("web client started");
