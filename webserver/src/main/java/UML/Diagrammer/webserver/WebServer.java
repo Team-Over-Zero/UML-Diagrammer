@@ -55,6 +55,7 @@ public class WebServer {
 
         http_client = new HTTP_Client();
         Database_Client db = new Database_Client();
+        System.out.println("DB CLIENT SPINNING UP");
         db.spinUp();
 
         String testNode ="{\"description\":\"DEFAULT DESCRIPTION\",\"height\":3,\"id\":1,\"name\":\"GET SHREKED\",\"svg_image\":\"DEFAULT IMAGE\",\"type\":\"default_nodes\",\"width\":3,\"x_coord\":0,\"y_coord\":0}";
@@ -70,12 +71,6 @@ public class WebServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
 

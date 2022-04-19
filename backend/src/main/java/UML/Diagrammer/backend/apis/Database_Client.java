@@ -102,6 +102,8 @@ public class Database_Client {
          //main listeners
         createPage();
         deletePage();
+        loadPageElements();
+        getPageIdByName();
 
         createEdgeOnPage();
         deleteEdgeFromPage();
@@ -110,6 +112,7 @@ public class Database_Client {
         updateNodeOnPage();
 
         createUser();
+        getUserPages();
         addUserToPage();
         removeUserFromPage();
 
@@ -186,6 +189,16 @@ public class Database_Client {
     void deletePage(){
         httpServer.post("/deletepage/",RequestController::deletePage);
     }
+    void loadPageElements(){
+        httpServer.post("/loadpage/",RequestController::loadPageElements);
+
+    }
+
+    void getPageIdByName(){
+        httpServer.post("/getpageidbyname/",RequestController::getPageIdByName);
+
+    }
+
     void createNodeOnPage(){
         httpServer.post("/pagecreatenode/",RequestController::createNodeOnPage);
     }
@@ -197,6 +210,7 @@ public class Database_Client {
         httpServer.post("/pageremoveedge/",RequestController::removeEdgeFromPage);
     }
     void updateNodeOnPage(){httpServer.post("/pageupdatenode/",RequestController::updateNodeOnPage);}
+
     void addUserToPage(){
         httpServer.post("/addusertopage/",RequestController::addUserToPage);
     }
@@ -208,7 +222,9 @@ public class Database_Client {
     void createUser(){
         httpServer.post("/createuser/", RequestController::createUser);
     }
-
+    void getUserPages(){
+        httpServer.get("/getuserpages/",RequestController::getUserPages);
+    }
 
     //Misc.
 

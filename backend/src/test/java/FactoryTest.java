@@ -81,6 +81,7 @@ public class FactoryTest extends DBSpec {
     @Test
     public void testSetCoords(){
         AbstractNode node = factory.buildNode();
+        node.createIt();
         node.setCoords(90,1234);
         node.saveIt();
         assertEquals(90,node.get("x_coord"));
@@ -93,6 +94,7 @@ public class FactoryTest extends DBSpec {
     public void testNegativeCoords(){
 
         AbstractNode node = factory.buildNode();
+        node.createIt();
         node.setCoords(-1,-1);
         node.saveIt();
         assertEquals(-1,node.get("x_coord"));

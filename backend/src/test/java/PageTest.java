@@ -17,7 +17,8 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * C1:
+ * class conditions: C1:Name,
+ * add conditions: C1: valid node, C2: valid edge
  */
 public class PageTest extends DBSpec {
     private NodeFactory factory;
@@ -39,8 +40,7 @@ public class PageTest extends DBSpec {
      */
     @Test
     public void garbageTest(){
-//        HashMap nD = new HashMap();
-//        HashMap eD = new HashMap();
+
         String s = "Test";
         Page page = new Page(s);
         assertNotNull(page);
@@ -53,6 +53,7 @@ public class PageTest extends DBSpec {
 
         factory = new NodeFactory();
         DefaultNode node = factory.buildNode();
+        node.saveIt();
         page.add(node);
         DefaultNode testNode = (DefaultNode) page.getNodes().get(0).get(0);
 
@@ -157,5 +158,27 @@ public class PageTest extends DBSpec {
         assertEquals("default_nodes",def.get("type"));
         assertEquals("classnodes",cl.get("type"));
         //assertEquals(10,page.getNodes().size()); //tests size of dictionary not number of nodes
+    }
+
+    @Test
+    public void testAddNodeC1TRUEC2FALSEC3False(){
+        Exception ex = assertThrows(NullPointerException.class,()->page.add(null));
+        assertEquals(NullPointerException.class,ex.getClass());
+    }
+
+    @Test
+    public void testAddNodeC1FALSE(){
+        DefaultNode node = null;
+
+        Exception ex = assertThrows(NullPointerException.class,()->page.add(node));
+        assertEquals(NullPointerException.class,ex.getClass());
+    }
+
+    @Test
+    public void testAddNodeC2False(){
+        DefaultEdge edge = null;
+
+        Exception ex = assertThrows(NullPointerException.class,()->page.add(edge));
+        assertEquals(NullPointerException.class,ex.getClass());
     }
 }

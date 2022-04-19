@@ -52,17 +52,18 @@ public class HTTP_Client {
     String address;
     String port;
     String serverString;
-    public HTTP_Client(){
+
+    public HTTP_Client() {
         address = "127.0.0.1";
         port = "8888";
         serverString = String.format("http://%s:%s",address,port); // Changed to http to stop a javax.net.ssl.SSLException: Unsupported or unrecognized SSL message error
 
     }
 
-    public HTTP_Client(String addr, String p){
+    public HTTP_Client(String addr, String p) {
         address = addr;
         port = p;
-        serverString = String.format("https://%s:%s",address,port);
+        serverString = String.format("https://%s:%s", address, port);
         //serverString = serverString;
     }
 
@@ -70,29 +71,30 @@ public class HTTP_Client {
      * This method sends a simple get request to an API site (jsonplaceholder.typicode.com). Should always work.
      *
      * @return A string represenation of the jsonplaceholder webpage
-     * @throws IOException Wrap with try catch for IOexceptions
+     * @throws IOException          Wrap with try catch for IOexceptions
      * @throws InterruptedException Wrap with try catch for InterruptedException
      */
-    public String exampleGetRequest()throws IOException,InterruptedException {
+    public String exampleGetRequest() throws IOException, InterruptedException {
         String tempServerString = "https://jsonplaceholder.typicode.com/posts"; //no port for some reason
-       // System.out.println(serverString);
+        // System.out.println(serverString);
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .header("accept","application/json")
+                .header("accept", "application/json")
                 .uri(URI.create(tempServerString))
                 .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
 
     /**
      * This executes a put command. Request is sent to a sie called req.com
+     *
      * @return
      * @throws IOException
      * @throws InterruptedException
      */
-    public String examplePutRequest()throws IOException, InterruptedException{
+    public String examplePutRequest() throws IOException, InterruptedException {
         String tempServerString = "https://reqbin.com/echo/put/json"; //no port for some reason
         // System.out.println(serverString);
         HttpClient client = HttpClient.newHttpClient();
@@ -101,10 +103,10 @@ public class HTTP_Client {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .PUT(testPub)
-                .header("accept","application/json")
+                .header("accept", "application/json")
                 .uri(URI.create(tempServerString))
                 .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return response.body();
 
@@ -112,11 +114,12 @@ public class HTTP_Client {
 
     /**
      * This executes a sample post request. Request is sent to a site called reqbin.com
+     *
      * @return
      * @throws IOException
      * @throws InterruptedException
      */
-    public String examplePostRequest()throws IOException, InterruptedException {
+    public String examplePostRequest() throws IOException, InterruptedException {
         String tempServerString = "https://reqbin.com/echo/post/json"; //no port for some reason
         // System.out.println(serverString);
         HttpClient client = HttpClient.newHttpClient();
@@ -137,90 +140,90 @@ public class HTTP_Client {
      * Should send a post request with the username and password (we can deal with encryption later) and should get a response that says whether the user was successfully logged in.
      * We need to store credentials somehow so that that user can send continuous updates after logging in.
      * Need to make sure other methods here can't run without this one being correct.
+     *
      * @return
      */
-    public String tryLoginUser(){
+    public String tryLoginUser() {
 
         return "FAILED TO LOGIN";
     }
 
 
     /**
-     * @implNote NOT IMPLEMENTED
-     * Simple get Request that asks for a gson of a page object given a pagename.
      * @param pageName name of UML page the user is requesting to edit
      * @return
+     * @implNote NOT IMPLEMENTED
+     * Simple get Request that asks for a gson of a page object given a pagename.
      */
-    public String tryGetPage(String pageName){
+    public String tryGetPage(String pageName) {
         return "";
     }
 
     /**
-     * @implNote NOT IMPLEMENTED
-     * Should return a list of names of all of the pages the user has created.
+     * Should return a list of all the pages associated with a passed in userid json object
+     *
      * @return
      */
-    public List<String> getUserpageNames(){
-        LinkedList<String> userPageList = new LinkedList<>();
-
-        return userPageList;
-    }
-
-    public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        String returnString = genericPostRequestTwoParams("/createpage/","page", pageJson,"userid",userId);
+    public String getUserPages(String userId) throws URISyntaxException, IOException {
+        String returnString = genericGetRequestOneParam("/getuserpages/", "userid", userId);
         return returnString;
     }
 
+    public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException {
+        String returnString = genericPostRequestTwoParams("/createpage/", "page", pageJson, "userid", userId);
+        return returnString;
+    }
 
 
     /**
      * Should send a post req to the database with the current page state.
      * May want to change from void return to test errors and such.
      */
-    public void sendCurrentPageState(String page){}
+    public void sendCurrentPageState(String page) {
+    }
 
 
     //Dev Node Requests
 
     /**
-     *
      * @param nodeJson json node with no id
      * @return A string with the new node Id
      * @throws URISyntaxException thrown if input is not json
-     * @throws IOException genericIO exception
+     * @throws IOException        genericIO exception
      */
     public String sendNodeCreateRequest(String nodeJson) throws URISyntaxException, IOException {
-        String returnString = genericPostRequestOneParam("/createnodeonpage/","node", nodeJson);
+        String returnString = genericPostRequestOneParam("/createnodeonpage/", "node", nodeJson);
         return returnString;
     }
 
     /**
      * * Sends a passed in "updated node", and returns if it was successfully updated in the backend or note.
+     *
      * @param nodeJson Json node with id
      * @return
      * @throws IOException
      * @throws InterruptedException
      * @throws URISyntaxException
      */
-    public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        String returnString = genericGetRequestOneParam("/updatenode/","node",nodeJson);
+    public String sendNodeUpdateRequest(String nodeJson) throws IOException, InterruptedException, URISyntaxException {
+        String returnString = genericGetRequestOneParam("/updatenode/", "node", nodeJson);
         return returnString;
     }
 
     //Dev Edge requests.
-    public String sendEdgeCreateRequest(String edgeJson) throws IOException,InterruptedException,URISyntaxException{
+    public String sendEdgeCreateRequest(String edgeJson) throws IOException, URISyntaxException {
         String paramName = "edge";
-        String returnString = genericPostRequestOneParam(("/trycreateedge/"),paramName, edgeJson);
+        String returnString = genericPostRequestOneParam(("/trycreateedge/"), paramName, edgeJson);
         return returnString;
     }
 
     //Page Requests
 
 
-    public String sendCreatePage(String pageJson){
+    public String sendCreatePage(String pageJson) {
         String returnString = "";
         try {
-            returnString = genericPostRequestOneParam("/createpage/","page",pageJson);
+            returnString = genericPostRequestOneParam("/createpage/", "page", pageJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -231,145 +234,143 @@ public class HTTP_Client {
 
     /**
      * Deletes Page
+     *
      * @param pageJson
      * @return
      */
-    public String sendDeletePage(String pageJson){
+    public String sendDeletePage(String pageJson) {
         String returnString = "";
-        try{
-            returnString = genericPostRequestOneParam("/deletepage/","page",pageJson);
+        try {
+            returnString = genericPostRequestOneParam("/deletepage/", "page", pageJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return "";}
-     //may not be implemented yet
+        return "";
+    }
 
-    public String sendAddNodeToPage(String nodeJson, String pageIdJson){
+    public String sendLoadPage(String pageIdJson){
         String returnString = "";
         try {
-            returnString = genericPostRequestTwoParams("/pagecreatenode/","node",nodeJson,"pageid",pageIdJson);
+            returnString = genericGetRequestOneParam("/loadpage/", "pageid", pageIdJson);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (Exception e){
             e.printStackTrace();
-        } catch (KeyStoreException e) {
+        }
+
+        return returnString;
+    }
+
+
+    /**
+     * Gets a page id (json form)
+     * @param pageName Page Json object with a name attribute
+     * @return A page object with an ID.
+     */
+    public String sendGetPageIdByName(String pageName) {
+        String returnString = "";
+        try {
+            returnString = genericGetRequestOneParam("/getpageidbyname/","pagename",pageName);
+        } catch (URISyntaxException e) {
             e.printStackTrace();
-        } catch (KeyManagementException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return returnString;
     }
 
-    public String sendRemoveNodeFromPage(String nodeJson, String pageIdJson){
+    public String sendAddNodeToPage(String nodeJson, String pageIdJson) {
         String returnString = "";
-
         try {
-            returnString = genericPostRequestTwoParams("/pageremovenode/","node",nodeJson,"pageid",pageIdJson);
+            returnString = genericPostRequestTwoParams("/pagecreatenode/", "node", nodeJson, "pageid", pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
         return returnString;
     }
 
-    public String sendAddEdgeToPage(String edgeJson, String pageIdJson){
+    public String sendRemoveNodeFromPage(String nodeJson, String pageIdJson) {
         String returnString = "";
 
         try {
-            returnString = genericPostRequestTwoParams("/pagecreateedge/","edge",edgeJson,"pageid",pageIdJson);
+            returnString = genericPostRequestTwoParams("/pageremovenode/", "node", nodeJson, "pageid", pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
         return returnString;
     }
 
-    public String sendRemoveEdgeFromPage(String edgeJson, String pageIdJson){
+    public String sendAddEdgeToPage(String edgeJson, String pageIdJson) {
         String returnString = "";
+
         try {
-            returnString = genericPostRequestTwoParams("/pageremoveedge/","edge",edgeJson,"pageid",pageIdJson);
+            returnString = genericPostRequestTwoParams("/pagecreateedge/", "edge", edgeJson, "pageid", pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
         return returnString;
     }
 
-    public String sendAddUserToPage(String userJson, String pageIdJson){
+    public String sendRemoveEdgeFromPage(String edgeJson, String pageIdJson) {
         String returnString = "";
-
         try {
-            returnString = genericPostRequestTwoParams("/addusertopage/","user",userJson,"pageid",pageIdJson);
+            returnString = genericPostRequestTwoParams("/pageremoveedge/", "edge", edgeJson, "pageid", pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        }
+        return returnString;
+    }
+
+    public String sendAddUserToPage(String userJson, String pageIdJson) {
+        String returnString = "";
+
+        try {
+            returnString = genericPostRequestTwoParams("/addusertopage/", "user", userJson, "pageid", pageIdJson);
+        } catch (URISyntaxException e) {
             e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return returnString;
     }
 
     /**
-     *
-     *
-     * @param userJson user object (UserUI)
+     * @param userJson   user object (UserUI)
      * @param pageIdJson json representation of an id
      * @return Server context.result() string.
      */
-    public String sendRemoveUserFromPage(String userJson, String pageIdJson){
+    public String sendRemoveUserFromPage(String userJson, String pageIdJson) {
         String returnString = "";
         try {
-            returnString = genericPostRequestTwoParams("/removenodefrompage/","user",userJson,"pageid",pageIdJson);
+            returnString = genericPostRequestTwoParams("/removenodefrompage/", "user", userJson, "pageid", pageIdJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
             e.printStackTrace();
         }
         return returnString;
     }
 
     //User Requests
-    public String sendCreateUser(String userJson){
+    public String sendCreateUser(String userJson) {
         String returnString = "";
         try {
-            returnString = genericPostRequestOneParam("/createuser/","user",userJson);
+            returnString = genericPostRequestOneParam("/createuser/", "user", userJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -380,39 +381,38 @@ public class HTTP_Client {
 
     /**
      * May not be properly implemented yet.
+     *
      * @param userJson
      * @return
      */
-    public String sendDeleteUser(String userJson){
+    public String sendDeleteUser(String userJson) {
         String returnString = "";
         try {
-            returnString = genericPostRequestOneParam("/deleteuser/","user",userJson);
+            returnString = genericPostRequestOneParam("/deleteuser/", "user", userJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return returnString;
-      }
-
+    }
 
 
     /**
-     *  This method can be used to send a single parameter put request to our database_client.
+     * This method can be used to send a single parameter put request to our database_client.
      *
-     *
-     * @param relPath the path parameter, ie. /createnode/
+     * @param relPath    the path parameter, ie. /createnode/
      * @param param1Name the name of the parameter, ie. node
-     * @param param1 a passed in json object. ie. {"id:1","type: default_nodes"}
+     * @param param1     a passed in json object. ie. {"id:1","type: default_nodes"}
      * @return
      * @throws URISyntaxException
      * @throws IOException
      */
-    public String genericPostRequestOneParam(String relPath,String param1Name,String param1) throws URISyntaxException, IOException {
+    public String genericPostRequestOneParam(String relPath, String param1Name, String param1) throws URISyntaxException, IOException {
 
         CloseableHttpClient client = HttpClientBuilder.create().build();
 
-        HttpPost httpPost = new HttpPost(serverString+relPath);
+        HttpPost httpPost = new HttpPost(serverString + relPath);
 
         URI uri = new URIBuilder(httpPost.getURI())
                 .addParameter(param1Name, param1)
@@ -423,7 +423,7 @@ public class HTTP_Client {
         ((HttpRequestBase) httpPost).setURI(uri);
         CloseableHttpResponse response = client.execute(httpPost);
         HttpEntity resStr = response.getEntity();
-        InputStream iS=resStr.getContent();
+        InputStream iS = resStr.getContent();
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
         client.close();
         return returnString;
@@ -434,54 +434,50 @@ public class HTTP_Client {
      * A query in the format  genericPutRequestTwoParams("/addnodetopage/", "pageid", pageJson, "node", nodeJson) would
      * attempt to instantiate a node on the passed in page.
      *
-     * @param relPath the path parameter, ie. /createnode/
+     * @param relPath    the path parameter, ie. /createnode/
      * @param param1Name the name of the first parameter, ie. node
-     * @param param1 a passed in json object. ie. {"id:1","type: default_nodes"}
+     * @param param1     a passed in json object. ie. {"id:1","type: default_nodes"}
      * @param param2Name the name of the second parameter
-     * @param param2 a second passed in json object.
+     * @param param2     a second passed in json object.
      * @return
      * @throws URISyntaxException
      * @throws IOException
      */
-    public String genericPostRequestTwoParams(String relPath, String param1Name, String param1, String param2Name, String param2) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public String genericPostRequestTwoParams(String relPath, String param1Name, String param1, String param2Name, String param2) throws URISyntaxException, IOException {
         CloseableHttpClient client = HttpClients
                 .custom()
                 .build();
 
-        HttpPost httpPost = new HttpPost(serverString+relPath);
+        HttpPost httpPost = new HttpPost(serverString + relPath);
 
         URI uri = new URIBuilder(httpPost.getURI())
                 .addParameter(param1Name, param1)
-                .addParameter(param2Name,param2)
+                .addParameter(param2Name, param2)
                 .build();
         ((HttpRequestBase) httpPost).setURI(uri);
         CloseableHttpResponse response = client.execute(httpPost);
         HttpEntity resStr = response.getEntity();
-        InputStream iS=resStr.getContent();
+        InputStream iS = resStr.getContent();
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
         client.close();
         return returnString;
     }
 
     /**
-     *
-     * @param relPath the path parameter, ie. /getpage/
+     * @param relPath    the path parameter, ie. /getpage/
      * @param param1Name the name of the first parameter, ie. page
-     * @param param1 a passed in json object. ie. {"id:1","name:My First Page"}
+     * @param param1     a passed in json object. ie. {"id:1","name:My First Page"}
      * @return A string with the server response body
      * @throws URISyntaxException
      * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws KeyManagementException
      */
-    public String genericGetRequestOneParam(String relPath, String param1Name,String param1) throws URISyntaxException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public String genericGetRequestOneParam(String relPath, String param1Name, String param1) throws URISyntaxException, IOException {
 
 
         CloseableHttpClient client = HttpClients
                 .custom()
                 .build();
-        HttpGet httpGet = new HttpGet(serverString+ relPath);
+        HttpGet httpGet = new HttpGet(serverString + relPath);
         URI uri = new URIBuilder(httpGet.getURI())
                 .addParameter(param1Name, param1)
                 .build();
@@ -489,7 +485,7 @@ public class HTTP_Client {
         CloseableHttpResponse response = client.execute(httpGet);
         String testStr = response.toString();
         HttpEntity resStr = response.getEntity();
-        InputStream iS=resStr.getContent();
+        InputStream iS = resStr.getContent();
 
         String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
         client.close();
@@ -497,9 +493,25 @@ public class HTTP_Client {
 
     }
 
+    public String genericGetRequestTwoParams(String relPath, String param1Name, String param1, String param2Name, String param2) throws URISyntaxException, IOException {
+        CloseableHttpClient client = HttpClients
+                .custom()
+                .build();
 
+        HttpGet httpGet = new HttpGet(serverString + relPath);
 
-
+        URI uri = new URIBuilder(httpGet.getURI())
+                .addParameter(param1Name, param1)
+                .addParameter(param2Name, param2)
+                .build();
+        ((HttpRequestBase) httpGet).setURI(uri);
+        CloseableHttpResponse response = client.execute(httpGet);
+        HttpEntity resStr = response.getEntity();
+        InputStream iS = resStr.getContent();
+        String returnString = new String(iS.readAllBytes(), StandardCharsets.UTF_8);
+        client.close();
+        return returnString;
+    }
 
 }
 

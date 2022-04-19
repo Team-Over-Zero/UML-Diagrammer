@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 /**
@@ -61,8 +62,8 @@ public class HTTP_ClientTest {
      * tested method returns a class with no data right now
      */
     @Test
-    public void testGetUserpageNames() {
-        assertEquals(LinkedList.class,client.getUserpageNames().getClass());
+    public void testGetUserpageNames() throws URISyntaxException, IOException {
+        assertEquals(String.class,client.getUserPages("{\"id\":\"1\"}").getClass());
     }
 
 

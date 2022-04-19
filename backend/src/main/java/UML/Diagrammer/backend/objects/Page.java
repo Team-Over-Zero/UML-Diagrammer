@@ -68,29 +68,25 @@ public class Page extends Model {
          * @author Alex
          * @return
          */
-    public ArrayList<LazyList> getNodes(){
+    public ArrayList<LazyList<? extends AbstractNode>> getNodes(){
 
-        ArrayList totalList = new ArrayList();
+        ArrayList<LazyList<? extends AbstractNode>> totalList = new ArrayList();
 
         for (Class c:nodeClassLookupList) {
-            List<? extends AbstractNode> tempNodes;
-            totalList.add(tempNodes =  getAll(c));
+            //this.getAll(c);
+            totalList.add(this.getAll(c)); //adds a list of nodes of a given class.
         }
-
         return totalList;
-
     }
-        public ArrayList<LazyList> getEdges(){
 
-            ArrayList totalList = new ArrayList();
+        public ArrayList<LazyList<? extends AbstractEdge>> getEdges(){
 
+        ArrayList<LazyList<? extends AbstractEdge>> totalList = new ArrayList();
             for (Class c:edgeClassLookupList) {
-                List<? extends AbstractNode> tempEdges;
-                totalList.add(tempEdges =  getAll(c));
+                List<? extends AbstractEdge> tempEdges;
+                totalList.add(this.getAll(c));
             }
-
             return totalList;
-
         }
 
         /**
