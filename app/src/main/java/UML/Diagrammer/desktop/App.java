@@ -31,6 +31,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.checkerframework.checker.units.qual.A;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class App extends Application{
@@ -44,11 +52,6 @@ public class App extends Application{
     }
 
     public static void main(String[] args) {
-    	//SvgImageLoaderFactory.install();
-    	//App.launch();
-        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-        //testing database_client
-
         App.launch();
     }
 
@@ -57,12 +60,6 @@ public class App extends Application{
      * @param stage current main stage of the application
      */
     public void start(Stage stage) throws Exception {
-        //database.openConnection(); //This should be deprecated when ObjectRequester can start sending http_requests in favor of dbConnect.
-//        dbConnect = new Database_Client();
-//        dbConnect.spinUp();
-
-
-        //Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
         stage.setTitle("UML Diagrammer");
         stage.setScene(new Scene(root, 600, 400));
@@ -70,16 +67,4 @@ public class App extends Application{
         primaryStage = stage;
         //primaryStage.setAlwaysOnTop(true);
     }
-
-    /**
-     * This is what happens on app exit, can also call this via Platform.exit()
-     * Just closes out the database before the app closes.
-     */
-    @Override
-    public void stop(){
-        System.out.println("Stage is closing");
-        //dbConnect.spinDown();
-        //database.closeConnection();
-    }
-
 }
