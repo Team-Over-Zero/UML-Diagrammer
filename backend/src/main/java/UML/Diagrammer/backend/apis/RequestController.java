@@ -710,7 +710,7 @@ public final class RequestController {
 
     public static void addUserToPage(Context context) {
         String userJson = context.queryParam("user");
-        String pageJson = context.queryParam("page");
+        String pageJson = context.queryParam("pageid");
         if(userJson!=null && pageJson!=null){
             CustomJsonHelper jHelper = new CustomJsonHelper();
             String userId = jHelper.getObjId(userJson);

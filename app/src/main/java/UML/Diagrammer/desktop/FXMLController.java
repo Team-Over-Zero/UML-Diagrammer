@@ -179,6 +179,7 @@ public class FXMLController extends App implements PropertyChangeListener{
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
         fxObject.setOnMouseReleased(nodeOnMouseReleased);
+        //fxObject.setOnMouseDragReleased(nodeOnMouseReleased);
         fxObject.setOnContextMenuRequested(e -> // Right click
                 action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
@@ -282,6 +283,7 @@ public class FXMLController extends App implements PropertyChangeListener{
         button.setOnAction(e -> {
             objectRequesterObservable.createNewPage(textField.getText());
             canvasPane.getChildren().clear();
+            popUp.hide();
         });
 
         StackPane sp = new StackPane();

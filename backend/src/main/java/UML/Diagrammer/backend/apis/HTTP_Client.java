@@ -55,7 +55,7 @@ public class HTTP_Client {
     public HTTP_Client(){
         address = "127.0.0.1";
         port = "8888";
-        serverString = String.format("http://%s:%s",address,port); // Chaged to http to stop a javax.net.ssl.SSLException: Unsupported or unrecognized SSL message error
+        serverString = String.format("http://%s:%s",address,port); // Changed to http to stop a javax.net.ssl.SSLException: Unsupported or unrecognized SSL message error
 
     }
 

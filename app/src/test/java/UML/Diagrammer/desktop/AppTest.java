@@ -3,6 +3,7 @@
  */
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import javafx.scene.layout.StackPane;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,14 @@ import static org.testfx.assertions.api.Assertions.assertThat;
 
 class AppTest {
     private FxRobot robo;
+    private Database_Client db;
     @BeforeEach
     public void setRobo() throws Exception{
         ApplicationTest.launch(App.class);
         robo = new FxRobot();
+
+        db = new Database_Client();
+        db.spinUp();
     }
 
     @AfterEach
@@ -43,10 +48,11 @@ class AppTest {
         FxToolkit.hideStage();
         robo.release(new KeyCode[]{});
         robo.release(new MouseButton[]{});
+        db.spinDown();
     }
 
 
-    /*@Test
+    @Test
     public void largeTest() {
 
         robo.clickOn("Log In");
@@ -103,7 +109,7 @@ class AppTest {
         robo.clickOn("SVG");
 
 
-    }*/
+    }
 
 
 

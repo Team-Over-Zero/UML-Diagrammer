@@ -188,10 +188,22 @@ public class ActionHandler {
         popUp.setAutoHide(true);
     }
 
+    /**
+     * Calls makePopUpEditTextBox with to edit the name of a node.
+     * @param uIElement The element you are editing on the UI.
+     * @param x Current x location of the element on the UI
+     * @param y Current y location of the element on the UI
+     */
     public void editNamePopUp(StackPane uIElement, int x, int y){
         makePopUpEditTextBox(uIElement, x, y, 0);
     }
 
+    /**
+     * Calls makePopUpEditTextBox with to edit the description of a node.
+     * @param uIElement The element you are editing on the UI.
+     * @param x Current x location of the element on the UI
+     * @param y Current y location of the element on the UI
+     */
     public void editDescPopUp(StackPane uIElement, int x, int y){
         makePopUpEditTextBox(uIElement, x, y, 1);
     }
@@ -368,6 +380,9 @@ public class ActionHandler {
 
     }
 
+    /**
+     * Unfocuses the current element on the UI and clears it's highlighting.
+     */
     public void clearFocusedElement(){
         currentFocusedUIElement.setStyle("-fx-border-color: ");
         currentFocusedUIElement = null;
@@ -381,10 +396,18 @@ public class ActionHandler {
         dbConnection.updateNode(node);
     }
 
+    /**
+     * Same as updateNode but for node deletion
+     * @param node Node to delete
+     */
     private void deleteNode(UINode node){
         FXMLController.objectRequesterObservable.deleteNodeFromPage(node);
     }
 
+    /**
+     * Same as updateNode but for edge deletion
+     * @param edge Edge to delete
+     */
     private void deleteEdge(UIEdge edge){
         FXMLController.objectRequesterObservable.deleteEdgeFromPage(edge);
     }

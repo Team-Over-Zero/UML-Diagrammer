@@ -28,12 +28,13 @@ import org.javalite.activejdbc.Base;
 
 import java.util.ArrayList;
 
+/**
+ * A class that's responsible to communicate with the database.
+ */
 public class DatabaseConnection {
 
     // The current instance of the object requester and factories
     HTTP_Client HTTPClient = new HTTP_Client();
-
-
 
     // Putting either of these strings in postman work properly
     // http://127.0.0.1:8888/createuser/?user={"id":"-1","name":"newName"}
@@ -86,6 +87,12 @@ public class DatabaseConnection {
         catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
     }
 
+    /**
+     * Similar to saveNewNodeToDB.
+     * SImply saves a new edge to the db given a ege and the page.
+     * @param edge The edge you'd like to save to the db
+     * @param page The page that's associated with the page.
+     */
     public void saveNewEdgeToDB(UIEdge edge, UIPage page){
         String returnedString = HTTPClient.sendAddEdgeToPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
         edge.setId(stripNum(returnedString));
@@ -101,6 +108,10 @@ public class DatabaseConnection {
         return Integer.parseInt(stringToStrip.replaceAll("\\D", ""));
     }
 
+    /**
+     * Update an existing node to the database. This is a node that is already in the db and has a real id.
+     * @param nodeToUpdate The node you'd like to update
+     */
     public void updateNode(UINode nodeToUpdate){
         try {
             HTTPClient.sendNodeUpdateRequest(nodeToUpdate.getNodeAsJSon());
@@ -109,19 +120,34 @@ public class DatabaseConnection {
         catch (Exception e){e.printStackTrace();}
     }
 
+    /**
+     * Removes a given node from a page.
+     * @param node The node that exits on the page
+     * @param page The page where the node resides.
+     */
     public void removeNodeFromPage(UINode node, UIPage page){
         HTTPClient.sendRemoveNodeFromPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
         System.out.println("Successfully removed node " + node.getId() + " from db!");
     }
 
+    /**
+     * Removes a given edge from a page.
+     * @param edge The edge that already exists in the db
+     * @param page The page that the edge resides in.
+     */
     public void removeEdgeFromPage(UIEdge edge, UIPage page){
         HTTPClient.sendRemoveEdgeFromPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
         System.out.println("Successfully removed edge from db!");
     }
 
+    /**
+     * Adds a user to a page, so they may have access to it when accessing it later.
+     * @param user The user that you're adding to the page.
+     * @param page The page that you're adding the user to.
+     */
     public void addUserToPage(UIUser user, UIPage page){
+        System.out.println("IDAsJSON: "+ user.getIDAsJson()+" pageIdAsJSON: "+ page.getPageIdAsJSon());
         HTTPClient.sendAddUserToPage(user.getIDAsJson(), page.getPageIdAsJSon());
         System.out.println("Successfully added user: "+user.getName()+ " to page: "+ page.getId());
     }
-
 }
