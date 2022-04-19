@@ -150,4 +150,16 @@ public class DatabaseConnection {
         HTTPClient.sendAddUserToPage(user.getIDAsJson(), page.getPageIdAsJSon());
         System.out.println("Successfully added user: "+user.getName()+ " to page: "+ page.getId());
     }
+
+    /**
+     * Gets a list of all the pages associated with a given user
+     * @return
+     */
+    public String getUserPages(UIUser user){
+        try {
+            return HTTPClient.getUserPages(user.getIDAsJson());
+        }
+        catch (Exception e){e.printStackTrace(); System.out.println("Failed to get user's pages");}
+        return null;
+    }
 }
