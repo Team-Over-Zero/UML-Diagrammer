@@ -37,8 +37,6 @@
 
 </template>
 
-<script src="https://unpkg.com/konva@8/konva.min.js"></script>
-<script src="https://unpkg.com/vue-konva/umd/vue-konva.min.js"></script>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -50,6 +48,8 @@
   let canvas = new fabric.Canvas('c');
   let nodes = [];
 
+  let currentPage = -1;
+
   let defaultNode = {
     description: "A description",
     height: 50,
@@ -60,6 +60,7 @@
     svg_image: "",
     type: "",
     id: -1,
+    page_id: -1,
   };
 
   function registerCanvas(){
@@ -154,6 +155,30 @@
 
   function addNode(path, svg_image, type, name = "name", xCoord = 10, yCoord = 10, id = -1){
 
+    if(id == -1){
+      let n = {
+        description: "A description",
+        height: 50,
+        width: 50,
+        x_coord: xCoord,
+        y_coord: yCoord,
+        name: name,
+        svg_image: svg_image,
+        type: type,
+        id: -1,
+        page_id: currentPage,
+      };
+      let nodeJson = JSON.stringify(n);
+      let pageJson = JSON.stringify({id:1});
+
+      fetch('/createNode/' + nodeJson + "/" + pageJson)
+          .then(result => result.text())
+          .then((output) => {
+            console.log('Output: ', output);
+          }).catch(err => console.error(err));
+    }
+
+
     let shape = new fabric.Path(path, {
       left: 0,
       top: 0
@@ -217,9 +242,12 @@
         svg_image: object._objects[2].text,
         type: object._objects[3].text,
         id: parseInt(object._objects[4].text),
+        page_id: currentPage,
       };
       json = JSON.stringify(n)
-      console.log(json);
+      //console.log(json);
+
+      return json;
     })
   }
 
@@ -256,15 +284,6 @@
             }).catch(err => console.error(err));
       },
 
-      vtestGet: function(){
-        fetch('/testGet')
-            .then(result => result.json())
-            .then((output) => {
-              console.log('Output: ', output);
-
-            }).catch(err => console.error(err));
-      },
-
       vloadNode: function(){
         //let n = {description:"Default Description",height:152,width:152,x_coord:363.82059800664456,y_coord:191.78807947019868,name:"A very good text",svg_image:"TextBox_Square_Interface.svg",type:"text_box_nodes",id:-1};
 
@@ -285,6 +304,15 @@
 
       vparseJsonFromDiagram: function(){
         parseJsonFromDiagram();
+      },
+
+      vcreateNode: function(json){
+        fetch('/createNode/' + json)
+            .then(result => result.json())
+            .then((output) => {
+              console.log('Output: ', output);
+            }).catch(err => console.error(err));
+
       }
 
 
