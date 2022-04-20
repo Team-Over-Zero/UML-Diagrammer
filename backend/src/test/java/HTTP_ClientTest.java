@@ -19,6 +19,12 @@ public class HTTP_ClientTest {
     }
 
 
+    @Test
+    public void test(){
+
+    }
+
+
 
     @Test
     public void testExampleGetRequest() throws IOException, InterruptedException {
@@ -42,8 +48,10 @@ public class HTTP_ClientTest {
         assertEquals(testText,s);
     }
     /**
-     * test tryLoginUser, for now not useful
+     *
+      test tryLoginUser, for now not useful
      */
+
     @Test
     public void testTryLoginUser() {
         assertEquals("FAILED TO LOGIN",client.tryLoginUser());

@@ -33,7 +33,7 @@ public class FXMLLoginController extends App{
      */
     @FXML private void loginButtonPressed() throws IOException {
         UIUser newUser = dbConnection.createNewUser("newTestUser");
-        UIPage newPageForUser = dbConnection.createNewPage(newUser, "newTestUsersPage");
+        UIPage newPageForUser = dbConnection.createNewPage(newUser, "Page1");
         dbConnection.addUserToPage(newUser, newPageForUser);
         Parent board = FXMLLoader.load(getClass().getResource("/Board.fxml"));
         App.primaryStage.setScene(new Scene(board, 1000, 800));

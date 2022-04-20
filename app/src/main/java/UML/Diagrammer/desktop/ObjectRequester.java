@@ -45,6 +45,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ObjectRequester {
@@ -362,6 +366,54 @@ public class ObjectRequester {
         dbConnection.removeEdgeFromPage(edge, currentPage);
     }
 
+    /**
+     * Gets the list of pages from the db and parses the returned string into a map of id/name pairs of pages.
+     * @return
+     */
+    public Map<Integer, String> getUserPages(){
+        try {
+            String dbString = dbConnection.getUserPages(currentUser);
+            // Matches the string of "\\\"STRING, this gets the name string with some "\\\" before it.
+            Pattern pattern = Pattern.compile("\\\"\\\\+\"\\w+");
+            Matcher matcher = pattern.matcher(dbString);
+
+            //Actually strip the string and add it's content to a list
+            ArrayList<String> nameNotStripped = new ArrayList<>();
+            while (matcher.find()) {
+                nameNotStripped.add(matcher.group());
+            }
+
+            // We now have a list of name string with "\\\" before it, so we just need to strip that off.
+            Pattern namePattern = Pattern.compile("\\w+");
+            Matcher strippedStringToMatch = namePattern.matcher(nameNotStripped.toString());
+
+            ArrayList<String> normalNameList = new ArrayList<>();
+            while (strippedStringToMatch.find()){ // Strip it and add the name's to a list.
+                normalNameList.add(strippedStringToMatch.group());
+            }
+
+            // Same thing but for id, much simpler regex
+            Pattern iDPattern = Pattern.compile("[0-9]+");
+            Matcher iDMatcher = iDPattern.matcher(dbString);
+
+            //Actually strip the string and add it's content to a list
+            ArrayList<String> idStripped = new ArrayList<>();
+            while (iDMatcher.find()) {
+                idStripped.add(iDMatcher.group());
+            }
+
+            // Add the id/name pairs into a map
+            Map<Integer, String> map = new HashMap<>();
+            for (int i = 0; i < normalNameList.size(); i++){
+                map.put(Integer.valueOf(idStripped.get(i)), normalNameList.get(i));
+            }
+
+            return map;
+        }
+        catch (Exception e){e.printStackTrace();}
+        return null;
+    }
+
     public void testDBConnections(){
         /*UIUser newUser = dbConnection.createNewUser("myNewUser");
         UIPage newPage = dbConnection.createNewPage(newUser, "newPage");
@@ -407,10 +459,8 @@ public class ObjectRequester {
         newUIClassNode.setY(777);
         dbConnection.updateNode(newUIClassNode);*/
 
-        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
+        getUserPages();
 
-        dbConnection.removeNodeFromPage(newUIClassNode, currentPage);
     }
 
 }

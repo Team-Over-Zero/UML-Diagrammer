@@ -36,10 +36,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -57,6 +54,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 
 public class FXMLController extends App implements PropertyChangeListener{
@@ -103,12 +101,13 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
-     * Label for the UI to display object changes
+     * Various ui elements for the UI to display object changes
      */
     @FXML private Label ActionLabel;
     @FXML public Label noElementSelectedErrorLabel;
     @FXML public Pane canvasPane;
     @FXML public MenuButton loadMenuButton;
+    @FXML public Button dummyLoadButton;
 
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).
@@ -259,10 +258,42 @@ public class FXMLController extends App implements PropertyChangeListener{
         objectRequesterObservable.testDBConnections();
     }
 
-    @FXML private void loadButtonPressed(){
-        // Get a list of pages associated with the user and put them in a list (Only need name & id)
-        // Create a MenuItem for each page
-        // Add that MenuItem to the MenuButton
+    /**
+     * On press of the "load" button it populates it with the current pages that the user has.
+     * On click of an item it fetches that page from the db and loads it into the UI.
+     * On the UI startup/login there is a button that just says "Load", this populates the menubutton items on press
+     * and disappears the normal menuButton can be shown. This is because the FXMLController needs to be created
+     * before the button can be populated, but the button can't be populated until something is clicked because I can't
+     * send parameters to the javafx initalize() function without significant refactoring.
+     * Very janky but it works for the mvp.
+     */
+    @FXML private void populateLoadButtons(){
+        Map<Integer, String> pages = objectRequesterObservable.getUserPages();
+        for (Map.Entry<Integer, String> curPage : pages.entrySet()){
+            if (!containsPage(curPage.getValue())) {
+                MenuItem newItem = new MenuItem(curPage.getValue());
+                newItem.setOnAction(a -> {
+                    // Get the page from the db
+                    //load the page into the UI.
+                });
+                loadMenuButton.getItems().add(newItem);
+            }
+        }
+        dummyLoadButton.setVisible(false);
+    }
+
+    /**
+     * Just a quick function to check if the item we are adding to the list is already present
+     * @param value The name of the item you are adding
+     * @return If that item already exists.
+     */
+    private Boolean containsPage(String value){
+        for (MenuItem curItem: loadMenuButton.getItems()) {
+            if(value.equals(curItem.getText())){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -284,6 +315,7 @@ public class FXMLController extends App implements PropertyChangeListener{
             objectRequesterObservable.createNewPage(textField.getText());
             canvasPane.getChildren().clear();
             popUp.hide();
+            populateLoadButtons();
         });
 
         StackPane sp = new StackPane();
