@@ -190,9 +190,10 @@ public class HTTP_Client {
      * @return A string with the new node Id
      * @throws URISyntaxException thrown if input is not json
      * @throws IOException        genericIO exception
+     * @deprecated Works for creating pageless nodes but use sendAddNodeToPage instead
      */
     public String sendNodeCreateRequest(String nodeJson) throws URISyntaxException, IOException {
-        String returnString = genericPostRequestOneParam("/createnodeonpage/", "node", nodeJson);
+        String returnString = genericPostRequestOneParam("/trycreatenode/", "node", nodeJson);
         return returnString;
     }
 
