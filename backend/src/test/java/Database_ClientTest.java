@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * For most tests, C1 is that you have given a valid choice of object
+ * MAY NEED TO PROVIDE REAL DATA IN ORDER TO INCREASE COVERAGE, IE TRY NOT USING JUST DEFAULT VALUES MADE BY CONSTRUCTORS
+ * IN ALL CAPS AS THIS MAY BE CRITICAL
+ *
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Database_ClientTest extends DBSpec {
@@ -108,6 +111,7 @@ public class Database_ClientTest extends DBSpec {
     @Test
     public void testCreatePageC1True() {
         Page page = new Page();
+        page.set("name","hellworld");
         String pageJ = page.toJson(true);
         String s = "";
         try
@@ -126,6 +130,7 @@ public class Database_ClientTest extends DBSpec {
     @Test
     public void testCreateC1False() {
         User page = new User();
+
         String pageJ = page.toJson(true);
 
         try
@@ -161,6 +166,7 @@ public class Database_ClientTest extends DBSpec {
     @Test
     public void testDeletePageC1True(){
         Page page = new Page();
+        page.set("name","hellworld");
         String pageJ = page.toJson(true);
         try
 
@@ -222,7 +228,10 @@ public class Database_ClientTest extends DBSpec {
     @Test
     public void testAddUserToPageC1True(){
         Page page = new Page();
+        page.set("name","hellworld");
         User user = new User();
+        user.set("id",100);
+        user.set("name","AHHHH");
         String userJ = user.toJson(true);
         String pageJ = page.toJson(true);
         try
@@ -436,6 +445,11 @@ public class Database_ClientTest extends DBSpec {
         }
 
 
+
+    }
+
+    @Test
+    public void wtf() {
 
     }
 

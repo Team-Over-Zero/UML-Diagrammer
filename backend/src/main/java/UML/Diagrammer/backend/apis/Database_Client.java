@@ -139,7 +139,7 @@ public class Database_Client {
 
 
     //Node Methods
-    void devGetDefaultNode(){
+    public void devGetDefaultNode(){
         httpServer.get("/getdefaultnode/{objectid}",RequestController::getDefaultNode);
     }
     void devTryCreateNode(){
