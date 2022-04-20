@@ -108,6 +108,9 @@ public class NodeTest extends DBSpec {
         assertEquals("This should be gettable",s);
     }
 
+
+
+
     /*Test Node's hashCode method*/
     @Test
     public void testHashCode() {
