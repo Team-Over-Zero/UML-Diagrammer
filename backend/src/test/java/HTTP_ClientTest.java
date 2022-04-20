@@ -1,9 +1,12 @@
+import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
 import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
 import UML.Diagrammer.backend.objects.Page;
 import UML.Diagrammer.backend.objects.User;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,12 +23,23 @@ public class HTTP_ClientTest {
     private HTTP_Client client;
     private EdgeFactory edgeFactory;
     private NodeFactory nodeFactory;
+    private Database_Client dbClient;
 
     @BeforeEach
     public void setUp() throws Exception {
         client = new HTTP_Client();
         edgeFactory = new EdgeFactory();
         nodeFactory = new NodeFactory();
+    }
+
+    @BeforeAll private void startDB(){
+        dbClient = new Database_Client();
+        dbClient.spinUp();
+    }
+
+    @AfterAll
+    public void shutDonw(){
+        dbClient.spinDown();
     }
 
 
@@ -89,7 +103,7 @@ public class HTTP_ClientTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals("SUCCESS, s");
+        assertEquals("SUCCESS", "s");
     }
 
     @Test
@@ -752,6 +766,4 @@ public class HTTP_ClientTest {
         String s =client.sendRemoveEdgeFromPage(edgeJson,page.getId().toString());
         assertEquals("FAIL", s);
     }
-}
-
 }
