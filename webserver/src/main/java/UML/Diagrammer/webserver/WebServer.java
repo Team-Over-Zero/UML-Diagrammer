@@ -70,8 +70,6 @@ public class WebServer {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
 
         System.out.println("web client started");

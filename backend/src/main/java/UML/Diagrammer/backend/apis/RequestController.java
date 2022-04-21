@@ -401,9 +401,15 @@ public final class RequestController {
         String userIdJson = context.queryParam("userid");
         String pageJson = context.queryParam("page");
         CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        Gson gson = new Gson();
 
         if(userIdJson!=null && pageJson!=null) {
             try {
+                JsonObject pJson = gson.fromJson(pageJson,JsonObject.class);
+                if(pJson.has("id")) {
+                    pJson.remove("id");
+                }
+                pageJson = pJson.toString();
                 String userIdStr = jsonHelper.getObjId(userIdJson);
                 int userIdInt = Integer.parseInt(userIdStr);
                 User foundUser = User.findById(userIdInt);
