@@ -44,8 +44,8 @@ public class UIFactoryTest extends DBSpec {
         node2.setName(nameSet);
         assertEquals("DEFAULT NAME", node.getName());
         assertEquals("TESTFACTORY CLASSNODE", node2.getName());
-        assertEquals(0,node.getX());
-        assertEquals(0,node.getY());
+        assertEquals(0,node.getX_coord());
+        assertEquals(0,node.getY_coord());
 
     }
 
@@ -53,36 +53,36 @@ public class UIFactoryTest extends DBSpec {
     @Test
     public void testSizeNotBroken(){
         UINode node = factory.buildNode();
-        assertEquals(3,node.getH());
-        assertEquals(3,node.getW());
+        assertEquals(3,node.getHeight());
+        assertEquals(3,node.getWidth());
     }
 
-    /*Tests factory's setHeight*/
+    /*Tests factory's setHeighteight*/
     @Test
-    public void testSetHeight(){
+    public void testsetHeighteight(){
         UINode node = factory.buildNode();
-        node.setH(3);
-        assertEquals(3,node.getH());
+        node.setHeight(3);
+        assertEquals(3,node.getHeight());
     }
 
-    /*Tests factory's multipleSetHeights*/
+    /*Tests factory's multiplesetHeighteights*/
     @Test
-    public void multipleSetHeights(){
+    public void multiplesetHeighteights(){
         UINode node = factory.buildNode();
-        node.setH(2);
-        node.setH(3);
-        node.setH(1);
-        assertEquals(1,node.getH());
+        node.setHeight(2);
+        node.setHeight(3);
+        node.setHeight(1);
+        assertEquals(1,node.getHeight());
     }
 
     /*Tests the factory's setCoords method in this function*/
     @Test
     public void testSetCoords(){
         UINode node = factory.buildNode();
-        node.setX(90);
-        node.setY(1234);
-        assertEquals(90,node.getX());
-        assertEquals(1234,node.getY());
+        node.setX_coord(90);
+        node.setY_coord(1234);
+        assertEquals(90,node.getX_coord());
+        assertEquals(1234,node.getY_coord());
 
     }
 
@@ -90,20 +90,20 @@ public class UIFactoryTest extends DBSpec {
     @Test
     public void testNegativeCoords(){
         UINode node = factory.buildNode();
-        node.setX(-1);
-        node.setY(-1);
-        assertEquals(-1,node.getX());
-        assertEquals(-1,node.getY());
+        node.setX_coord(-1);
+        node.setY_coord(-1);
+        assertEquals(-1,node.getX_coord());
+        assertEquals(-1,node.getY_coord());
     }
 
     /*Tests the factory's setSize method in this function*/
     @Test
     public void setSize(){
         UINode node = factory.buildNode();
-        node.setH(20);
-        node.setW(20);
-        assertEquals(20,node.getW());
-        assertEquals(20,node.getH());
+        node.setHeight(20);
+        node.setWidth(20);
+        assertEquals(20,node.getWidth());
+        assertEquals(20,node.getHeight());
     }
 
     /*Tests the factory's classNodeSubclass method in this function*/
@@ -111,11 +111,11 @@ public class UIFactoryTest extends DBSpec {
     public void testClassNodeSubclass(){
         UIClassNode node = factory.buildNode("classnodes", 0, 0, 3, 3);
         assertEquals("Class Name", node.getName());
-        assertEquals("Class Description", node.getDesc());
-        assertEquals(0, node.getX());
-        assertEquals(0, node.getY());
-        assertEquals(3, node.getW());
-        assertEquals(3, node.getH());
+        assertEquals("Class Description", node.getDescription());
+        assertEquals(0, node.getX_coord());
+        assertEquals(0, node.getY_coord());
+        assertEquals(3, node.getWidth());
+        assertEquals(3, node.getHeight());
     }
 
     /*Tests the factory's defaultNodeSubclass method in this function*/
@@ -123,11 +123,11 @@ public class UIFactoryTest extends DBSpec {
     public void testDefaultNodeSubclass(){
         UIDefaultNode node = factory.buildNode();
         assertEquals("DEFAULT NAME", node.getName());
-        assertEquals("DEFAULT DESCRIPTION", node.getDesc());
-        assertEquals(0, node.getX());
-        assertEquals(0, node.getY());
-        assertEquals(3, node.getW());
-        assertEquals(3, node.getH());
+        assertEquals("DEFAULT DESCRIPTION", node.getDescription());
+        assertEquals(0, node.getX_coord());
+        assertEquals(0, node.getY_coord());
+        assertEquals(3, node.getWidth());
+        assertEquals(3, node.getHeight());
     }
 
 }

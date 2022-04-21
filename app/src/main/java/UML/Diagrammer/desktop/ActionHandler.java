@@ -94,8 +94,8 @@ public class ActionHandler {
         Object nodeObject = t.getSource();
         if (nodeObject instanceof StackPane) {
             UINode node = (UINode) ((StackPane) nodeObject).getUserData();
-            node.setX((int)newTranslateX);
-            node.setY((int)newTranslateY); // Updates the object with the new coordinates
+            node.setX_coord((int)newTranslateX);
+            node.setY_coord((int)newTranslateY); // Updates the object with the new coordinates
         }
     }
 
@@ -155,8 +155,8 @@ public class ActionHandler {
         }
         else{
             label = new Label("Enter a new description");
-            textField = new TextField(node.getDesc());
-            elIndex = findString(uIElement, String.valueOf(node.getDesc()));
+            textField = new TextField(node.getDescription());
+            elIndex = findString(uIElement, String.valueOf(node.getDescription()));
         }
         //TextField textField = new TextField(node.getName());
         textField.setPrefWidth(200);
@@ -170,7 +170,7 @@ public class ActionHandler {
             textEl.setText(textField.getText());
             UINode associatedNode = (UINode) finalUIElement.getUserData();
             if(type == 0) { associatedNode.setName(textField.getText()); }
-            else{ associatedNode.setDesc(textField.getText()); }
+            else{ associatedNode.setDescription(textField.getText()); }
             updateNode(associatedNode);
             popUp.hide();
         });

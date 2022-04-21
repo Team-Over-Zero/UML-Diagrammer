@@ -39,15 +39,15 @@ public class LoadPage {
      */
     public void loadNode(UINode node){
         switch (node.getType()){
-            case "ovalnodes" -> oR.makeOvalRequest(node.getX(), node.getY(), node.getName(), (UIOvalNode) node);
-            case "classnodes" -> oR.makeClassRequest(node.getX(), node.getY(), node.getName(), node.getDesc(), (UIClassNode) node);
-            case "foldernodes" -> oR.makeFolderRequest(node.getX(), node.getY(), node.getName(), (UIFolderNode) node);
-            case "lifelinenodes" -> oR.makeLifeLineRequest(node.getX(), node.getY(), node.getName(), (UILifeLineNode) node);
-            case "loopnodes" -> oR.makeLoopRequest(node.getX(), node.getY(), node.getName(),(UILoopNode) node);
-            case "notenodes" -> oR.makeNoteRequest(node.getX(), node.getY(), node.getName(), (UINoteNode) node);
-            case "stickfigurenodes" -> oR.makeStickFigureRequest(node.getX(), node.getY(), node.getName(), (UIStickFigureNode) node);
-            case "textboxnodes" -> oR.makeTextBoxRequest(node.getX(), node.getY(), node.getName(), (UITextBoxNode) node);
-            case "squarenodes" -> oR.makeSquareRequest(node.getX(), node.getY(), node.getName(), (UISquareNode) node);
+            case "ovalnodes" -> oR.makeOvalRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIOvalNode) node);
+            case "classnodes" -> oR.makeClassRequest(node.getX_coord(), node.getY_coord(), node.getName(), node.getDescription(), (UIClassNode) node);
+            case "foldernodes" -> oR.makeFolderRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIFolderNode) node);
+            case "lifelinenodes" -> oR.makeLifeLineRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UILifeLineNode) node);
+            case "loopnodes" -> oR.makeLoopRequest(node.getX_coord(), node.getY_coord(), node.getName(),(UILoopNode) node);
+            case "notenodes" -> oR.makeNoteRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UINoteNode) node);
+            case "stickfigurenodes" -> oR.makeStickFigureRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIStickFigureNode) node);
+            case "textboxnodes" -> oR.makeTextBoxRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UITextBoxNode) node);
+            case "squarenodes" -> oR.makeSquareRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UISquareNode) node);
         }
     }
 

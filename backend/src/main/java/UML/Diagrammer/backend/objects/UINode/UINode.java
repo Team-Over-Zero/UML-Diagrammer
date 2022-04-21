@@ -14,57 +14,53 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.backend.objects.UINode;
 
-import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Random;
 
 @Getter @Setter
 public abstract class UINode {
     public String name;
     public String type;
-    public String desc;
-    public String SVGImage;
-    public int x;
-    public int y;
-    public int w;
-    public int h;
+    public String description;
+    public String svg_image;
+    public int x_coord;
+    public int y_coord;
+    public int width;
+    public int height;
     public int id;
-    Random ran = new Random();
 
-    public UINode(String name, String type, String desc, String SVGImage, int x, int y, int w, int h){
-        id = ran.nextInt(1000); // random num until I get db connection up
+    public UINode(String name, String type, String description, String SVGImage, int x, int y_coord, int w, int h){
+        id = -1;
         this.name = name;
         this.type = type;
-        this.desc = desc;
-        this.SVGImage = SVGImage;
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.description = description;
+        this.svg_image = SVGImage;
+        this.x_coord = x;
+        this.y_coord = y_coord;
+        this.width = w;
+        this.height = h;
     }
 
     public UINode(){
-        this.id = ran.nextInt(1000);
+        this.id = -1;
         this.name = "DEFAULT NAME";
         this.type = "DEFAULT TYPE";
-        this.desc = "DEFAULT DESCRIPTION";
-        this.SVGImage = "DEFAULT SVG";
-        this.x = 0;
-        this.y = 0;
-        this.w = 3;
-        this.h = 3;
+        this.description = "DEFAULT DESCRIPTION";
+        this.svg_image = "DEFAULT SVG";
+        this.x_coord = 0;
+        this.y_coord = 0;
+        this.width = 3;
+        this.height = 3;
     }
 
     public String toString() {
         return "Made a UINode with:" + "\n" +
                 "name: "+name+ "\n"+
                 "type: "+type+ "\n"+
-                "desc: " + desc + "\n" +
-                "SVG " + SVGImage + "\n" +
-                "(x, y): " + "(" + x + ", " + y + ")" + "\n" +
-                "(Width, Height): " + "(" + w + ", " + h + ")";
+                "desc: " + description + "\n" +
+                "SVG " + svg_image + "\n" +
+                "(x, y): " + "(" + x_coord + ", " + y_coord + ")" + "\n" +
+                "(Width, Height): " + "(" + width + ", " + height + ")";
     }
 
     public String getIDAsJson(){
@@ -72,15 +68,15 @@ public abstract class UINode {
     }
 
     public String getNodeAsJSon(){
-        return "{\"description\":\"" + desc + "\"," +
-                "\"height\":\"" + h + "\"," +
+        return "{\"description\":\"" + description + "\"," +
+                "\"height\":\"" + height + "\"," +
                 "\"id\":\"" + id + "\"," +
                 "\"name\":\"" + name + "\"," +
-                "\"svg_image\":\"" + SVGImage + "\"," +
+                "\"svg_image\":\"" + svg_image + "\"," +
                 "\"type\":\"" + type + "\"," +
-                "\"width\":\"" + w + "\"," +
-                "\"x_coord\":\"" + x + "\"," +
-                "\"y_coord\":\"" + y + "\"" +
+                "\"width\":\"" + width + "\"," +
+                "\"x_coord\":\"" + x_coord + "\"," +
+                "\"y_coord\":\"" + y_coord + "\"" +
                 "}";
     }
 }

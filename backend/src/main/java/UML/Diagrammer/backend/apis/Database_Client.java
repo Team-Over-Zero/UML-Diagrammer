@@ -190,7 +190,7 @@ public class Database_Client {
         httpServer.post("/deletepage/",RequestController::deletePage);
     }
     void loadPageElements(){
-        httpServer.post("/loadpage/",RequestController::loadPageElements);
+        httpServer.get("/loadpage/",RequestController::loadPageElements);
 
     }
 
