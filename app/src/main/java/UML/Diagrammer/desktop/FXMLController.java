@@ -47,6 +47,7 @@ import javafx.stage.Popup;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.batik.transcoder.TranscoderException;
+import org.checkerframework.checker.guieffect.qual.UI;
 
 import javax.imageio.ImageIO;
 import java.awt.image.RenderedImage;
@@ -255,7 +256,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * A test button to test db connection like making a new user, page etc.
      */
     @FXML private void testDB(){
-        objectRequesterObservable.testDBConnections();
+        objectRequesterObservable.testDBConnections(canvasPane);
     }
 
     /**
@@ -273,8 +274,10 @@ public class FXMLController extends App implements PropertyChangeListener{
             if (!containsPage(curPage.getValue())) {
                 MenuItem newItem = new MenuItem(curPage.getValue());
                 newItem.setOnAction(a -> {
-                    // Get the page from the db
-                    //load the page into the UI.
+                    UIPage page = new UIPage(curPage.getKey(), curPage.getValue());
+                    canvasPane.getChildren().clear();
+                    objectRequesterObservable.loadPagesFromDB(canvasPane, page);
+                    objectRequesterObservable.setCurrentPage(page);
                 });
                 loadMenuButton.getItems().add(newItem);
             }

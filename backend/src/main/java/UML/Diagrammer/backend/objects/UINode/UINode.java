@@ -70,7 +70,7 @@ public abstract class UINode {
     public String getNodeAsJSon(){
         return "{\"description\":\"" + description + "\"," +
                 "\"height\":\"" + height + "\"," +
-                "\"id\":\"" + id + "\"," +
+                "\"id\":" + id + "," +
                 "\"name\":\"" + name + "\"," +
                 "\"svg_image\":\"" + svg_image + "\"," +
                 "\"type\":\"" + type + "\"," +
