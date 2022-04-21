@@ -347,14 +347,13 @@ public final class RequestController {
     }
 
     /**
-     * DEPRECATED
      *
      * Given a two param object get request with id and table name as parameters, attempts to send back an object.
      * attaches to the /getobject/ get request. unlike the path params {} this takes implicit user defined params.
      * These would be structured in the url like : .../getobject/?objectid=foo&objecttable=bar in this method.
      * <p>
      * Note that this will actually return a list of maps not an object.
-     *
+     * @deprecated
      * @param context
      */
     public static void getObjsAsMapWithIdandTable(Context context) {
@@ -572,7 +571,12 @@ public final class RequestController {
                 String jsonSuccess = "{\"id\":\"" + foundNode.getId() + "\"}";
 
                 context.result(jsonSuccess); //result is the id of the instantiated node as a json object.
-            } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
+            }
+            catch(IndexOutOfBoundsException notFoundEx){
+                notFoundEx.printStackTrace();
+                context.result(nodeNotFoundErr);
+            }
+            catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
                 context.status(500);
 
@@ -709,12 +713,13 @@ public final class RequestController {
         String nodeJson = context.queryParam("node");
 
         CustomJsonHelper jHelper = new CustomJsonHelper();
-        String pageId = jHelper.getObjId(pageJson);
-        String nodeId = jHelper.getObjId(nodeJson);
-        String nodeType = jHelper.getObjType(nodeJson);
-        Iterator<Map.Entry<String, JsonElement>> iterator = jHelper.getIterator(nodeJson);
-        Page foundPage = Page.findById(pageId);
+
         try {
+            String pageId = jHelper.getObjId(pageJson);
+            String nodeId = jHelper.getObjId(nodeJson);
+            String nodeType = jHelper.getObjType(nodeJson);
+            Iterator<Map.Entry<String, JsonElement>> iterator = jHelper.getIterator(nodeJson);
+            Page foundPage = Page.findById(pageId);
             LazyList<? extends AbstractNode> foundNodes = nodeListByIdType(nodeId,nodeType);
             AbstractNode foundNode = foundNodes.get(0); //finds the database node
             while(iterator.hasNext()){
@@ -798,6 +803,11 @@ public final class RequestController {
 
     }
 
+    /**
+     * Attaches to the /addusertopage/ post request
+     * Adds a passed in user json to a passed in pageid in json format.
+     * @param context
+     */
     public static void addUserToPage(Context context) {
         String userJson = context.queryParam("user");
         String pageJson = context.queryParam("pageid");
@@ -813,6 +823,44 @@ public final class RequestController {
             context.result(nullParams);
         }
     }
+
+    /**
+     * Attaches to the /loginuser/ post request
+     * Given a passed in user query param in json form (no id), attempts to find that user in the database and sends back that
+     * user's id.
+     *
+     * @param context
+     */
+    public static void loginUser(Context context){
+        String userParam = context.queryParam("user");
+        Gson gson = new Gson();
+        if(userParam!=null) {
+            try {
+                JsonObject jObj = gson.fromJson(userParam, JsonObject.class);
+                String userName = jObj.get("name").getAsString();
+                String password = jObj.get("password").getAsString();
+
+                User foundUser = User.findFirst("name = ? and password = ?", userName, password);
+                String userJson = "";
+                if (foundUser!=null){
+                    userJson =foundUser.toJson(false);
+                    context.result(userJson);
+                }
+                else{
+                    context.result("INVALID CREDENTIALS");
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                context.result(genericException);
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+    }
+
+
 
     //Helper Methods:
     /**

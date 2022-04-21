@@ -10,6 +10,10 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
 
+    //for app zip files
+    id 'distribution'
+
+
     //Project Lombok
     id "io.freefair.lombok" version "6.4.1"
 
@@ -67,11 +71,13 @@ dependencies {
 // https://mvnrepository.com/artifact/org.webjars/fabric.js
     implementation group: 'org.webjars', name: 'fabric.js', version: '1.4.12'
 
+
 }
 
 application {
     // Define the main class for the application.
     mainClass = 'UML.Diagrammer.webserver.App'
+
 }
 
 tasks.named('test') {
@@ -88,6 +94,18 @@ activejdbc {
     toolVersion = '3.0-j11'
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs= ["src/main/java"]
+        }
+        resources {
+            srcDirs= ["src/main/resources"]
+        }
+    }
+}
+
+
 // license checker rules
 license {
     header rootProject.file('LICENSE')
@@ -99,4 +117,5 @@ license {
     mapping {
         java = 'SLASHSTAR_STYLE'
     }
+
 }

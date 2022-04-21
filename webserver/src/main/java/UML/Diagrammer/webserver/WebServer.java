@@ -58,11 +58,11 @@ public class WebServer {
         System.out.println("DB CLIENT SPINNING UP");
         db.spinUp();
 
-        String testNode ="{\"description\":\"DEFAULT DESCRIPTION\",\"height\":3,\"id\":1,\"name\":\"GET SHREKED\",\"svg_image\":\"DEFAULT IMAGE\",\"type\":\"default_nodes\",\"width\":3,\"x_coord\":0,\"y_coord\":0}";
+        //String testNode ="{\"description\":\"DEFAULT DESCRIPTION\",\"height\":3,\"id\":1,\"name\":\"GET SHREKED\",\"svg_image\":\"DEFAULT IMAGE\",\"type\":\"default_nodes\",\"width\":3,\"x_coord\":0,\"y_coord\":0}";
         try {
             String response1 = http_client.exampleGetRequest();
            // System.out.println("example get response: "+response1);
-           String response2 = http_client.sendNodeUpdateRequest(testNode);
+           //String response2 = http_client.sendNodeUpdateRequest(testNode);
             //System.out.println("Response: "+response2);
 
 

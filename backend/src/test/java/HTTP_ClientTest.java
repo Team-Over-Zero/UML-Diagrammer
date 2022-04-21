@@ -24,8 +24,6 @@ public class HTTP_ClientTest {
 
     }
 
-
-
     @Test
     public void testExampleGetRequest() throws IOException, InterruptedException {
        String s = client.exampleGetRequest();
