@@ -30,6 +30,10 @@ import UML.Diagrammer.backend.objects.UIEdge.UINormalEdge;
 import UML.Diagrammer.backend.objects.UINode.*;
 import UML.Diagrammer.backend.objects.UIPage;
 import UML.Diagrammer.backend.objects.UIUser;
+import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -38,15 +42,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -226,10 +229,10 @@ public class ObjectRequester {
         Line line = new Line();
         UINode node0 = (UINode) n0.getUserData();
         UINode node1 = (UINode) n1.getUserData();
-        line.setStartX(node0.getX() + (node0.getW() / 2));
-        line.setStartY(node0.getY() + (node0.getH() / 2));
-        line.setEndX(node1.getX() + (node1.getW() / 2));
-        line.setEndY(node1.getY() + (node1.getH() / 2));
+        line.setStartX(node0.getX_coord() + (node0.getWidth() / 2));
+        line.setStartY(node0.getY_coord() + (node0.getHeight() / 2));
+        line.setEndX(node1.getX_coord() + (node1.getWidth() / 2));
+        line.setEndY(node1.getY_coord() + (node1.getHeight() / 2));
         line.setStrokeWidth(3);
         line.setUserData(edge);
         return line;
@@ -281,11 +284,11 @@ public class ObjectRequester {
      */
     public StackPane UIClassRequest(UINode node, int x, int y, String givenName, String givenDesc) {
         StackPane stack = makeStackPane(node, "Class.svg");
-        stack.setPrefWidth(node.getW());
-        stack.setPrefHeight(node.getH());
+        stack.setPrefWidth(node.getWidth());
+        stack.setPrefHeight(node.getHeight());
 
         Label name = new Label((String) node.getName());
-        Label desc = new Label((String) node.getDesc());
+        Label desc = new Label((String) node.getDescription());
         if (x != -1){       // For loading in a new node
             stack.setTranslateX(x);
             stack.setTranslateY(y);
@@ -313,8 +316,8 @@ public class ObjectRequester {
         StackPane stack = makeStackPane(node, image);
         Label name = new Label(node.getName());
         name.setWrapText(true);
-        stack.setPrefHeight(node.getH());
-        stack.setPrefWidth(node.getW());
+        stack.setPrefHeight(node.getHeight());
+        stack.setPrefWidth(node.getWidth());
         if (x != -1){       // For loading in a new node
             stack.setTranslateX(x);
             stack.setTranslateY(y);
@@ -342,10 +345,11 @@ public class ObjectRequester {
      * Creates a new page and adds the current user to it.
      * @param pageName The name of the page that the user specified.
      */
-    public void createNewPage(String pageName){
+    public UIPage createNewPage(String pageName){
         UIPage newPage = dbConnection.createNewPage(currentUser, pageName);
         dbConnection.addUserToPage(currentUser, newPage);
         currentPage = newPage;
+        return newPage;
     }
 
     /**
@@ -414,53 +418,61 @@ public class ObjectRequester {
         return null;
     }
 
+    public void loadPagesFromDB(){
+        String retObject = dbConnection.loadPageElements("{\"id\":\"295\"}");
+
+        Gson gson  = new Gson();
+        String[][] stringArray = gson.fromJson(retObject, String[][].class);
+        System.out.println(Arrays.toString(stringArray[1]));
+
+        hydrateNodes(stringArray[0]);
+
+        //hydrateEdges(stringArray[1]);
+
+        /*System.out.println("PRINTING NEW ARRAY ");
+        for (int i = 0; i < stringArray.length; i++){
+            for (int j = 0; j < stringArray[i].length; j++){
+                System.out.println("[i][j]]: "+i+ "  "+j);
+                System.out.println(stringArray[i][j] + " ");
+            }
+            System.out.println();
+            System.out.println();
+        }*/
+    }
+
+    public List<UINode> hydrateNodes(String[] nodes){
+        NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
+
+        customNodeDeserializer.registerSubtype( "defaultnodes",UIDefaultNode.class);
+        customNodeDeserializer.registerSubtype( "classnodes", UIClassNode.class);
+        customNodeDeserializer.registerSubtype( "foldernodes", UIFolderNode.class);
+        customNodeDeserializer.registerSubtype( "lifelinenodes", UILifeLineNode.class);
+        customNodeDeserializer.registerSubtype( "loopnodes", UILoopNode.class);
+        customNodeDeserializer.registerSubtype( "notenodes", UINoteNode.class);
+        customNodeDeserializer.registerSubtype( "ovalnodes", UIOvalNode.class);
+        customNodeDeserializer.registerSubtype( "squarenodes", UISquareNode.class);
+        customNodeDeserializer.registerSubtype( "stickfigurenodes", UIStickFigureNode.class);
+        customNodeDeserializer.registerSubtype( "textboxnodes", UITextBoxNode.class);
+
+        Gson gBuilder = new GsonBuilder()
+                .registerTypeAdapter(UINode.class,customNodeDeserializer)
+                .create();
+
+        List<UINode> UINodeList = new ArrayList<>();
+
+        for (String curJsonNode : nodes){
+            System.out.println(curJsonNode.toString());
+            UINodeList.add(gBuilder.fromJson(curJsonNode, new TypeToken<UINode>(){}.getType()));
+        }
+        return UINodeList;
+    }
+
+    public void hydrateEdges(String[] edgeJson, List<UINode> nodes){
+
+    }
+
     public void testDBConnections(){
-        /*UIUser newUser = dbConnection.createNewUser("myNewUser");
-        UIPage newPage = dbConnection.createNewPage(newUser, "newPage");
-
-        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(newUIClassNode, newPage);
-
-        UITextBoxNode otherNewUIClassNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode, newPage);
-
-        UINoteNode otherNewUIClassNode0 = nodeFactory.buildNode("notenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode0, newPage);
-
-        UIFolderNode otherNewUIClassNode1 = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode1, newPage);
-
-        UISquareNode otherNewUIClassNode2 = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode2, newPage);
-
-        UIStickFigureNode otherNewUIClassNode3 = nodeFactory.buildNode("stickfigurenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode3, newPage);
-
-        UIOvalNode otherNewUIClassNode4 = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode4, newPage);
-
-        UILifeLineNode otherNewUIClassNode5 = nodeFactory.buildNode("lifelinenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode5, newPage);
-
-        UILoopNode otherNewUIClassNode6 = nodeFactory.buildNode("loopnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode6, newPage);
-
-        // Only works when the edge is default. Change UIEdge.getEdgeAsJSon from normal_edges
-        UINormalEdge newUIEdge = edgeFactory.buildEdge("normaledges", newUIClassNode, otherNewUIClassNode);
-        //System.out.println("EdgeJSON is: " + newUIEdge.getEdgeAsJSon());
-        dbConnection.saveNewEdgeToDB(newUIEdge, newPage);
-
-        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
-
-        newUIClassNode.setName("name changed!");
-        newUIClassNode.setDesc("diffrent desc too");
-        newUIClassNode.setX(666);
-        newUIClassNode.setY(777);
-        dbConnection.updateNode(newUIClassNode);*/
-
-        getUserPages();
-
+        loadPagesFromDB();
     }
 
 }

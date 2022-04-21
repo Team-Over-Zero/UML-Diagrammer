@@ -131,8 +131,10 @@ public class NodeTest extends DBSpec {
         Gson gson = new Gson();
         System.out.println("id="+uiNode.getId());
         String gsonStrDefNode = gson.toJson(uiNode);
-        UIClassNode uiClassNode = uiNodeFactory.buildNode("classnodes",2,1,1,1);
+        UIClassNode uiClassNode = uiNodeFactory.buildNode("classnodes",2,1,8,1);
         String gsonStrClassNode = gson.toJson(uiClassNode);
+
+        System.out.println(gsonStrDefNode);
 
         List<String> gsonStrList = new ArrayList<String>();
         gsonStrList.add(gsonStrDefNode);
@@ -154,6 +156,10 @@ public class NodeTest extends DBSpec {
             System.out.println(n.toString());
 
             aList.add(gBuilder.fromJson(n, new TypeToken<UINode>(){}.getType())); //adds a hydrated string to our list
+        }
+
+        for (UINode node : aList){
+            System.out.println(node);
         }
                 //gBuilder.fromJson(arrStr, new TypeToken<AbstractNode>(){}.getType());
        // assertEquals("{}",gsonStrDefNode);
