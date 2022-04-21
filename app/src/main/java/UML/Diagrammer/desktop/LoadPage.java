@@ -77,25 +77,4 @@ public class LoadPage {
         System.out.println(matchingNodes.get(0).getWidth());
         oR.makeEdgeRequest(matchingNodes.get(0), matchingNodes.get(1), edge);
     }
-
-    /**
-     * Test function to make sure that the loading works. Will remove in the future.
-     */
-    public void loadNodesTest(Pane pane){
-        UIOvalNode ovalTestNode = nodeFactory.buildNode("ovalnodes", 150, 600, 300, 150);
-        UIFolderNode folderTestNode = nodeFactory.buildNode("foldernodes", 500, 150, 300, 150);
-        UISquareNode squareTestNode = nodeFactory.buildNode("squarenodes", 5, 5, 300, 300);
-        ovalTestNode.setName("New name is taken");
-        folderTestNode.setName("I folder, I loaded");
-        ArrayList<UINode> testArray = new ArrayList<UINode>();
-        testArray.add(ovalTestNode);
-        testArray.add(folderTestNode);
-        testArray.add(squareTestNode);
-
-        UINormalEdge testEdge = edgeFactory.buildEdge("normaledges", ovalTestNode, folderTestNode);
-        ArrayList<UIEdge> testEdgeArray = new ArrayList<>();
-        testEdgeArray.add(testEdge);
-
-        loadPage(testArray, testEdgeArray, pane);
-    }
 }

@@ -64,6 +64,7 @@ public class ObjectRequester {
     private static final UIEdgeFactory edgeFactory = new UIEdgeFactory();
     public UIUser currentUser;
     public UIPage currentPage;
+    private LoadPage pageLoader = new LoadPage();
     public static DatabaseConnection dbConnection = new DatabaseConnection();
 
     /**
@@ -440,7 +441,7 @@ public class ObjectRequester {
             hydratedEdgeList.add(hydratedEdge);
         }
 
-        loadPage(hydratedNodeList, hydratedEdgeList, currentPane);
+        pageLoader.loadPage(hydratedNodeList, hydratedEdgeList, currentPane);
     }
 
     /**
@@ -525,68 +526,6 @@ public class ObjectRequester {
             fromIdTo.add(Integer.valueOf(m.group()));
         }
         return fromIdTo;
-    }
-
-    /**
-     * Loads the page by takeing a list of nodes and edges and adds them to the pane with their given information
-     * @param nodes The set of nodes we are loading in
-     * @param edge The set of edges we are loading in
-     * @param pane The parent pane that everything loads into
-     */
-    public void loadPage(ArrayList<UINode> nodes, ArrayList<UIEdge> edge, Pane pane){
-        for (UINode curNode: nodes) {
-            loadNode(curNode);
-        }
-
-        for (UIEdge curEdge: edge){
-            loadEdge(curEdge, pane);
-        }
-    }
-
-    /**
-     * Calls the appropriate make method based on the node type.
-     * Uses the given nodes attributes as a reference to create it in the specified area with loaded names.
-     * @param node The node you are loading in.
-     */
-    public void loadNode(UINode node){
-        switch (node.getType()){
-            case "ovalnodes" -> makeOvalRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIOvalNode) node);
-            case "classnodes" -> makeClassRequest(node.getX_coord(), node.getY_coord(), node.getName(), node.getDescription(), (UIClassNode) node);
-            case "foldernodes" -> makeFolderRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIFolderNode) node);
-            case "lifelinenodes" -> makeLifeLineRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UILifeLineNode) node);
-            case "loopnodes" -> makeLoopRequest(node.getX_coord(), node.getY_coord(), node.getName(),(UILoopNode) node);
-            case "notenodes" -> makeNoteRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UINoteNode) node);
-            case "stickfigurenodes" -> makeStickFigureRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIStickFigureNode) node);
-            case "textboxnodes" -> makeTextBoxRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UITextBoxNode) node);
-            case "squarenodes" -> makeSquareRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UISquareNode) node);
-        }
-    }
-
-    /**
-     * Loads the edge into the pane given a pane and an edge. The edge finds it's connected components via looking at
-     * all the nodes and finds a matching ID.
-     * @param edge The edge we are trying to create
-     * @param pane The parent pane where we are displaying th edge.
-     */
-    public void loadEdge(UIEdge edge, Pane pane){
-        int n1Id = edge.getN1().getId();
-        int n2Id = edge.getN2().getId();
-        ArrayList<StackPane> matchingNodes = new ArrayList<>();
-        for (Node curNode: pane.getChildren()) {
-            if (curNode instanceof StackPane curPane){
-                UINode curUINode = (UINode) curPane.getUserData();
-                int nodeId = curUINode.getId();
-                if (nodeId == n1Id){
-                    matchingNodes.add(curPane);
-                }
-                else if (nodeId == n2Id){
-                    matchingNodes.add(curPane);
-                }
-            }
-            if (matchingNodes.size() == 2){break;} // Leave loop early if both nodes have been found
-        }
-        System.out.println(matchingNodes.get(0).getWidth());
-        makeEdgeRequest(matchingNodes.get(0), matchingNodes.get(1), edge);
     }
 
     public void testDBConnections(Pane pane){
