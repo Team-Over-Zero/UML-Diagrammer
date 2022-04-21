@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,15 +20,15 @@ public class HTTP_ClientTest {
 
 
     @Test
-    public void test(){
+    public void test() {
 
     }
 
     @Test
     public void testExampleGetRequest() throws IOException, InterruptedException {
-       String s = client.exampleGetRequest();
+        String s = client.exampleGetRequest();
 
-       assertEquals(String.class,s.getClass());
+        assertEquals(String.class, s.getClass());
 
     }
 
@@ -37,23 +36,23 @@ public class HTTP_ClientTest {
     public void testExamplePutRequest() throws IOException, InterruptedException {
         String testText = "{\"success\":\"true\"}\n";
         String s = client.examplePutRequest();
-        assertEquals(testText,s);
+        assertEquals(testText, s);
     }
 
     @Test
     public void testExamplePostRequest() throws IOException, InterruptedException {
         String testText = "{\"success\":\"true\"}\n";
         String s = client.examplePostRequest();
-        assertEquals(testText,s);
+        assertEquals(testText, s);
     }
+
     /**
-     *
-      test tryLoginUser, for now not useful
+     * test tryLoginUser, for now not useful
      */
 
     @Test
     public void testTryLoginUser() {
-        assertEquals("FAILED TO LOGIN",client.tryLoginUser());
+        assertEquals("FAILED TO LOGIN", client.tryLoginUser());
     }
 
     /**
@@ -62,7 +61,7 @@ public class HTTP_ClientTest {
     @Test
     public void testTryGetPage() {
         String s = client.tryGetPage("nothing");
-        assertEquals("",s);
+        assertEquals("", s);
     }
 
     /**
@@ -70,11 +69,11 @@ public class HTTP_ClientTest {
      */
     @Test
     public void testGetUserpageNames() throws URISyntaxException, IOException {
-        assertEquals(String.class,client.getUserPages("{\"id\":\"1\"}").getClass());
+        assertEquals(String.class, client.getUserPages("{\"id\":\"1\"}").getClass());
     }
 
 
-
+}
 
     /*@Test
     public void sendCurrentPageState() {
