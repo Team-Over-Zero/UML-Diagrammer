@@ -21,14 +21,14 @@
       </select>
     </div>
     <div>
-      <button v-on:click="vaddNode('Class', 'class_nodes')">Class</button>
-      <button v-on:click="vaddNode('Note', 'note_nodes')">Note</button>
-      <button v-on:click="vaddNode('Folder', 'folder_nodes')">Folder</button>
-      <button v-on:click="vaddNode('TextBox_Square_Interface', 'text_box_nodes')">Text Box</button>
-      <button v-on:click="vaddNode('LifeLine', 'life_line_nodes')">Lifeline</button>
-      <button v-on:click="vaddNode('Loop', 'loop_nodes')">Loop</button>
-      <button v-on:click="vaddNode('StickFigure', 'stick_figure_nodes')">User</button>
-      <button v-on:click="vaddNode('Oval_UseCase', 'oval_nodes')">Oval</button>
+      <button v-on:click="vaddNode('Class', 'classnodes')">Class</button>
+      <button v-on:click="vaddNode('Note', 'notenodes')">Note</button>
+      <button v-on:click="vaddNode('Folder', 'foldernodes')">Folder</button>
+      <button v-on:click="vaddNode('TextBox_Square_Interface', 'textboxnodes')">Text Box</button>
+      <button v-on:click="vaddNode('LifeLine', 'lifelinenodes')">Lifeline</button>
+      <button v-on:click="vaddNode('Loop', 'loopnodes')">Loop</button>
+      <button v-on:click="vaddNode('StickFigure', 'stickfigurenodes')">User</button>
+      <button v-on:click="vaddNode('Oval_UseCase', 'ovalnodes')">Oval</button>
 
     </div>
     <canvas id="c" width ="1200px" height="600px" class="display-canvas"></canvas>
@@ -48,10 +48,10 @@
   let canvas = new fabric.Canvas('c');
   let nodes = [];
 
-  let currentPage = -1;
+  let currentPage = 1;
 
   let defaultNode = {
-    description: "A description",
+    description: "a loop",
     height: 50,
     width: 50,
     x_coord: 10,
@@ -157,7 +157,7 @@
 
     if(id == -1){
       let n = {
-        description: "A description",
+        description: "Did this make it",
         height: 50,
         width: 50,
         x_coord: xCoord,
@@ -168,13 +168,16 @@
         id: -1,
         page_id: currentPage,
       };
+
+
       let nodeJson = JSON.stringify(n);
-      let pageJson = JSON.stringify({id:1});
+      let pageJson = JSON.stringify({id:currentPage});
 
       fetch('/createNode/' + nodeJson + "/" + pageJson)
-          .then(result => result.text())
+          .then(result => result.json())
           .then((output) => {
             console.log('Output: ', output);
+            id = output.id;
           }).catch(err => console.error(err));
     }
 
@@ -245,7 +248,7 @@
         page_id: currentPage,
       };
       json = JSON.stringify(n)
-      //console.log(json);
+      console.log(json);
 
       return json;
     })
