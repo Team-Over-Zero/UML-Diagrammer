@@ -55,7 +55,12 @@
       <Button layoutX="281.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
       <Button layoutX="235.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
       <Label fx:id="noElementSelectedErrorLabel" layoutX="338.0" layoutY="5.0" text="No item selected, select an item then press edit/delete" textFill="RED" visible="false" />
-      <Button layoutX="385.0" layoutY="2.0" mnemonicParsing="false" onAction="#testDB" text="testDB" />
+      <Button layoutX="344.0" layoutY="2.0" mnemonicParsing="false" text="testDB" />
       <Button fx:id="dummyLoadButton" layoutX="70.0" minWidth="70.0" mnemonicParsing="false" onAction="#populateLoadButtons" style="-fx-background-color: white; -fx-border-color: black;" text="Load" />
+      <Label fx:id="currentPageLabel" layoutX="851.0" prefHeight="26.0" prefWidth="150.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

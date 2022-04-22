@@ -59,7 +59,13 @@ class AppTest {
 
         robo.clickOn("Cancel");
 
+        robo.clickOn("#UserNameTextField").write("user");
+        robo.clickOn("#PasswordTextField").write("password");
+
         robo.clickOn("Log In");
+
+        robo.clickOn("#newPageNameTextField").write("page");
+        robo.clickOn("Create new");
 
         /*verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());
@@ -111,6 +117,14 @@ class AppTest {
         robo.clickOn("Export");
 
         robo.clickOn("SVG");
+
+        robo.clickOn("Load");
+        //I'm sorry - David
+        robo.clickOn("Load");
+        robo.sleep(1000);
+        robo.clickOn("fuck");
+
+
 
 
 

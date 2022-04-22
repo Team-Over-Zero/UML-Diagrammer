@@ -30,6 +30,10 @@ import UML.Diagrammer.backend.objects.UIEdge.UINormalEdge;
 import UML.Diagrammer.backend.objects.UINode.*;
 import UML.Diagrammer.backend.objects.UIPage;
 import UML.Diagrammer.backend.objects.UIUser;
+import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -38,15 +42,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -226,10 +229,10 @@ public class ObjectRequester {
         Line line = new Line();
         UINode node0 = (UINode) n0.getUserData();
         UINode node1 = (UINode) n1.getUserData();
-        line.setStartX(node0.getX() + (node0.getW() / 2));
-        line.setStartY(node0.getY() + (node0.getH() / 2));
-        line.setEndX(node1.getX() + (node1.getW() / 2));
-        line.setEndY(node1.getY() + (node1.getH() / 2));
+        line.setStartX(node0.getX_coord() + (node0.getWidth() / 2));
+        line.setStartY(node0.getY_coord() + (node0.getHeight() / 2));
+        line.setEndX(node1.getX_coord() + (node1.getWidth() / 2));
+        line.setEndY(node1.getY_coord() + (node1.getHeight() / 2));
         line.setStrokeWidth(3);
         line.setUserData(edge);
         return line;
@@ -281,11 +284,11 @@ public class ObjectRequester {
      */
     public StackPane UIClassRequest(UINode node, int x, int y, String givenName, String givenDesc) {
         StackPane stack = makeStackPane(node, "Class.svg");
-        stack.setPrefWidth(node.getW());
-        stack.setPrefHeight(node.getH());
+        stack.setPrefWidth(node.getWidth());
+        stack.setPrefHeight(node.getHeight());
 
         Label name = new Label((String) node.getName());
-        Label desc = new Label((String) node.getDesc());
+        Label desc = new Label((String) node.getDescription());
         if (x != -1){       // For loading in a new node
             stack.setTranslateX(x);
             stack.setTranslateY(y);
@@ -313,8 +316,8 @@ public class ObjectRequester {
         StackPane stack = makeStackPane(node, image);
         Label name = new Label(node.getName());
         name.setWrapText(true);
-        stack.setPrefHeight(node.getH());
-        stack.setPrefWidth(node.getW());
+        stack.setPrefHeight(node.getHeight());
+        stack.setPrefWidth(node.getWidth());
         if (x != -1){       // For loading in a new node
             stack.setTranslateX(x);
             stack.setTranslateY(y);
@@ -342,10 +345,11 @@ public class ObjectRequester {
      * Creates a new page and adds the current user to it.
      * @param pageName The name of the page that the user specified.
      */
-    public void createNewPage(String pageName){
+    public UIPage createNewPage(String pageName){
         UIPage newPage = dbConnection.createNewPage(currentUser, pageName);
         dbConnection.addUserToPage(currentUser, newPage);
         currentPage = newPage;
+        return newPage;
     }
 
     /**
@@ -373,6 +377,7 @@ public class ObjectRequester {
     public Map<Integer, String> getUserPages(){
         try {
             String dbString = dbConnection.getUserPages(currentUser);
+            System.out.println("RAW DB PAGES: " + dbString);
             // Matches the string of "\\\"STRING, this gets the name string with some "\\\" before it.
             Pattern pattern = Pattern.compile("\\\"\\\\+\"\\w+");
             Matcher matcher = pattern.matcher(dbString);
@@ -414,53 +419,180 @@ public class ObjectRequester {
         return null;
     }
 
-    public void testDBConnections(){
-        /*UIUser newUser = dbConnection.createNewUser("myNewUser");
-        UIPage newPage = dbConnection.createNewPage(newUser, "newPage");
+    /**
+     * Given a page and the current pane, load the nodes/edges from the db.
+     * @param currentPane The current pane that all the elemnts reside
+     * @param page The id of the page you are loading from the db.
+     */
+    public void loadPagesFromDB(Pane currentPane, UIPage page){
+        String retObject = dbConnection.loadPageElements(page.getPageIdAsJSon());
 
-        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(newUIClassNode, newPage);
+        Gson gson  = new Gson();
+        String[][] stringArray = gson.fromJson(retObject, String[][].class);
+        ArrayList<UIEdge> hydratedEdgeList = new ArrayList<>();
+        if(stringArray[0].length != 0) { // Error checking if edges/nodes are empty
+            ArrayList<UINode> hydratedNodeList = hydrateNodes(stringArray[0]);
 
-        UITextBoxNode otherNewUIClassNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode, newPage);
+            if(stringArray[1].length !=0) { // Empty edge checking
+                stripEdge(stringArray[1][0]);
 
-        UINoteNode otherNewUIClassNode0 = nodeFactory.buildNode("notenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode0, newPage);
-
-        UIFolderNode otherNewUIClassNode1 = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode1, newPage);
-
-        UISquareNode otherNewUIClassNode2 = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode2, newPage);
-
-        UIStickFigureNode otherNewUIClassNode3 = nodeFactory.buildNode("stickfigurenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode3, newPage);
-
-        UIOvalNode otherNewUIClassNode4 = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode4, newPage);
-
-        UILifeLineNode otherNewUIClassNode5 = nodeFactory.buildNode("lifelinenodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode5, newPage);
-
-        UILoopNode otherNewUIClassNode6 = nodeFactory.buildNode("loopnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(otherNewUIClassNode6, newPage);
-
-        // Only works when the edge is default. Change UIEdge.getEdgeAsJSon from normal_edges
-        UINormalEdge newUIEdge = edgeFactory.buildEdge("normaledges", newUIClassNode, otherNewUIClassNode);
-        //System.out.println("EdgeJSON is: " + newUIEdge.getEdgeAsJSon());
-        dbConnection.saveNewEdgeToDB(newUIEdge, newPage);
-
-        UIClassNode newUIClassNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
-        dbConnection.saveNewNodeToDB(newUIClassNode, currentPage);
-
-        newUIClassNode.setName("name changed!");
-        newUIClassNode.setDesc("diffrent desc too");
-        newUIClassNode.setX(666);
-        newUIClassNode.setY(777);
-        dbConnection.updateNode(newUIClassNode);*/
-
-        getUserPages();
-
+                for(String curEdgeString : stringArray[1]){
+                    UIEdge hydratedEdge = hydrateEdges(stripEdge(curEdgeString), hydratedNodeList);
+                    hydratedEdgeList.add(hydratedEdge);
+                }
+            }
+            loadPage(hydratedNodeList, hydratedEdgeList, currentPane);
+        }
     }
 
+    /**
+     * Given a json string of nodes create real UINode objects that can be used to display on the UI.
+     * @param nodes The string list of json nodes
+     * @return An array list of hydrated nodes
+     */
+    public ArrayList<UINode> hydrateNodes(String[] nodes){
+        NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
+
+        customNodeDeserializer.registerSubtype( "defaultnodes",UIDefaultNode.class);
+        customNodeDeserializer.registerSubtype( "classnodes", UIClassNode.class);
+        customNodeDeserializer.registerSubtype( "foldernodes", UIFolderNode.class);
+        customNodeDeserializer.registerSubtype( "lifelinenodes", UILifeLineNode.class);
+        customNodeDeserializer.registerSubtype( "loopnodes", UILoopNode.class);
+        customNodeDeserializer.registerSubtype( "notenodes", UINoteNode.class);
+        customNodeDeserializer.registerSubtype( "ovalnodes", UIOvalNode.class);
+        customNodeDeserializer.registerSubtype( "squarenodes", UISquareNode.class);
+        customNodeDeserializer.registerSubtype( "stickfigurenodes", UIStickFigureNode.class);
+        customNodeDeserializer.registerSubtype( "textboxnodes", UITextBoxNode.class);
+
+        Gson gBuilder = new GsonBuilder()
+                .registerTypeAdapter(UINode.class,customNodeDeserializer)
+                .create();
+
+        ArrayList<UINode> UINodeList = new ArrayList<>();
+
+        for (String curJsonNode : nodes){
+            System.out.println(curJsonNode.toString());
+            UINodeList.add(gBuilder.fromJson(curJsonNode, new TypeToken<UINode>(){}.getType()));
+        }
+        return UINodeList;
+    }
+
+    /**
+     * Not a great function due to needing the lists be in a particular order. And no duplicate ids.
+     * Gets the edge information that you'd like to hydrate and create a node with the list of nodes that are given to it.
+     * @param edgeIds The list of integers that make up the IDs, [fromNodeId, edgeId, toNodeId]
+     * @param nodes The list of hydrated nodes that you need to associate lines with.
+     * @return The new hydrated edge.
+     */
+    public UIEdge hydrateEdges(ArrayList<Integer> edgeIds, ArrayList<UINode> nodes){
+        ArrayList<UINode> matchedNodes = new ArrayList<>();
+        for (UINode curNode : nodes){
+            if (curNode.getId() == edgeIds.get(0)) {
+                matchedNodes.add(curNode);
+            }
+        }
+        for (UINode curNode : nodes) {
+            if (curNode.getId() == edgeIds.get(2)) {
+                matchedNodes.add(curNode);
+            }
+        }
+        UIEdge hydratedEdge = new UINormalEdge(matchedNodes.get(0), matchedNodes.get(1));
+        hydratedEdge.setId(edgeIds.get(1));
+        return hydratedEdge;
+    }
+
+    /**
+     * Various regex operations to get a list of integers that only have the from node id, edge id, and to node id
+     * @param jsonEdgeString The json string from the server that is a edge.
+     * @return A arrayList<Integer> in this order [from_node_id, edge_id, to_node_id]
+     */
+    public ArrayList<Integer> stripEdge(String jsonEdgeString){
+        //Strips everything but the numbers, and it's identifier proceeding it.
+        Pattern pattern = Pattern.compile("[a-z_]+\":[0-9]+");
+        Matcher matcher = pattern.matcher(jsonEdgeString);
+        ArrayList<String> idNameAndInt = new ArrayList<>();
+        while (matcher.find()) {
+            idNameAndInt.add(matcher.group());
+        }
+
+        // Gets rid of the page_id number since we don't need it, along with the rest of the character we don't want
+        String strippedString = idNameAndInt.toString().replaceAll("((page_id\":[0-9]+)|[a-z_\":])+", "");
+        System.out.println(strippedString);
+
+        //Adds the numbers to a list for individual retrieval, list is [from_node_id, edge_id, to_node_id]
+        Pattern p = Pattern.compile("[0-9]+");
+        Matcher m = p.matcher(strippedString);
+        ArrayList<Integer> fromIdTo = new ArrayList<>();
+        while (m.find()) {
+            fromIdTo.add(Integer.valueOf(m.group()));
+        }
+        return fromIdTo;
+    }
+
+
+
+    /**
+     * Loads the page by takeing a list of nodes and edges and adds them to the pane with their given information
+     * @param nodes The set of nodes we are loading in
+     * @param edge The set of edges we are loading in
+     * @param pane The parent pane that everything loads into
+     */
+    public void loadPage(ArrayList<UINode> nodes, ArrayList<UIEdge> edge, Pane pane){
+        for (UINode curNode: nodes) {
+            loadNode(curNode);
+        }
+
+        if (edge.size() > 0) {
+            System.out.println("edge size is > 0");
+            for (UIEdge curEdge : edge) {
+                loadEdge(curEdge, pane);
+            }
+        }
+    }
+
+    /**
+     * Calls the appropriate make method based on the node type.
+     * Uses the given nodes attributes as a reference to create it in the specified area with loaded names.
+     * @param node The node you are loading in.
+     */
+    public void loadNode(UINode node){
+        switch (node.getType()){
+            case "ovalnodes" -> makeOvalRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIOvalNode) node);
+            case "classnodes" -> makeClassRequest(node.getX_coord(), node.getY_coord(), node.getName(), node.getDescription(), (UIClassNode) node);
+            case "foldernodes" -> makeFolderRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIFolderNode) node);
+            case "lifelinenodes" -> makeLifeLineRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UILifeLineNode) node);
+            case "loopnodes" -> makeLoopRequest(node.getX_coord(), node.getY_coord(), node.getName(),(UILoopNode) node);
+            case "notenodes" -> makeNoteRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UINoteNode) node);
+            case "stickfigurenodes" -> makeStickFigureRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIStickFigureNode) node);
+            case "textboxnodes" -> makeTextBoxRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UITextBoxNode) node);
+            case "squarenodes" -> makeSquareRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UISquareNode) node);
+        }
+    }
+
+    /**
+     * Loads the edge into the pane given a pane and an edge. The edge finds it's connected components via looking at
+     * all the nodes and finds a matching ID.
+     * @param edge The edge we are trying to create
+     * @param pane The parent pane where we are displaying th edge.
+     */
+    public void loadEdge(UIEdge edge, Pane pane){
+        int n1Id = edge.getN1().getId();
+        int n2Id = edge.getN2().getId();
+        ArrayList<StackPane> matchingNodes = new ArrayList<>();
+        for (Node curNode: pane.getChildren()) {
+            if (curNode instanceof StackPane curPane){
+                UINode curUINode = (UINode) curPane.getUserData();
+                int nodeId = curUINode.getId();
+                if (nodeId == n1Id){
+                    matchingNodes.add(curPane);
+                }
+                else if (nodeId == n2Id){
+                    matchingNodes.add(curPane);
+                }
+            }
+            if (matchingNodes.size() == 2){break;} // Leave loop early if both nodes have been found
+        }
+        System.out.println(matchingNodes.get(0).getWidth());
+        makeEdgeRequest(matchingNodes.get(0), matchingNodes.get(1), edge);
+    }
 }

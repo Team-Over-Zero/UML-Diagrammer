@@ -21,6 +21,7 @@ import UML.Diagrammer.backend.objects.UIEdge.UINormalEdge;
 import UML.Diagrammer.backend.objects.UINode.*;
 import UML.Diagrammer.backend.objects.UIPage;
 import UML.Diagrammer.backend.objects.UIUser;
+import com.google.gson.Gson;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -146,7 +147,6 @@ public class DatabaseConnection {
      * @param page The page that you're adding the user to.
      */
     public void addUserToPage(UIUser user, UIPage page){
-        System.out.println("IDAsJSON: "+ user.getIDAsJson()+" pageIdAsJSON: "+ page.getPageIdAsJSon());
         HTTPClient.sendAddUserToPage(user.getIDAsJson(), page.getPageIdAsJSon());
         System.out.println("Successfully added user: "+user.getName()+ " to page: "+ page.getId());
     }
@@ -161,5 +161,13 @@ public class DatabaseConnection {
         }
         catch (Exception e){e.printStackTrace(); System.out.println("Failed to get user's pages");}
         return null;
+    }
+
+    public String loadPageElements(String page){
+        return HTTPClient.sendLoadPage(page);
+    }
+
+    public String loginUser(String user){
+        return HTTPClient.sendLoginuser(user);
     }
 }

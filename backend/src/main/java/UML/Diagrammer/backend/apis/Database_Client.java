@@ -112,6 +112,7 @@ public class Database_Client {
         updateNodeOnPage();
 
         createUser();
+        loginUser();
         getUserPages();
         addUserToPage();
         removeUserFromPage();
@@ -158,7 +159,6 @@ public class Database_Client {
         httpServer.get("/getnode/",RequestController::getAnyNode);
     }
 
-
     /**
      * this will create a test default node with the name being a user defined query parameter in the post request.
      */
@@ -190,15 +190,10 @@ public class Database_Client {
         httpServer.post("/deletepage/",RequestController::deletePage);
     }
     void loadPageElements(){
-        httpServer.post("/loadpage/",RequestController::loadPageElements);
+        httpServer.get("/loadpage/",RequestController::loadPageElements);
 
     }
-
-    void getPageIdByName(){
-        httpServer.post("/getpageidbyname/",RequestController::getPageIdByName);
-
-    }
-
+    void getPageIdByName(){httpServer.post("/getpageidbyname/",RequestController::getPageIdByName);}
     void createNodeOnPage(){
         httpServer.post("/pagecreatenode/",RequestController::createNodeOnPage);
     }
@@ -225,6 +220,7 @@ public class Database_Client {
     void getUserPages(){
         httpServer.get("/getuserpages/",RequestController::getUserPages);
     }
+    void loginUser(){httpServer.post("/loginuser/",RequestController::loginUser);}
 
     //Misc.
 
