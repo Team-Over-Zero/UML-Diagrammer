@@ -118,6 +118,14 @@ class AppTest {
 
         robo.clickOn("SVG");
 
+        robo.clickOn("Load");
+        //I'm sorry - David
+        robo.clickOn("Load");
+        robo.sleep(1000);
+        robo.clickOn("fuck");
+
+
+
 
 
 
