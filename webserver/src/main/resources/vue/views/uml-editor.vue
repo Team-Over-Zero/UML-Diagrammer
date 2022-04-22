@@ -5,7 +5,7 @@
     </h1>
     <div>
       <button v-on:click="vparseJsonFromDiagram()">Save</button>
-      <button v-on:click="vloadNode()">Load</button>
+      <button v-on:click="vloadPage()">Load</button>
       <button>Export</button>
       <select name="left-arrow" id="left-arrow">
         <option value="<--"><--</option>
@@ -155,31 +155,7 @@
 
   function addNode(path, svg_image, type, name = "name", xCoord = 10, yCoord = 10, id = -1){
 
-    if(id == -1){
-      let n = {
-        description: "Did this make it",
-        height: 50,
-        width: 50,
-        x_coord: xCoord,
-        y_coord: yCoord,
-        name: name,
-        svg_image: svg_image,
-        type: type,
-        id: -1,
-        page_id: currentPage,
-      };
 
-
-      let nodeJson = JSON.stringify(n);
-      let pageJson = JSON.stringify({id:currentPage});
-
-      fetch('/createNode/' + nodeJson + "/" + pageJson)
-          .then(result => result.json())
-          .then((output) => {
-            console.log('Output: ', output);
-            id = output.id;
-          }).catch(err => console.error(err));
-    }
 
 
     let shape = new fabric.Path(path, {
@@ -225,6 +201,32 @@
 
     canvas.add(group);
 
+    if(id == -1){
+      let n = {
+        description: "Did this make it",
+        height: 50,
+        width: 50,
+        x_coord: xCoord,
+        y_coord: yCoord,
+        name: name,
+        svg_image: svg_image,
+        type: type,
+        id: -1,
+        page_id: currentPage,
+      };
+
+
+      let nodeJson = JSON.stringify(n);
+      let pageJson = JSON.stringify({id:currentPage});
+
+      fetch('/createNode/' + nodeJson + "/" + pageJson)
+          .then(result => result.json())
+          .then((output) => {
+            console.log('Output: ', output);
+            idText.text = output.id;
+          }).catch(err => console.error(err));
+    }
+
   }
 
   function removeCurrentNode(){
@@ -255,7 +257,15 @@
   }
 
 
-
+function loadPage(pageId){
+  //let jsonId = JSON.stringify({pageid:currentPage});
+  let jsonId = "{\"id\":\"" + 1 + "\"}";
+  fetch('/loadPage/' + jsonId)
+      .then(result => result.text())
+      .then((output) => {
+        console.log('Output: ', output);
+      }).catch(err => console.error(err));
+}
 
 
 
@@ -303,6 +313,10 @@
                   }).catch(err => console.error(err));
             }).catch(err => console.error(err));
 
+      },
+
+      vloadPage: function(){
+        loadPage(currentPage);
       },
 
       vparseJsonFromDiagram: function(){

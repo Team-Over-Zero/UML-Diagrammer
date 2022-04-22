@@ -96,9 +96,15 @@ public class WebServer {
             String node = ctx.pathParam("node");
             String page = ctx.pathParam("page");
             String responce = http_client.sendAddNodeToPage(node, page);
-            System.out.println("Responce from backend: " + responce);
             ctx.result(responce);
 
+        });
+
+        client.get("/loadPage/{id}", ctx -> {
+           String id = ctx.pathParam("id");
+           String response = http_client.sendLoadPage(id);
+           System.out.println("Response: " + response);
+           ctx.result(http_client.sendLoadPage(id));
         });
 
 
