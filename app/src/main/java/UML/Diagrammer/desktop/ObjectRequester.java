@@ -64,7 +64,6 @@ public class ObjectRequester {
     private static final UIEdgeFactory edgeFactory = new UIEdgeFactory();
     public UIUser currentUser;
     public UIPage currentPage;
-    private LoadPage pageLoader = new LoadPage();
     public static DatabaseConnection dbConnection = new DatabaseConnection();
 
     /**
@@ -378,6 +377,7 @@ public class ObjectRequester {
     public Map<Integer, String> getUserPages(){
         try {
             String dbString = dbConnection.getUserPages(currentUser);
+            System.out.println("RAW DB PAGES: " + dbString);
             // Matches the string of "\\\"STRING, this gets the name string with some "\\\" before it.
             Pattern pattern = Pattern.compile("\\\"\\\\+\"\\w+");
             Matcher matcher = pattern.matcher(dbString);
@@ -422,26 +422,27 @@ public class ObjectRequester {
     /**
      * Given a page and the current pane, load the nodes/edges from the db.
      * @param currentPane The current pane that all the elemnts reside
-     * @param pageId The id of the page you are loading from the db.
+     * @param page The id of the page you are loading from the db.
      */
     public void loadPagesFromDB(Pane currentPane, UIPage page){
         String retObject = dbConnection.loadPageElements(page.getPageIdAsJSon());
 
         Gson gson  = new Gson();
         String[][] stringArray = gson.fromJson(retObject, String[][].class);
-        System.out.println(Arrays.toString(stringArray[1]));
-
-        ArrayList<UINode> hydratedNodeList = hydrateNodes(stringArray[0]);
-
         ArrayList<UIEdge> hydratedEdgeList = new ArrayList<>();
-        stripEdge(stringArray[1][0]);
+        if(stringArray[0].length != 0) { // Error checking if edges/nodes are empty
+            ArrayList<UINode> hydratedNodeList = hydrateNodes(stringArray[0]);
 
-        for(String curEdgeString : stringArray[1]){
-            UIEdge hydratedEdge = hydrateEdges(stripEdge(curEdgeString), hydratedNodeList);
-            hydratedEdgeList.add(hydratedEdge);
+            if(stringArray[1].length !=0) { // Empty edge checking
+                stripEdge(stringArray[1][0]);
+
+                for(String curEdgeString : stringArray[1]){
+                    UIEdge hydratedEdge = hydrateEdges(stripEdge(curEdgeString), hydratedNodeList);
+                    hydratedEdgeList.add(hydratedEdge);
+                }
+            }
+            loadPage(hydratedNodeList, hydratedEdgeList, currentPane);
         }
-
-        pageLoader.loadPage(hydratedNodeList, hydratedEdgeList, currentPane);
     }
 
     /**
@@ -528,7 +529,70 @@ public class ObjectRequester {
         return fromIdTo;
     }
 
-    public void testDBConnections(Pane pane){
-        //loadPagesFromDB(pane);
+
+
+    /**
+     * Loads the page by takeing a list of nodes and edges and adds them to the pane with their given information
+     * @param nodes The set of nodes we are loading in
+     * @param edge The set of edges we are loading in
+     * @param pane The parent pane that everything loads into
+     */
+    public void loadPage(ArrayList<UINode> nodes, ArrayList<UIEdge> edge, Pane pane){
+        for (UINode curNode: nodes) {
+            loadNode(curNode);
+        }
+
+        if (edge.size() > 0) {
+            System.out.println("edge size is > 0");
+            for (UIEdge curEdge : edge) {
+                loadEdge(curEdge, pane);
+            }
+        }
+    }
+
+    /**
+     * Calls the appropriate make method based on the node type.
+     * Uses the given nodes attributes as a reference to create it in the specified area with loaded names.
+     * @param node The node you are loading in.
+     */
+    public void loadNode(UINode node){
+        switch (node.getType()){
+            case "ovalnodes" -> makeOvalRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIOvalNode) node);
+            case "classnodes" -> makeClassRequest(node.getX_coord(), node.getY_coord(), node.getName(), node.getDescription(), (UIClassNode) node);
+            case "foldernodes" -> makeFolderRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIFolderNode) node);
+            case "lifelinenodes" -> makeLifeLineRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UILifeLineNode) node);
+            case "loopnodes" -> makeLoopRequest(node.getX_coord(), node.getY_coord(), node.getName(),(UILoopNode) node);
+            case "notenodes" -> makeNoteRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UINoteNode) node);
+            case "stickfigurenodes" -> makeStickFigureRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UIStickFigureNode) node);
+            case "textboxnodes" -> makeTextBoxRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UITextBoxNode) node);
+            case "squarenodes" -> makeSquareRequest(node.getX_coord(), node.getY_coord(), node.getName(), (UISquareNode) node);
+        }
+    }
+
+    /**
+     * Loads the edge into the pane given a pane and an edge. The edge finds it's connected components via looking at
+     * all the nodes and finds a matching ID.
+     * @param edge The edge we are trying to create
+     * @param pane The parent pane where we are displaying th edge.
+     */
+    public void loadEdge(UIEdge edge, Pane pane){
+        int n1Id = edge.getN1().getId();
+        int n2Id = edge.getN2().getId();
+        ArrayList<StackPane> matchingNodes = new ArrayList<>();
+        for (Node curNode: pane.getChildren()) {
+            if (curNode instanceof StackPane curPane){
+                UINode curUINode = (UINode) curPane.getUserData();
+                int nodeId = curUINode.getId();
+                if (nodeId == n1Id){
+                    matchingNodes.add(curPane);
+                }
+                else if (nodeId == n2Id){
+                    matchingNodes.add(curPane);
+                }
+            }
+            if (matchingNodes.size() == 2){break;} // Leave loop early if both nodes have been found
+        }
+        System.out.println(matchingNodes.get(0).getWidth());
+        makeEdgeRequest(matchingNodes.get(0), matchingNodes.get(1), edge);
     }
 }

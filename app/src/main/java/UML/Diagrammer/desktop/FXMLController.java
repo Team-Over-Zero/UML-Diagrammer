@@ -106,6 +106,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      */
     @FXML private Label ActionLabel;
     @FXML public Label noElementSelectedErrorLabel;
+    @FXML public Label currentPageLabel;
     @FXML public Pane canvasPane;
     @FXML public MenuButton loadMenuButton;
     @FXML public Button dummyLoadButton;
@@ -253,13 +254,6 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
-     * A test button to test db connection like making a new user, page etc.
-     */
-    @FXML private void testDB(){
-        objectRequesterObservable.testDBConnections(canvasPane);
-    }
-
-    /**
      * On press of the "load" button it populates it with the current pages that the user has.
      * On click of an item it fetches that page from the db and loads it into the UI.
      * On the UI startup/login there is a button that just says "Load", this populates the menubutton items on press
@@ -278,6 +272,7 @@ public class FXMLController extends App implements PropertyChangeListener{
                     canvasPane.getChildren().clear();
                     objectRequesterObservable.loadPagesFromDB(canvasPane, page);
                     objectRequesterObservable.setCurrentPage(page);
+                    currentPageLabel.setText(page.getName());
                 });
                 loadMenuButton.getItems().add(newItem);
             }
@@ -290,7 +285,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * @param value The name of the item you are adding
      * @return If that item already exists.
      */
-    private Boolean containsPage(String value){
+    public Boolean containsPage(String value){
         for (MenuItem curItem: loadMenuButton.getItems()) {
             if(value.equals(curItem.getText())){
                 return true;
@@ -315,11 +310,18 @@ public class FXMLController extends App implements PropertyChangeListener{
         textField.setPrefHeight(50);
         Button button = new Button("Confirm");
         button.setOnAction(e -> {
-            UIPage newPage = objectRequesterObservable.createNewPage(textField.getText());
-            canvasPane.getChildren().clear();
-            objectRequesterObservable.setCurrentPage(newPage);
-            popUp.hide();
-            populateLoadButtons();
+            if (textField.getText().equals("") || textField.getText().matches(".*\\d.*")) {
+                label.setText("Page name can't be empty or include numbers");
+                label.setWrapText(true);
+            }
+            else{
+                UIPage newPage = objectRequesterObservable.createNewPage(textField.getText());
+                canvasPane.getChildren().clear();
+                objectRequesterObservable.setCurrentPage(newPage);
+                currentPageLabel.setText(newPage.getName());
+                popUp.hide();
+                populateLoadButtons();
+            }
         });
 
         StackPane sp = new StackPane();

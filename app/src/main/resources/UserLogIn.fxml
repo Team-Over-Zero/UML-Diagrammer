@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -11,16 +12,23 @@
    <children>
       <TextField fx:id="UserNameTextField" layoutX="216.0" layoutY="126.0" promptText="UserName" />
       <TextField fx:id="PasswordTextField" layoutX="215.0" layoutY="150.0" promptText="Password" />
-      <Button layoutX="216.0" layoutY="188.0" mnemonicParsing="false" onAction="#loginButtonPressed" text="Log In" />
+      <Button layoutX="268.0" layoutY="188.0" mnemonicParsing="false" onAction="#loginButtonPressed" text="Log In" />
       <Button layoutX="216.0" layoutY="230.0" mnemonicParsing="false" onAction="#loginRegisterNewUserPressed" text="Register New Account" />
-      <Label fx:id="ErrorLabel" layoutX="215.0" layoutY="98.0" text="Error" textFill="RED" visible="false" />
-      <Text layoutX="159.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UML Diagrammer 2.5">
+      <Label fx:id="loginErrorLabel" layoutX="179.0" layoutY="69.0" prefHeight="49.0" prefWidth="245.0" text="User name or password incorrect Please try again or register a new account" textFill="RED" visible="false" wrapText="true" />
+      <Text layoutX="121.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="UML Diagrammer 2.5">
          <font>
             <Font size="33.0" />
          </font>
       </Text>
       <Button blendMode="SRC_ATOP" layoutX="536.0" layoutY="14.0" mnemonicParsing="false" onAction="#exitAppPressed" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Button layoutX="290.0" layoutY="277.0" mnemonicParsing="false" onAction="#loginReadMePressed" text="Read Me" />
-      <Button layoutX="214.0" layoutY="277.0" mnemonicParsing="false" onAction="#loginCreditButtonPressed" text="Credits" />
+      <Label fx:id="loginSuccessLabel" layoutX="215.0" layoutY="77.0" prefHeight="49.0" prefWidth="162.0" text="Success, logging in..." textFill="#059e12" visible="false" wrapText="true" />
+      <Pane fx:id="successPane" layoutX="153.0" layoutY="74.0" prefHeight="312.0" prefWidth="298.0" style="-fx-background-color: white;" visible="false">
+         <children>
+            <Label fx:id="welcomeLabel" prefHeight="38.0" prefWidth="298.0" />
+            <Button fx:id="createNewButton" layoutX="95.0" layoutY="69.0" mnemonicParsing="false" onAction="#newPageButtonPressed" text="Create new" />
+            <TextField fx:id="newPageNameTextField" layoutX="64.0" layoutY="45.0" promptText="New page name" />
+            <Label fx:id="errorLabelNewPage" layoutY="7.0" prefHeight="38.0" prefWidth="298.0" text="Page name can't be blank or contain numbers" textFill="RED" visible="false" wrapText="true" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

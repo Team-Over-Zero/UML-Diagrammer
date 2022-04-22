@@ -59,7 +59,13 @@ class AppTest {
 
         robo.clickOn("Cancel");
 
+        robo.clickOn("#UserNameTextField").write("user");
+        robo.clickOn("#PasswordTextField").write("password");
+
         robo.clickOn("Log In");
+
+        robo.clickOn("#newPageNameTextField").write("page");
+        robo.clickOn("Create new");
 
         /*verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());

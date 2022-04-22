@@ -147,7 +147,6 @@ public class DatabaseConnection {
      * @param page The page that you're adding the user to.
      */
     public void addUserToPage(UIUser user, UIPage page){
-        System.out.println("IDAsJSON: "+ user.getIDAsJson()+" pageIdAsJSON: "+ page.getPageIdAsJSon());
         HTTPClient.sendAddUserToPage(user.getIDAsJson(), page.getPageIdAsJSon());
         System.out.println("Successfully added user: "+user.getName()+ " to page: "+ page.getId());
     }
@@ -165,9 +164,10 @@ public class DatabaseConnection {
     }
 
     public String loadPageElements(String page){
-        return /*String retString =*/ HTTPClient.sendLoadPage(page);
-        /*Gson gson = new Gson();
-        Object dbObject = gson.fromJson(retString, Object.class);
-        return dbObject;*/
+        return HTTPClient.sendLoadPage(page);
+    }
+
+    public String loginUser(String user){
+        return HTTPClient.sendLoginuser(user);
     }
 }

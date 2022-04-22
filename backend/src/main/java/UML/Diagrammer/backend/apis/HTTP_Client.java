@@ -380,6 +380,18 @@ public class HTTP_Client {
         return returnString;
     }
 
+    public String sendLoginuser(String userJson){
+        String returnString = "";
+        try {
+            returnString = genericPostRequestOneParam("/loginuser/", "user", userJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+    }
+
     /**
      * May not be properly implemented yet.
      *
