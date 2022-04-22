@@ -21,6 +21,7 @@ public class HTTP_ClientTest {
 
     @Test
     public void test() {
+        HTTP_Client bork = new HTTP_Client("bork","bork");
 
     }
 
