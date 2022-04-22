@@ -466,8 +466,6 @@ public class ObjectRequester {
             ArrayList<UINode> hydratedNodeList = hydrateNodes(stringArray[0]);
 
             if(stringArray[1].length !=0) { // Empty edge checking
-                stripEdge(stringArray[1][0]);
-
                 for(String curEdgeString : stringArray[1]){
                     UIEdge hydratedEdge = hydrateEdges(stripEdge(curEdgeString), hydratedNodeList);
                     hydratedEdgeList.add(hydratedEdge);
@@ -624,7 +622,6 @@ public class ObjectRequester {
             }
             if (matchingNodes.size() == 2){break;} // Leave loop early if both nodes have been found
         }
-        System.out.println(matchingNodes.get(0).getWidth());
         makeEdgeRequest(matchingNodes.get(0), matchingNodes.get(1), edge);
     }
 }

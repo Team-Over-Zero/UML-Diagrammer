@@ -72,34 +72,34 @@ class AppTest {
         robo.clickOn("#newPageNameTextField").write("page");
         robo.clickOn("Create new");
 
-        /*verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
-        verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());
-        verifyThat(robo.lookup("Delete"), (Button b) -> b.isVisible());
-        verifyThat("Load", org.testfx.matcher.control.LabeledMatchers.hasText("Load"));*/
-
         robo.clickOn("Class");
 
-        //robo.doubleClickOn("Class Name");
-        //robo.clickOn("Class Name");
+        verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
+        verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());
+        verifyThat(robo.lookup("Delete"), (Button b) -> b.isVisible());
+        verifyThat("Load", org.testfx.matcher.control.LabeledMatchers.hasText("Load"));
 
-        //robo.type(KeyCode.S);
+        robo.rightClickOn("Class Name");
 
-        //robo.clickOn("Confirm");
+        robo.clickOn("Edit name");
 
-        //robo.clickOn("Delete");
+        robo.type(KeyCode.S);
+
+        robo.clickOn("Confirm");
+
+        robo.clickOn("s");
+
+        robo.clickOn("Delete");
 
         robo.clickOn("Oval");
 
-        //robo.doubleClickOn("Oval Name");
+        robo.clickOn("Edit");
 
+        robo.type(KeyCode.E);
 
-        //robo.type(KeyCode.E);
+        robo.clickOn("Confirm");
 
-        //robo.clickOn("Confirm");
-
-        //robo.clickOn("e");
-
-        //robo.clickOn("Delete");
+        robo.clickOn("Delete");
 
         robo.clickOn("Line");
 
@@ -113,7 +113,7 @@ class AppTest {
 
         robo.clickOn("Stick Figure");
 
-        //robo.clickOn("Stick Figure Name");
+        robo.clickOn("Stick Figure Name");
 
         robo.clickOn("Text Box");
 
