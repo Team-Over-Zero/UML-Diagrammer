@@ -21,6 +21,10 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  * This does NOT need a description, but need a name and a STICK_FIGURE_SVG image.
  */
 public class StickFigureNode extends AbstractNode {
+    public StickFigureNode(){
+        super();
+        set("type","stickfigurenodes");
+    }
     public StickFigureNode(int x, int y, int w, int h){
         super("Stick Figure Name","stickfigurenodes", null, "STICK_FIGURE_SVG", x, y, w, h);
     }

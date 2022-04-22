@@ -21,6 +21,10 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  * This does NOT need a description, but need a name and a OVAL_SVG image.
  */
 public class OvalNode extends AbstractNode {
+    public OvalNode(){
+        super();
+        set("type","ovalnodes");
+    }
     public OvalNode(int x, int y, int w, int h){
         super("Oval Name","ovalnodes", null, "OVAL_SVG", x, y, w, h);
     }

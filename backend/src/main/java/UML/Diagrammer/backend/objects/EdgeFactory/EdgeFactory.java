@@ -29,7 +29,7 @@ public class EdgeFactory {
 	public <genericEdge extends AbstractEdge> genericEdge
     buildEdge(String tableName,int fromNodeId,String fromNodeType,int toNodeId,String toNodeType){
 
-        if(tableName.equals("normal_edges")) {
+        if(tableName.equals("normaledges")) {
             return (genericEdge) new NormalEdge(fromNodeId,fromNodeType,toNodeId,toNodeType);
         }
 

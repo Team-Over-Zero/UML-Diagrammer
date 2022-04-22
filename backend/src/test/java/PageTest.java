@@ -155,7 +155,7 @@ public class PageTest extends DBSpec {
 
 
         assertEquals("classnodes",clsNode.get("type"));
-        assertEquals("default_nodes",def.get("type"));
+        assertEquals("defaultnodes",def.get("type"));
         assertEquals("classnodes",cl.get("type"));
         //assertEquals(10,page.getNodes().size()); //tests size of dictionary not number of nodes
     }

@@ -22,7 +22,7 @@ import UML.Diagrammer.backend.objects.*;
 
      public ClassNode(){
          super();
-         set("type","class_nodes");
+         set("type","classnodes");
          saveIt();
      }
      public ClassNode(int x, int y, int w, int h){

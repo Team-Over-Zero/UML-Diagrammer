@@ -21,7 +21,11 @@ import UML.Diagrammer.backend.objects.AbstractNode;
  * This does NOT need a name but does need a description and a NOTE_SVG image.
  */
 public class NoteNode extends AbstractNode {
-    NoteNode(int x, int y, int w, int h){
+    public NoteNode(){
+        super();
+        set("type","notenodes");
+    }
+    public NoteNode(int x, int y, int w, int h){
         super("Note Name","notenodes", "Note Description", "NOTE_SVG", x, y, w, h);
     }
 }

@@ -22,7 +22,7 @@ import UML.Diagrammer.backend.objects.AbstractNode;
 public class DefaultNode extends AbstractNode {
     public DefaultNode(){
         super();
-        set("type","default_nodes");
+        set("type","defaultnodes");
         //saveIt();
 
     }

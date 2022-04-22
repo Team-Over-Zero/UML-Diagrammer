@@ -507,6 +507,7 @@ public final class RequestController {
 
 
     /**
+     * Attaches to the /loadpage/ post request
      * Given a pageid param, gets a json (2d arr) of nodes and edges.
      */
     public static void loadPageElements(Context context){
@@ -514,7 +515,12 @@ public final class RequestController {
         CustomJsonHelper jsonHelper = new CustomJsonHelper();
         try {
             String pageId = jsonHelper.getObjId(pageIdParam);
-            Page foundPage =Page.findById(pageId);
+            Page foundPage = Page.findById(pageId);
+            LazyList<TextBoxNode> tboxes = foundPage.getAll(TextBoxNode.class);
+            for (TextBoxNode t:tboxes
+                 ) {
+                System.out.println(t.toJson(true));
+            }
             ArrayList<String> nList = new ArrayList<>();
             ArrayList<LazyList<? extends AbstractNode>> listOfNodeLists = foundPage.getNodes();
             for (LazyList<? extends AbstractNode> lazyL: listOfNodeLists //for every node table in page
@@ -522,6 +528,7 @@ public final class RequestController {
                 for(AbstractNode n:lazyL){
                     String tempNode = n.toJson(false); //add an individual node to our node list.
                     nList.add(tempNode);
+                    System.out.println(n.toJson(true));
                 }
 
             }
@@ -569,11 +576,14 @@ public final class RequestController {
                // int nodeIdInt = Integer.parseInt(nodeId);
                 String newNodeId = jsonHelper.getObjId(createdNodeJson); // id of database node.
                 String nodeType = jsonHelper.getObjType(createdNodeJson);
+                System.out.println("Created node type is: "+ nodeType);
 
                 LazyList<? extends AbstractNode> foundNodeList = nodeListByIdType(newNodeId,nodeType);
                 AbstractNode foundNode = foundNodeList.get(0);
                 Page page = Page.findById(pageIdInt);
                 page.add(foundNode);
+                page.saveIt();
+                foundNode.saveIt();
                 String jsonSuccess = "{\"id\":\"" + foundNode.getId() + "\"}";
 
                 context.result(jsonSuccess); //result is the id of the instantiated node as a json object.
@@ -879,16 +889,16 @@ public final class RequestController {
      */
     private static LazyList<? extends AbstractNode> nodeListByIdType(String nodeId, String nodeType) throws Exception{
         LazyList<? extends AbstractNode> dfList = switch (nodeType) {
-            case "default_nodes" -> DefaultNode.where("id = ?", nodeId);
-            case "folder_nodes" -> FolderNode.where("id = ?", nodeId);
-            case "class_nodes" -> ClassNode.where("id = ?", nodeId);
-            case "life_line_nodes" -> LifeLineNode.where("id = ?", nodeId);
-            case "loop_nodes" -> LoopNode.where("id = ?", nodeId);
-            case "note_nodes" -> NoteNode.where("id = ?", nodeId);
-            case "oval_nodes" -> OvalNode.where("id = ?", nodeId);
-            case "square_nodes" -> SquareNode.where("id = ?", nodeId);
-            case "stick_figure_nodes" -> StickFigureNode.where("id = ?", nodeId);
-            case "text_box_nodes" -> TextBoxNode.where("id = ?", nodeId);
+            case "defaultnodes" -> DefaultNode.where("id = ?", nodeId);
+            case "foldernodes" -> FolderNode.where("id = ?", nodeId);
+            case "classnodes" -> ClassNode.where("id = ?", nodeId);
+            case "lifelinenodes" -> LifeLineNode.where("id = ?", nodeId);
+            case "loopnodes" -> LoopNode.where("id = ?", nodeId);
+            case "notenodes" -> NoteNode.where("id = ?", nodeId);
+            case "ovalnodes" -> OvalNode.where("id = ?", nodeId);
+            case "squarenodes" -> SquareNode.where("id = ?", nodeId);
+            case "stickfigurenodes" -> StickFigureNode.where("id = ?", nodeId);
+            case "textboxnodes" -> TextBoxNode.where("id = ?", nodeId);
             default -> DefaultNode.where("id = ?", nodeId); //just the default list type.
             //There has to be a better way to specify Class type right?
         };
