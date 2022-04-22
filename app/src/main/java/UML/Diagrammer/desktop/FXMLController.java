@@ -110,6 +110,7 @@ public class FXMLController extends App implements PropertyChangeListener{
     @FXML public Pane canvasPane;
     @FXML public MenuButton loadMenuButton;
     @FXML public Button dummyLoadButton;
+    @FXML public static Label saveFailedError;
 
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).

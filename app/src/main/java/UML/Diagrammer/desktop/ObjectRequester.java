@@ -34,6 +34,8 @@ import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.sun.javafx.collections.NonIterableChange;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -110,107 +112,137 @@ public class ObjectRequester {
      * @param text the name that is given to the object, default if not loading.
      */
     public void makeOvalRequest(int x, int y, String text, UIOvalNode newNode) {
+        int success = 1;
         if (x == -1){ // Not loading a node, got to save it to the db
             newNode = nodeFactory.buildNode("ovalnodes", 3, 3, 300, 150);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        String image = "Oval_UseCase.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if(success == 1) {
+            String image = "Oval_UseCase.svg";
+            StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     public void makeClassRequest(int x, int y, String name, String desc, UIClassNode newNode) {
+        int success = 1;
         if(x == -1) {
             newNode = nodeFactory.buildNode("classnodes", 3, 3, 300, 150);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if (success == 1) {
+            StackPane newUIShape = UIClassRequest(newNode, x, y, name, desc);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     public void makeFolderRequest(int x, int y, String text, UIFolderNode newNode) {
-        if (x == -1) {
+        int success = 1;
+        if (x == -1) {//int success = 1; success = if (success == 1) {
             newNode = nodeFactory.buildNode("foldernodes", 3, 3, 300, 150);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        String image = "Folder.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if (success == 1) {
+            String image = "Folder.svg";
+            StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     //unique
     public void makeLifeLineRequest(int x, int y, String text, UILifeLineNode newNode) {
+        int success = 1;
         if (x == -1) {
             newNode = nodeFactory.buildNode("lifelinenodes", 3, 3, 30, 500);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        String image = "/LifeLine.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_CENTER, x, y, text);
-        newUIShape.setPrefHeight(430);
-        newUIShape.setPrefWidth(80);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if (success == 1) {
+            String image = "/LifeLine.svg";
+            StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_CENTER, x, y, text);
+            newUIShape.setPrefHeight(430);
+            newUIShape.setPrefWidth(80);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     //unique
     public void makeLoopRequest(int x, int y, String text, UILoopNode newNode) {
+        int success = 1;
         if (x == -1) {
             newNode = nodeFactory.buildNode("loopnodes", 3, 3, 750, 450);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        StackPane newUIShape = UILoopRequest(newNode, x, y, text);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if (success == 1) {
+            StackPane newUIShape = UILoopRequest(newNode, x, y, text);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     public void makeNoteRequest(int x, int y, String text, UINoteNode newNode) {
+        int success = 1;
         if (x == -1) {
             newNode = nodeFactory.buildNode("notenodes", 3, 3, 200, 200);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        String image = "/Note.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if (success == 1) {
+            String image = "/Note.svg";
+            StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     public void makeStickFigureRequest(int x, int y, String text, UIStickFigureNode newNode) {
+        int success = 1;
         if (x == -1) {
             newNode = nodeFactory.buildNode("stickfigurenodes", 3, 3, 100, 200);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        String image = "/StickFigure.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, Pos.BOTTOM_CENTER, x, y, text);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if (success == 1) {
+            String image = "/StickFigure.svg";
+            StackPane newUIShape = UIBasicRequest(newNode, image, Pos.BOTTOM_CENTER, x, y, text);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     public void makeTextBoxRequest(int x, int y, String text, UITextBoxNode newNode) {
+        int success = 1;
         if (x == -1) {
             newNode = nodeFactory.buildNode("textboxnodes", 3, 3, 300, 150);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode ,currentPage);
         }
-        String image = "TextBox_Square_Interface.svg";
-        StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
-        support.firePropertyChange("newNodeCreation", null, newUIShape);
+        if(success == 1) {
+            String image = "TextBox_Square_Interface.svg";
+            StackPane newUIShape = UIBasicRequest(newNode, image, Pos.TOP_LEFT, x, y, text);
+            support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     public void makeSquareRequest(int x, int y, String text, UISquareNode newNode) {
+        int success = 1;
         if (x == -1) {
             newNode = nodeFactory.buildNode("squarenodes", 3, 3, 300, 150);
-            dbConnection.saveNewNodeToDB(newNode ,currentPage);
+            success = dbConnection.saveNewNodeToDB(newNode, currentPage);
         }
+        if (success == 1){
         String image = "TextBox_Square_Interface.svg";
         StackPane newUIShape = UIBasicRequest(newNode, image, Pos.CENTER, x, y, text);
         support.firePropertyChange("newNodeCreation", null, newUIShape);
+        }
     }
 
     /**
      * Creates creates an edge for the data and a line for the UI. Then notifies the FXMLController to update.
      */
     public void makeEdgeRequest(StackPane n0, StackPane n1, UIEdge newEdge) {
+        int success = 1;
         if (newEdge == null) { // Check for loading
             newEdge = edgeFactory.buildEdge("normaledges", (UINode) n0.getUserData(), (UINode) n1.getUserData());
-            dbConnection.saveNewEdgeToDB(newEdge ,currentPage);
+            success = dbConnection.saveNewEdgeToDB(newEdge ,currentPage);
         }
-        Line newLine = UIEdgeRequest(n0, n1, newEdge);
-        support.firePropertyChange("newEdgeCreation", null, newLine);
+        if (success == 1) {
+            Line newLine = UIEdgeRequest(n0, n1, newEdge);
+            support.firePropertyChange("newEdgeCreation", null, newLine);
+        }
     }
 
     /**

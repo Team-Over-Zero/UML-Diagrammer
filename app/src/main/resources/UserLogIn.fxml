@@ -30,6 +30,5 @@
             <Label fx:id="errorLabelNewPage" layoutY="7.0" prefHeight="38.0" prefWidth="298.0" text="Page name can't be blank or contain numbers" textFill="RED" visible="false" wrapText="true" />
          </children>
       </Pane>
-      <Label layoutX="14.0" layoutY="296.0" prefHeight="90.0" prefWidth="208.0" text="Login with UserName: &quot;user&quot; Password: &quot;password&quot; for a valid user until regestration is done." wrapText="true" />
    </children>
 </AnchorPane>

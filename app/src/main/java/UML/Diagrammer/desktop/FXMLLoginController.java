@@ -18,7 +18,10 @@ import java.net.URI;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class to control the inputs/login for the login and register pages.
@@ -55,9 +58,10 @@ public class FXMLLoginController extends App{
             loginErrorLabel.setVisible(true);
         }
         else {
-
             successPane.setVisible(true);
-            String userId = retString.replaceAll("[a-z{}\":,]", "");
+            // Magic regex from stackoverflow. Gets the first repeated instance of integers
+            String userId = retString.replaceAll("^\\D*(\\d+).*", "$1");
+            System.out.println(userId);
             loginErrorLabel.setVisible(false);
             loggedInUser = new UIUser(Integer.parseInt(userId), UserNameTextField.getText());
             welcomeLabel.setText("Welcome " + loggedInUser.getName() + " please provide a page name");
@@ -67,7 +71,7 @@ public class FXMLLoginController extends App{
     @FXML private void newPageButtonPressed() throws IOException {
         if (newPageNameTextField.getText().equals("") || newPageNameTextField.getText().matches(".*\\d.*")){
             welcomeLabel.setVisible(false);
-            //display page name can't be blank or contain numbers
+            //display "page name can't be blank or contain numbers"
             errorLabelNewPage.setVisible(true);
         }
         else {
@@ -101,10 +105,6 @@ public class FXMLLoginController extends App{
         Platform.exit();
     }
 
-    @FXML private void loginCreditButtonPressed(){}
-
-    @FXML private void loginReadMePressed() throws URISyntaxException, IOException {}
-
     // Register page actions found from here on
 
     @FXML TextField registerUserName;
@@ -131,7 +131,7 @@ public class FXMLLoginController extends App{
         else {
             String newUserName = registerUserName.getText();
             String newPassword = registerNewPassword.getText();
-            dbConnection.createNewUser(newUserName);
+            dbConnection.createNewUser(newUserName, newPassword);
             registerErrorLabel.setVisible(false);
             registerSuccessLabel.setVisible(true);
         }

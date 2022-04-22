@@ -51,7 +51,10 @@
          <effect>
             <Blend />
          </effect></Separator>
-      <Pane fx:id="canvasPane" layoutY="126.0" prefHeight="675.0" prefWidth="1000.0" />
+      <Pane fx:id="canvasPane" layoutY="126.0" prefHeight="675.0" prefWidth="1000.0">
+         <children>
+            <Label fx:id="saveFailedError" layoutX="398.0" layoutY="6.0" text="Failed to save, please try again" textFill="RED" visible="false" />
+         </children></Pane>
       <Button layoutX="281.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
       <Button layoutX="235.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
       <Label fx:id="noElementSelectedErrorLabel" layoutX="338.0" layoutY="5.0" text="No item selected, select an item then press edit/delete" textFill="RED" visible="false" />

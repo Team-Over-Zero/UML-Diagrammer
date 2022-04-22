@@ -20,9 +20,13 @@ public class UIUser {
     }
 
     public String getIDAsJson(){
-        Gson gson = new Gson();
-        String jsonStr = gson.toJson(this);
-        //return jsonStr;
         return "{\"id\":\"" + id + "\"}";
+    }
+
+    //returns something like: {"id":"1","name":"brandNewUser","password":"brandnewpassword"}
+    public String getFullUserString(String pw){
+        return "{\"id\":\"" + id + "\"" +
+                ",\"name\":\"" + name + "\"" +
+                ",\"password\":\"" + pw + "\"}";
     }
 }

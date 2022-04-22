@@ -57,6 +57,11 @@ class AppTest {
 
         robo.clickOn("Register New Account");
 
+        robo.clickOn("#registerUserName").write("user");
+        robo.clickOn("#registerNewPassword").write("password");
+        robo.clickOn("#registerConfirmPassword").write("password");
+
+        robo.clickOn("Register");
         robo.clickOn("Cancel");
 
         robo.clickOn("#UserNameTextField").write("user");
@@ -75,13 +80,13 @@ class AppTest {
         robo.clickOn("Class");
 
         //robo.doubleClickOn("Class Name");
-        robo.clickOn("Class Name");
+        //robo.clickOn("Class Name");
 
         //robo.type(KeyCode.S);
 
         //robo.clickOn("Confirm");
 
-        robo.clickOn("Delete");
+        //robo.clickOn("Delete");
 
         robo.clickOn("Oval");
 
@@ -94,7 +99,7 @@ class AppTest {
 
         //robo.clickOn("e");
 
-        robo.clickOn("Delete");
+        //robo.clickOn("Delete");
 
         robo.clickOn("Line");
 
@@ -108,7 +113,7 @@ class AppTest {
 
         robo.clickOn("Stick Figure");
 
-        robo.clickOn("Stick Figure Name");
+        //robo.clickOn("Stick Figure Name");
 
         robo.clickOn("Text Box");
 
@@ -119,21 +124,6 @@ class AppTest {
         robo.clickOn("SVG");
 
         robo.clickOn("Load");
-        //I'm sorry - David
         robo.clickOn("Load");
-        robo.sleep(1000);
-        robo.clickOn("fuck");
-
-
-
-
-
-
     }
-
-
-
-
-
-
 }
