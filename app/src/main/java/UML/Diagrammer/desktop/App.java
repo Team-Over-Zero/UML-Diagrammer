@@ -26,6 +26,7 @@ package UML.Diagrammer.desktop;
 import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.objects.UINode.*;
+import UML.Diagrammer.backend.objects.UIUser;
 import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

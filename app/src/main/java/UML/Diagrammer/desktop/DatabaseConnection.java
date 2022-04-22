@@ -44,10 +44,10 @@ public class DatabaseConnection {
      * Creates a new user and gets their ID from the database
      * @param name name of the user
      */
-    public UIUser createNewUser(String name){
+    public UIUser createNewUser(String name, String pw){
         try {
             UIUser newUser = new UIUser(-1, name);
-            String dbUserString = HTTPClient.sendCreateUser(newUser.getIDAsJson());
+            String dbUserString = HTTPClient.sendCreateUser(newUser.getFullUserString(pw));
             newUser.setId(stripNum(dbUserString));
             System.out.println("newUserId is now: " + newUser.getId());
             return newUser;
@@ -79,13 +79,14 @@ public class DatabaseConnection {
      * @param node The node you'd like to save to a page.
      * @param page The page that the user is currently on.
      */
-    public void saveNewNodeToDB(UINode node, UIPage page) {
+    public int saveNewNodeToDB(UINode node, UIPage page) {
         try {
             String returnedString = HTTPClient.sendAddNodeToPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
             node.setId(stripNum(returnedString));
             System.out.println("Successfully saved node: " + node.getType() + "-" + node.getId() + " to page: " + page.getId());
+            return 1;
         }
-        catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE");}
+        catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE"); return 0;}
     }
 
     /**
@@ -94,10 +95,14 @@ public class DatabaseConnection {
      * @param edge The edge you'd like to save to the db
      * @param page The page that's associated with the page.
      */
-    public void saveNewEdgeToDB(UIEdge edge, UIPage page){
-        String returnedString = HTTPClient.sendAddEdgeToPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
-        edge.setId(stripNum(returnedString));
-        System.out.println("Successfully saved \"normal\" edge " + edge.getId() + " to page: " + page.getId());
+    public int saveNewEdgeToDB(UIEdge edge, UIPage page){
+        try {
+            String returnedString = HTTPClient.sendAddEdgeToPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
+            edge.setId(stripNum(returnedString));
+            System.out.println("Successfully saved \"normal\" edge " + edge.getId() + " to page: " + page.getId());
+            return 1;
+        }
+        catch (Exception e){e.printStackTrace(); return 0;}
     }
 
     /**
