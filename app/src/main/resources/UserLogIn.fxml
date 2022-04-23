@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -28,6 +29,7 @@
             <Button fx:id="createNewButton" layoutX="95.0" layoutY="69.0" mnemonicParsing="false" onAction="#newPageButtonPressed" text="Create new" />
             <TextField fx:id="newPageNameTextField" layoutX="64.0" layoutY="45.0" promptText="New page name" />
             <Label fx:id="errorLabelNewPage" layoutY="7.0" prefHeight="38.0" prefWidth="298.0" text="Page name can't be blank or contain numbers" textFill="RED" visible="false" wrapText="true" />
+            <MenuButton fx:id="loadSession" layoutX="107.0" layoutY="101.0" mnemonicParsing="false" text="Load" />
          </children>
       </Pane>
    </children>

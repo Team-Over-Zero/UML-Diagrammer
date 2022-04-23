@@ -503,7 +503,10 @@ public class ObjectRequester {
      * @param currentPane The current pane that all the elemnts reside
      * @param page The id of the page you are loading from the db.
      */
-    public void loadPagesFromDB(Pane currentPane, UIPage page){
+    public void loadPageFromDB(Pane currentPane, UIPage page){
+        if (page == null){
+            page = currentPage;
+        }
         String retObject = dbConnection.loadPageElements(page.getPageIdAsJSon());
 
         Gson gson  = new Gson();

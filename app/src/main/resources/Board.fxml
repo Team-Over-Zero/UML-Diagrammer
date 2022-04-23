@@ -38,7 +38,7 @@
             <Button layoutX="310.0" layoutY="10.0" mnemonicParsing="false" onAction="#lifeLineButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/LifeLine.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Life Line" />
             <Button layoutX="810.0" layoutY="10.0" mnemonicParsing="false" onAction="#loopButtonPressed" prefHeight="100.0" prefWidth="100.0" style="-fx-background-image: url(Images/Loop.png); -fx-background-size: 100, 100; -fx-background-repeat: no-repeat; -fx-background-position: center;" text="Loop" />
          </children></HBox>
-      <Label fx:id="ActionLabel" layoutX="400.0" prefHeight="26.0" prefWidth="568.0" visible="false">
+      <Label fx:id="ActionLabel" layoutX="468.0" prefHeight="26.0" prefWidth="447.0" visible="false" wrapText="true">
          <font>
             <Font size="14.0" />
          </font></Label>
@@ -55,8 +55,8 @@
          <children>
             <Label fx:id="saveFailedError" layoutX="398.0" layoutY="6.0" text="Failed to save, please try again" textFill="RED" visible="false" />
          </children></Pane>
-      <Button layoutX="337.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
-      <Button layoutX="291.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
+      <Button layoutX="406.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
+      <Button layoutX="360.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
       <Label fx:id="currentPageLabel" layoutX="851.0" prefHeight="26.0" prefWidth="150.0" textAlignment="RIGHT" wrapText="true">
          <font>
             <Font size="14.0" />
@@ -64,5 +64,6 @@
       </Label>
       <Button layoutX="70.0" mnemonicParsing="false" onAction="#sharePageButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Invite" />
       <Button fx:id="dummyLoadButton" layoutX="127.0" minWidth="70.0" mnemonicParsing="false" onAction="#populateLoadButtons" style="-fx-background-color: white; -fx-border-color: black;" text="Load" />
+      <Button layoutX="278.0" mnemonicParsing="false" onAction="#refresh" style="-fx-background-color: white; -fx-border-color: black;" text="Refresh" />
    </children>
 </AnchorPane>

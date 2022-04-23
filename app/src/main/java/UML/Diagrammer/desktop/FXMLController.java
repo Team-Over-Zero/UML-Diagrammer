@@ -271,7 +271,7 @@ public class FXMLController extends App implements PropertyChangeListener{
                 newItem.setOnAction(a -> {
                     UIPage page = new UIPage(curPage.getKey(), curPage.getValue());
                     canvasPane.getChildren().clear();
-                    objectRequesterObservable.loadPagesFromDB(canvasPane, page);
+                    objectRequesterObservable.loadPageFromDB(canvasPane, page);
                     objectRequesterObservable.setCurrentPage(page);
                     currentPageLabel.setText(page.getName());
                 });
@@ -279,6 +279,15 @@ public class FXMLController extends App implements PropertyChangeListener{
             }
         }
         dummyLoadButton.setVisible(false);
+    }
+
+    /**
+     * On press of a button a user can hit the refresh button, and it will allow for collaborate work and
+     * loading in from the UI.
+     */
+    @FXML private void refresh(){
+        canvasPane.getChildren().clear();
+        objectRequesterObservable.loadPageFromDB(canvasPane, null);
     }
 
     /**
@@ -329,7 +338,7 @@ public class FXMLController extends App implements PropertyChangeListener{
      * @param value The name of the item you are adding
      * @return If that item already exists.
      */
-    public Boolean containsPage(String value){
+    private Boolean containsPage(String value){
         for (MenuItem curItem: loadMenuButton.getItems()) {
             if(value.equals(curItem.getText())){
                 return true;
