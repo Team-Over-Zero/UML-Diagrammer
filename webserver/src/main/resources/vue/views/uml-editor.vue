@@ -261,9 +261,27 @@ function loadPage(pageId){
   //let jsonId = JSON.stringify({pageid:currentPage});
   let jsonId = "{\"id\":\"" + 1 + "\"}";
   fetch('/loadPage/' + jsonId)
-      .then(result => result.text())
+      .then(result => result.json())
       .then((output) => {
-        console.log('Output: ', output);
+
+        let strings = output[0];
+
+        console.log('Output: ', strings);
+
+        strings.forEach((string) => {
+          let n = JSON.parse(string);
+          console.log(n);
+
+          fetch('/svg/' + n.svg_image)
+              .then(result => result.text())
+              .then((output) => {
+                console.log(output);
+                addNode(output, n.svg_image, n.type, n.name, n.x_coord, n.y_coord, n.id);
+                co
+              }).catch(err => console.error(err));
+
+        });
+
       }).catch(err => console.error(err));
 }
 
