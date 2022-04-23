@@ -14,12 +14,12 @@
 <AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UML.Diagrammer.desktop.FXMLController">
    <children>
       <Button layoutX="-2.0" mnemonicParsing="false" onAction="#logOutButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Log Out" />
-      <MenuButton fx:id="loadMenuButton" layoutX="70.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Load">
+      <MenuButton fx:id="loadMenuButton" layoutX="127.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Load">
         <items>
           <MenuItem mnemonicParsing="false" onAction="#makeNewPageMenuItemPressed" text="New Page" />
         </items>
       </MenuButton>
-      <MenuButton fx:id="loadMenuButton1" layoutX="140.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Export">
+      <MenuButton fx:id="loadMenuButton1" layoutX="197.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Export">
          <items>
             <MenuItem mnemonicParsing="false" onAction="#exportToPNG" text="PNG" />
             <MenuItem mnemonicParsing="false" text="SVG" />
@@ -55,14 +55,14 @@
          <children>
             <Label fx:id="saveFailedError" layoutX="398.0" layoutY="6.0" text="Failed to save, please try again" textFill="RED" visible="false" />
          </children></Pane>
-      <Button layoutX="281.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
-      <Button layoutX="235.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
-      <Label fx:id="noElementSelectedErrorLabel" layoutX="338.0" layoutY="5.0" text="No item selected, select an item then press edit/delete" textFill="RED" visible="false" />
-      <Button fx:id="dummyLoadButton" layoutX="70.0" minWidth="70.0" mnemonicParsing="false" onAction="#populateLoadButtons" style="-fx-background-color: white; -fx-border-color: black;" text="Load" />
+      <Button layoutX="337.0" mnemonicParsing="false" onAction="#deleteButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Delete" />
+      <Button layoutX="291.0" mnemonicParsing="false" onAction="#editButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Edit" />
       <Label fx:id="currentPageLabel" layoutX="851.0" prefHeight="26.0" prefWidth="150.0" textAlignment="RIGHT" wrapText="true">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
+      <Button layoutX="70.0" mnemonicParsing="false" onAction="#sharePageButtonPressed" style="-fx-background-color: white; -fx-border-color: black;" text="Invite" />
+      <Button fx:id="dummyLoadButton" layoutX="127.0" minWidth="70.0" mnemonicParsing="false" onAction="#populateLoadButtons" style="-fx-background-color: white; -fx-border-color: black;" text="Load" />
    </children>
 </AnchorPane>

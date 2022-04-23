@@ -185,10 +185,11 @@ public class DatabaseConnection {
 
     /**
      * Gets a user based on their username
-     * @param user
-     * @return
+     * @param username the name of the user you are trying to add
+     * @return a json string of the user you are querying for or ERROR: USER NOT FOUND otherwise.
      */
-    public String addUserToPage(String user){
-        return null;
+    public String inviteUserToPage(String username){
+        //{"name":"user"} {\"name\":\" + username + \"}
+        return HTTPClient.sendFindUserByName("{\"name\":\"" + username + "\"}");
     }
 }

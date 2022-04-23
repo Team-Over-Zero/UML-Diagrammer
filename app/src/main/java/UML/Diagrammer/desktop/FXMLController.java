@@ -295,11 +295,21 @@ public class FXMLController extends App implements PropertyChangeListener{
         textField.setPrefWidth(200);
         textField.setPrefHeight(50);
         Button button = new Button("Confirm");
+
         button.setOnAction(e -> {
-            // Check if user exists in the db.
-            // If it doesn't display error
-            // If it does do a db call to add user to current page.
-            label.setText("User does not exist.");
+            String userText = textField.getText();
+            if (userText.equals("") | userText.matches("[0-9]")){
+                label.setText("User can't be blank or contain numbers");
+            }
+            else {
+                String addedUserSuccess = objectRequesterObservable.inviteUserToPage(userText);
+                if (addedUserSuccess.equals("fail")){
+                    label.setText("User doesn't exist");
+                }
+                else{
+                    label.setText("Successfully invited "+ userText +" , invite another?");
+                }
+            }
         });
 
         StackPane sp = new StackPane();
