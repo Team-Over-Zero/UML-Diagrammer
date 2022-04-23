@@ -188,8 +188,7 @@ public class DatabaseConnection {
      * @param username the name of the user you are trying to add
      * @return a json string of the user you are querying for or ERROR: USER NOT FOUND otherwise.
      */
-    public String inviteUserToPage(String username){
-        //{"name":"user"} {\"name\":\" + username + \"}
+    public String findUserViaName(String username){
         return HTTPClient.sendFindUserByName("{\"name\":\"" + username + "\"}");
     }
 }

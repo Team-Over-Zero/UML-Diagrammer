@@ -57,7 +57,7 @@ class AppTest extends DBSpec {
         robo.clickOn("#registerConfirmPassword").write("password");
 
         robo.clickOn("Register");
-        robo.clickOn("Cancel");
+        robo.clickOn("Log In");
 
         robo.clickOn("#UserNameTextField").write("junittest");
         robo.clickOn("#PasswordTextField").write("password");

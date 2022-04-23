@@ -405,7 +405,7 @@ public class ObjectRequester {
     }
 
     public String inviteUserToPage(String username){
-        String retString = dbConnection.inviteUserToPage(username);
+        String retString = dbConnection.findUserViaName(username);
         if (retString.equals("ERROR: USER NOT FOUND")){
             return "fail";
         }

@@ -124,16 +124,23 @@ public class FXMLLoginController extends App{
     }
 
     @FXML private void registerButtonPressed(){
-        if (!registerNewPassword.getText().equals(registerConfirmPassword.getText())){
+        String foundUser = dbConnection.findUserViaName(registerUserName.getText());
+
+        System.out.println(foundUser);
+
+        if (!foundUser.equals("ERROR: USER NOT FOUND")){
+            registerErrorLabel.setText("Username already taken");
+            registerErrorLabel.setVisible(true);
+        }
+        else if (!registerNewPassword.getText().equals(registerConfirmPassword.getText())){
             registerErrorLabel.setText("Passwords do not match");
             registerErrorLabel.setVisible(true);
         }
         else {
-            String newUserName = registerUserName.getText();
-            String newPassword = registerNewPassword.getText();
-            dbConnection.createNewUser(newUserName, newPassword);
+            dbConnection.createNewUser(registerUserName.getText(), registerNewPassword.getText());
             registerErrorLabel.setVisible(false);
             registerSuccessLabel.setVisible(true);
+            System.out.println("MADE USER");
         }
         //System.out.println(registerNewPassword.getText().equals(registerNewPassword.getText()));
     }
