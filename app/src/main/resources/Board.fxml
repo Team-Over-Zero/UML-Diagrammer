@@ -22,7 +22,6 @@
       <MenuButton fx:id="loadMenuButton1" layoutX="197.0" mnemonicParsing="false" style="-fx-background-color: white; -fx-border-color: black;" text="Export">
          <items>
             <MenuItem mnemonicParsing="false" onAction="#exportToPNG" text="PNG" />
-            <MenuItem mnemonicParsing="false" text="SVG" />
          </items>
       </MenuButton>
       <HBox layoutX="-2.0" layoutY="31.0" prefHeight="95.0" prefWidth="1000.0">
