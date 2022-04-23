@@ -35,6 +35,7 @@ public class EdgeFactoryTest extends DBSpec {
         edge.createIt();
         assertEquals( node.getInteger("id"),edge.getInteger("from_node_id"));
         assertEquals((node2.getInteger("id")),edge.getInteger("to_node_id"));
+
     }
 
 
