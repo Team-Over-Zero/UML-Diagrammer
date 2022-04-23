@@ -91,9 +91,19 @@ class AppTest extends DBSpec {
 
         robo.clickOn("s");
 
-        robo.clickOn("Delete");
 
         robo.clickOn("Oval");
+        robo.clickOn("Oval Name");
+
+        robo.clickOn("Oval Name");
+
+        robo.clickOn("s");
+
+        robo.clickOn("Line");
+
+        robo.sleep(2000);
+
+        robo.clickOn("Delete");
 
         robo.clickOn("Edit");
 
@@ -121,9 +131,12 @@ class AppTest extends DBSpec {
 
         robo.clickOn("Loop");
 
+
         robo.clickOn("Export");
 
         robo.clickOn("SVG");
+
+
 
         robo.clickOn("Load");
         robo.clickOn("Load");

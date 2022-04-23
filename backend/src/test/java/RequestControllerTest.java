@@ -49,15 +49,27 @@ public class RequestControllerTest extends DBSpec {
         user.set("name","test");
         user.set("id",999);
         http_client.sendCreateUser(user.toJson(true));
-        http_client.sendCreatePage(page.toJson(true));
+
         http_client.sendAddUserToPage(user.toJson(true),page.toJson(true));
+
+        http_client.sendCreatePage(page.toJson(true));
+
+
+
+        //http_client.sendAddUserToPage(user.toJson(true),page.toJson(true));
+
+        //http_client.sendAddUserToPage(user.toJson(true),page.toJson(true));
+
         http_client.sendAddNodeToPage(node.toJson(true),page.toJson(true));
+
         ClassNode cn = nodeFactory.buildNode("classnodes",0,0,30,40);
+
         cn.set("id",999);
 
         FolderNode fn = nodeFactory.buildNode("foldernodes",40,40,30,40);
 
         fn.set("id",998);
+
         http_client.sendAddNodeToPage(cn.toJson(true),page.toJson(true));
 
         http_client.sendAddNodeToPage(fn.toJson(true),page.toJson(true));
@@ -65,7 +77,9 @@ public class RequestControllerTest extends DBSpec {
         NormalEdge edge = factory.buildEdge("normaledges",999,"classnodes",998,"foldernodes");
 
         TextBoxNode tn = nodeFactory.buildNode("textboxnodes",40,2,100,90);
+
         tn.set("name", "name");
+
         tn.set("description", "ark barky ardvark bark");
 
         http_client.sendAddNodeToPage(tn.toJson(true),page.toJson(true));
@@ -125,6 +139,7 @@ public class RequestControllerTest extends DBSpec {
 
 
         http_client.sendCreateUser(null);
+
         http_client.sendRemoveNodeFromPage(node.toJson(true),page.toJson(true));
 
         http_client.sendDeleteUser(user.toJson(true));
