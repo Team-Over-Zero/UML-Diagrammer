@@ -87,18 +87,39 @@ public class WebServer {
             ctx.result(svgString);
         });
 
-        client.get("/node/{id}", ctx -> {
-           ctx.result("{\"description\":\"Default Description\",\"height\":201,\"width\":201,\"x_coord\":640.8970099667774,\"y_coord\":197.74834437086093,\"name\":\"This is to see if I have this \",\"svg_image\":\"Note.svg\",\"type\":\"note_nodes\",\"id\":-1}");
-        });
-
         client.get("/createNode/{node}/{page}", ctx -> {
 
             String node = ctx.pathParam("node");
             String page = ctx.pathParam("page");
-            String responce = http_client.sendAddNodeToPage(node, page);
-            System.out.println("Responce from backend: " + responce);
-            ctx.result(responce);
+            String response = http_client.sendAddNodeToPage(node, page);
+            ctx.result(response);
 
+        });
+
+        client.get("/updateNode/{node}", ctx -> {
+            String node = ctx.pathParam("node");
+            String response = http_client.sendNodeUpdateRequest(node);
+            ctx.result(response);
+        });
+
+        client.get("/deleteNode/{node}/{page}", ctx -> {
+            String node = ctx.pathParam("node");
+            String page = ctx.pathParam("page");
+            String response = http_client.sendRemoveNodeFromPage(node, page);
+            ctx.result(response);
+        });
+
+        client.get("/createPage/{pagejson}", ctx -> {
+            String pageJson = ctx.pathParam("pagejson");
+            String response = http_client.sendCreatePage(pageJson);
+            ctx.result(response);
+        });
+
+
+
+        client.get("/loadPage/{id}", ctx -> {
+           String id = ctx.pathParam("id");
+           ctx.result(http_client.sendLoadPage(id));
         });
 
 

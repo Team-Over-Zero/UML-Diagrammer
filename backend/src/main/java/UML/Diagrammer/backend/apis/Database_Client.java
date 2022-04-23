@@ -79,43 +79,47 @@ public class Database_Client {
      */
     public void spinUp(){
 
-        DBConfiguration.loadConfiguration("/database.properties");
+            DBConfiguration.loadConfiguration("/database.properties");
 
-       // Base.open();
-        httpServer = Javalin.create(config ->
-        {config.enableDevLogging();}).start(javalinPort);
+           // Base.open();
+            httpServer = Javalin.create(config ->
+            {config.enableDevLogging();}).start(javalinPort);
 
-         //initializes javalin listeners
+            //initializes javalin listeners
 
-        //dev listeners
-         devGetParamInit();
-         devGetDefaultNode();
-         devGetAnyNode();
-         devGetAnyEdge();
-         devTryCreateNode();
-         devTryCreateEdge();
-         devUpdateNode();
-         devPostStatusCodeInit();
-         devTestCreateNode();
-         devGetObjectsAsMap();
+            //dev listeners
+            devGetParamInit();
+            devGetDefaultNode();
+            devGetAnyNode();
+            devGetAnyEdge();
+            devTryCreateNode();
+            devTryCreateEdge();
+            devUpdateNode();
+            devPostStatusCodeInit();
+            devTestCreateNode();
+            devGetObjectsAsMap();
 
-         //main listeners
-        createPage();
-        deletePage();
-        loadPageElements();
-        getPageIdByName();
+            //page listeners
+            createPage();
+            deletePage();
+            loadPageElements();
+            getPageIdByName();
 
-        createEdgeOnPage();
-        deleteEdgeFromPage();
-        createNodeOnPage();
-        deleteNodeFromPage();
-        updateNodeOnPage();
+            //page object listeners
+            createEdgeOnPage();
+            deleteEdgeFromPage();
+            createNodeOnPage();
+            deleteNodeFromPage();
+            updateNodeOnPage();
 
-        createUser();
-        loginUser();
-        getUserPages();
-        addUserToPage();
-        removeUserFromPage();
+            //user listeners
+            createUser();
+            deleteUser();
+            loginUser();
+            findUserByName();
+            getUserPages();
+            addUserToPage();
+            removeUserFromPage();
 
 
         //This handler will run before every single request handler. This will ensure
@@ -217,11 +221,12 @@ public class Database_Client {
     void createUser(){
         httpServer.post("/createuser/", RequestController::createUser);
     }
+    void deleteUser(){httpServer.post("/deleteuser",RequestController::deleteUser);}
     void getUserPages(){
         httpServer.get("/getuserpages/",RequestController::getUserPages);
     }
     void loginUser(){httpServer.post("/loginuser/",RequestController::loginUser);}
-
+    void findUserByName(){httpServer.post("/finduserbyname/",RequestController::findUserByName);}
     //Misc.
 
     //DEPRECATED. Use carefully.

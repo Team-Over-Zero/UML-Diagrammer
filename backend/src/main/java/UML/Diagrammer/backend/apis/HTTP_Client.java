@@ -17,7 +17,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *
  * This class offers helper methods for client applications to use. Since UML_Diagrammer only needs a few specific
  * HTTP requests, this will help clients easily build those requests, helping with separation of responsibilities.
- * @Author Alex
+ * @Author Alex Diviney
  */
 package UML.Diagrammer.backend.apis;
 import org.apache.http.HttpEntity;
@@ -136,17 +136,7 @@ public class HTTP_Client {
 
     }
 
-    /**
-     * Should send a post request with the username and password (we can deal with encryption later) and should get a response that says whether the user was successfully logged in.
-     * We need to store credentials somehow so that that user can send continuous updates after logging in.
-     * Need to make sure other methods here can't run without this one being correct.
-     *
-     * @return
-     */
-    public String tryLoginUser() {
 
-        return "FAILED TO LOGIN";
-    }
 
 
     /**
@@ -174,13 +164,6 @@ public class HTTP_Client {
         return returnString;
     }
 
-
-    /**
-     * Should send a post req to the database with the current page state.
-     * May want to change from void return to test errors and such.
-     */
-    public void sendCurrentPageState(String page) {
-    }
 
 
     //Dev Node Requests
@@ -380,7 +363,7 @@ public class HTTP_Client {
         return returnString;
     }
 
-    public String sendLoginuser(String userJson){
+    public String sendLoginUser(String userJson){
         String returnString = "";
         try {
             returnString = genericPostRequestOneParam("/loginuser/", "user", userJson);
@@ -392,8 +375,28 @@ public class HTTP_Client {
         return returnString;
     }
 
+
     /**
-     * May not be properly implemented yet.
+     *
+     * @param nameJson Given in a passed in user name in json format, attempts to find a user, returns:
+     *                 "ERROR: USER NOT FOUND" if no user with that name exists.
+     * @return
+     */
+    public String sendFindUserByName(String nameJson){
+
+        String returnString = "";
+        try {
+            returnString = genericPostRequestOneParam("/finduserbyname/", "username", nameJson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnString;
+
+    }
+    /**
+     * Deletes a passed in user and all associated data. Use carefully.
      *
      * @param userJson
      * @return
@@ -409,6 +412,10 @@ public class HTTP_Client {
         }
         return returnString;
     }
+
+
+
+
 
 
     /**

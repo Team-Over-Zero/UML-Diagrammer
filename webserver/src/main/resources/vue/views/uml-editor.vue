@@ -5,7 +5,8 @@
     </h1>
     <div>
       <button v-on:click="vparseJsonFromDiagram()">Save</button>
-      <button v-on:click="vloadNode()">Load</button>
+      <button v-on:click="vloadPage()">Load</button>
+      <button v-on:click="vcreatePage()">New</button>
       <button>Export</button>
       <select name="left-arrow" id="left-arrow">
         <option value="<--"><--</option>
@@ -155,31 +156,7 @@
 
   function addNode(path, svg_image, type, name = "name", xCoord = 10, yCoord = 10, id = -1){
 
-    if(id == -1){
-      let n = {
-        description: "Did this make it",
-        height: 50,
-        width: 50,
-        x_coord: xCoord,
-        y_coord: yCoord,
-        name: name,
-        svg_image: svg_image,
-        type: type,
-        id: -1,
-        page_id: currentPage,
-      };
 
-
-      let nodeJson = JSON.stringify(n);
-      let pageJson = JSON.stringify({id:currentPage});
-
-      fetch('/createNode/' + nodeJson + "/" + pageJson)
-          .then(result => result.json())
-          .then((output) => {
-            console.log('Output: ', output);
-            id = output.id;
-          }).catch(err => console.error(err));
-    }
 
 
     let shape = new fabric.Path(path, {
@@ -224,10 +201,61 @@
     });
 
     canvas.add(group);
+    console.log(group);
+
+    if(id == -1){
+      let n = {
+        description: "Did this make it",
+        height: 50,
+        width: 50,
+        x_coord: xCoord,
+        y_coord: yCoord,
+        name: name,
+        svg_image: svg_image,
+        type: type,
+        id: -1,
+        page_id: currentPage,
+      };
+
+
+      let nodeJson = JSON.stringify(n);
+      let pageJson = JSON.stringify({id:currentPage});
+
+      fetch('/createNode/' + nodeJson + "/" + pageJson)
+          .then(result => result.json())
+          .then((output) => {
+            console.log('Output: ', output);
+            idText.text = output.id;
+          }).catch(err => console.error(err));
+    }
 
   }
 
   function removeCurrentNode(){
+
+    let object = canvas.getActiveObject()
+
+    let n = {
+      description: "Default Description",
+      height: Math.floor(object.height),
+      width: Math.floor(object.height),
+      x_coord: Math.floor(object.left),
+      y_coord: Math.floor(object.top),
+      name: object._objects[1].text,
+      svg_image: object._objects[2].text,
+      type: object._objects[3].text,
+      id: parseInt(object._objects[4].text),
+      page_id: currentPage,
+    };
+
+    let nodejson = JSON.stringify(n)
+    let pagejson = JSON.stringify({id:currentPage});
+    fetch('/deleteNode/' + nodejson + '/' + pagejson)
+        .then(result => result.text())
+        .then((output) => {
+          console.log('Output: ', output);
+        }).catch(err => console.error(err));
+
     canvas.remove(canvas.getActiveObject());
   }
 
@@ -237,10 +265,10 @@
       console.log(object);
       let n = {
         description: "Default Description",
-        height: object.height,
-        width: object.height,
-        x_coord: object.left,
-        y_coord: object.top,
+        height: Math.floor(object.height),
+        width: Math.floor(object.height),
+        x_coord: Math.floor(object.left),
+        y_coord: Math.floor(object.top),
         name: object._objects[1].text,
         svg_image: object._objects[2].text,
         type: object._objects[3].text,
@@ -249,13 +277,51 @@
       };
       json = JSON.stringify(n)
       console.log(json);
+      fetch('/updateNode/' + json)
+          .then(result => result.text())
+          .then((output) => {
+            console.log(output);
+          }).catch(err => console.error(err));
 
       return json;
     })
   }
 
+function createPage(){
+  fetch('/createPage/[{id:-1},{1}]')
+      .then(result => result.text())
+      .then((output) => {
+        console.log(output);
+      }).catch(err => console.error(err));
+}
 
+function loadPage(pageId){
+  canvas.clear();
+  //let jsonId = JSON.stringify({pageid:currentPage});
+  let jsonId = "{\"id\":\"" + 1 + "\"}";
+  fetch('/loadPage/' + jsonId)
+      .then(result => result.json())
+      .then((output) => {
 
+        let strings = output[0];
+
+        console.log('Output: ', strings);
+
+        strings.forEach((string) => {
+          let n = JSON.parse(string);
+          console.log(n);
+
+          fetch('/svg/' + n.svg_image)
+              .then(result => result.text())
+              .then((output) => {
+                addNode(output, n.svg_image, n.type, n.name, parseInt(n.x_coord), parseInt(n.y_coord), n.id);
+
+              }).catch(err => console.error(err));
+
+        });
+
+      }).catch(err => console.error(err));
+}
 
 
 
@@ -288,7 +354,6 @@
       },
 
       vloadNode: function(){
-        //let n = {description:"Default Description",height:152,width:152,x_coord:363.82059800664456,y_coord:191.78807947019868,name:"A very good text",svg_image:"TextBox_Square_Interface.svg",type:"text_box_nodes",id:-1};
 
         fetch('/node/1')
             .then(result => result.text())
@@ -305,8 +370,16 @@
 
       },
 
+      vloadPage: function(){
+        loadPage(currentPage);
+      },
+
       vparseJsonFromDiagram: function(){
         parseJsonFromDiagram();
+      },
+
+      vcreatePage: function(){
+        createPage();
       },
 
       vcreateNode: function(json){
@@ -326,7 +399,9 @@
 
 
   document.addEventListener('keyup', (e) => {
-    if (e.code === "Delete")        removeCurrentNode();
+    if (e.code === "Delete"){
+      removeCurrentNode();
+    }
   });
 
 </script>

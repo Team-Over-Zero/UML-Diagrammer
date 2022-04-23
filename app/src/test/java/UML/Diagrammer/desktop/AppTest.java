@@ -4,35 +4,24 @@
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.Database_Client;
-import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
-import javafx.scene.layout.StackPane;
-import org.javalite.activejdbc.test.DBSpec;
-import org.junit.jupiter.api.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
-
+import org.javalite.activejdbc.test.DBSpec;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.testfx.api.FxRobot;
-
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.control.ListViewMatchers;
 
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxRobot.*;
-import static org.testfx.assertions.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AppTest {
+class AppTest extends DBSpec {
     private FxRobot robo;
     private Database_Client dbClient;
     @BeforeEach
@@ -79,6 +68,7 @@ class AppTest {
         robo.clickOn("Create new");
 
         robo.clickOn("Class");
+
 
         verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());

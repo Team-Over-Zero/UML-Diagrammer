@@ -180,7 +180,7 @@ public class DatabaseConnection {
     }
 
     public String loginUser(String user){
-        return HTTPClient.sendLoginuser(user);
+        return HTTPClient.sendLoginUser(user);
     }
 
     /**
