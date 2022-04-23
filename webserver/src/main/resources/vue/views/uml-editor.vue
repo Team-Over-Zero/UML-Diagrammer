@@ -5,7 +5,8 @@
     </h1>
     <div>
       <button v-on:click="vparseJsonFromDiagram()">Save</button>
-      <button onclick="loadPage(1)">Load</button>
+      <button v-on:click="vloadPage()">Load</button>
+      <button v-on:click="vcreatePage()">New</button>
       <button>Export</button>
       <select name="left-arrow" id="left-arrow">
         <option value="<--"><--</option>
@@ -200,6 +201,7 @@
     });
 
     canvas.add(group);
+    console.log(group);
 
     if(id == -1){
       let n = {
@@ -239,10 +241,10 @@
       console.log(object);
       let n = {
         description: "Default Description",
-        height: object.height,
-        width: object.height,
-        x_coord: object.left,
-        y_coord: object.top,
+        height: Math.floor(object.height),
+        width: Math.floor(object.height),
+        x_coord: Math.floor(object.left),
+        y_coord: Math.floor(object.top),
         name: object._objects[1].text,
         svg_image: object._objects[2].text,
         type: object._objects[3].text,
@@ -251,13 +253,26 @@
       };
       json = JSON.stringify(n)
       console.log(json);
+      fetch('/updateNode/' + json)
+          .then(result => result.text())
+          .then((output) => {
+            console.log(output);
+          }).catch(err => console.error(err));
 
       return json;
     })
   }
 
+function createPage(){
+  fetch('/createPage/[{id:-1},{1}]')
+      .then(result => result.text())
+      .then((output) => {
+        console.log(output);
+      }).catch(err => console.error(err));
+}
 
 function loadPage(pageId){
+  canvas.clear();
   //let jsonId = JSON.stringify({pageid:currentPage});
   let jsonId = "{\"id\":\"" + 1 + "\"}";
   fetch('/loadPage/' + jsonId)
@@ -275,9 +290,8 @@ function loadPage(pageId){
           fetch('/svg/' + n.svg_image)
               .then(result => result.text())
               .then((output) => {
-                console.log(output);
-                addNode(output, n.svg_image, n.type, n.name, n.x_coord, n.y_coord, n.id);
-                co
+                addNode(output, n.svg_image, n.type, n.name, parseInt(n.x_coord), parseInt(n.y_coord), n.id);
+
               }).catch(err => console.error(err));
 
         });
@@ -339,6 +353,10 @@ function loadPage(pageId){
 
       vparseJsonFromDiagram: function(){
         parseJsonFromDiagram();
+      },
+
+      vcreatePage: function(){
+        createPage();
       },
 
       vcreateNode: function(json){
