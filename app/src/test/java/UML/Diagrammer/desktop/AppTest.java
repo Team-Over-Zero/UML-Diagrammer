@@ -6,7 +6,9 @@ package UML.Diagrammer.desktop;
 import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import javafx.scene.layout.StackPane;
-import org.junit.jupiter.api.Test;
+import org.javalite.activejdbc.test.DBSpec;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -15,8 +17,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxRobot;
 
@@ -31,16 +31,22 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxRobot.*;
 import static org.testfx.assertions.api.Assertions.assertThat;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AppTest {
     private FxRobot robo;
-    private Database_Client db;
+    private Database_Client dbClient;
     @BeforeEach
     public void setRobo() throws Exception{
         ApplicationTest.launch(App.class);
         robo = new FxRobot();
 
-        db = new Database_Client();
-        db.spinUp();
+        String jUnitUrl = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/junit?useSSL=false";
+        String databaseUser = "root";
+        String databasePassword = "TeamOverZero";
+        int javalinPort = 8888;
+        dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
+        dbClient.spinUp();
+
     }
 
     @AfterEach
@@ -48,7 +54,7 @@ class AppTest {
         FxToolkit.hideStage();
         robo.release(new KeyCode[]{});
         robo.release(new MouseButton[]{});
-        db.spinDown();
+        dbClient.spinDown();
     }
 
 
@@ -57,14 +63,14 @@ class AppTest {
 
         robo.clickOn("Register New Account");
 
-        robo.clickOn("#registerUserName").write("user");
+        robo.clickOn("#registerUserName").write("junittest");
         robo.clickOn("#registerNewPassword").write("password");
         robo.clickOn("#registerConfirmPassword").write("password");
 
         robo.clickOn("Register");
         robo.clickOn("Cancel");
 
-        robo.clickOn("#UserNameTextField").write("user");
+        robo.clickOn("#UserNameTextField").write("junittest");
         robo.clickOn("#PasswordTextField").write("password");
 
         robo.clickOn("Log In");

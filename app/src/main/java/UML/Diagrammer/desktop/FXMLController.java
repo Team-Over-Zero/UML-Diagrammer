@@ -282,6 +282,39 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * Adds a user from their username given a username from the user.
+     */
+    @FXML private void sharePageButtonPressed(){
+        Popup popUp = new Popup();
+        popUp.setHeight(100);
+        popUp.setWidth(100);
+        popUp.setX((int)App.primaryStage.getX());
+        popUp.setY((int)App.primaryStage.getY());
+        Label label = new Label("Enter a name of a user you'd like to invite");
+        TextField textField = new TextField("User to invite");
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(50);
+        Button button = new Button("Confirm");
+        button.setOnAction(e -> {
+            // Check if user exists in the db.
+            // If it doesn't display error
+            // If it does do a db call to add user to current page.
+            label.setText("User does not exist.");
+        });
+
+        StackPane sp = new StackPane();
+        StackPane.setAlignment(textField, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
+
+        sp.getChildren().addAll(textField, label, button);
+        popUp.getContent().add(sp);
+        popUp.show(App.primaryStage);
+        button.setDefaultButton(true);
+        popUp.setAutoHide(true);
+    }
+
+    /**
      * Just a quick function to check if the item we are adding to the list is already present
      * @param value The name of the item you are adding
      * @return If that item already exists.
