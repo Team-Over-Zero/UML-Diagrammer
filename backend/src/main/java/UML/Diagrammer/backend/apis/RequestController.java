@@ -42,6 +42,7 @@ public final class RequestController {
     public static final String genericException = "GENERIC EXCEPTION";
     public static final String successMsg = "SUCCESS";
     public static final String nodeNotFoundErr = "ERROR: NODE NOT FOUND";
+    public static final String userNotFoundErr = "ERROR: USER NOT FOUND";
     private RequestController() {
     }
 
@@ -790,6 +791,33 @@ public final class RequestController {
     }
 
     /**
+     * Attaches to the /deleteuser/ post request.
+     * Cascade deletes a user and all of its associated objects. BE CAREFUL USING THIS.
+     */
+    public static void deleteUser(Context context){
+        String userJson = context.queryParam("user");
+        CustomJsonHelper jHelper = new CustomJsonHelper();
+        if(userJson!=null) {
+            try {
+                String userId = jHelper.getObjId(userJson);
+                User user = User.findById(userId);
+                user.deleteCascade(); //deletes user and ALL associated objects.
+                context.result(successMsg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.result(genericException);
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+
+
+    }
+
+
+
+    /**
      * Attaches to the /removeuserfrompage/ post request.
      * removes a user from a page. does not delete the user since the user to page relationship is many to many.
      * @param context
@@ -875,6 +903,40 @@ public final class RequestController {
             context.result(nullParams);
         }
     }
+
+    /**
+     * Given a passed in user name query param in json format, attempts to return the first found user. Otherwise gives a user not found error.
+     *
+     * @param context
+     */
+    public static void findUserByName(Context context){
+        String userParam = context.queryParam("username");
+        Gson gson = new Gson();
+        if(userParam!=null) {
+            try {
+                JsonObject jObj = gson.fromJson(userParam, JsonObject.class);
+                String userName = jObj.get("name").getAsString();
+                User foundUser = User.findFirst("name = ?", userName);
+                String userJson = "";
+                if (foundUser!=null){
+                    userJson =foundUser.toJson(false);
+                    context.result(userJson);
+                }
+                else{
+                    context.result(userNotFoundErr);
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                context.result(genericException);
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+    }
+
+
 
 
 

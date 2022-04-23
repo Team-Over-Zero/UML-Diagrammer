@@ -6,6 +6,7 @@ package UML.Diagrammer.desktop;
 import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import javafx.scene.layout.StackPane;
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +32,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxRobot.*;
 import static org.testfx.assertions.api.Assertions.assertThat;
 
-class AppTest {
+class AppTest extends DBSpec {
     private FxRobot robo;
     private Database_Client db;
     @BeforeEach
@@ -73,6 +74,7 @@ class AppTest {
         robo.clickOn("Create new");
 
         robo.clickOn("Class");
+
 
         verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());

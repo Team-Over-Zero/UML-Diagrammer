@@ -4,11 +4,11 @@ import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
 import UML.Diagrammer.backend.apis.RequestController;
 import UML.Diagrammer.backend.objects.EdgeFactory.EdgeFactory;
-import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
-import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
-import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
+import UML.Diagrammer.backend.objects.EdgeFactory.NormalEdge;
+import UML.Diagrammer.backend.objects.NodeFactory.*;
 import UML.Diagrammer.backend.objects.Page;
 import UML.Diagrammer.backend.objects.User;
+import io.javalin.http.Handler;
 import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class RequestControllerTest extends DBSpec {
         String databasePassword = "TeamOverZero";
         int javalinPort = 8888;
         dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
-       // dbClient.spinUp();
+        //dbClient.spinUp();
     }
 
     @Test
@@ -43,6 +43,7 @@ public class RequestControllerTest extends DBSpec {
         DefaultNode node = nodeFactory.buildNode();
         node.set("id","test");
         Page page = new Page();
+        page.set("name","1234");
 
         User user = new User();
         user.set("name","test");
@@ -52,7 +53,53 @@ public class RequestControllerTest extends DBSpec {
         http_client.sendAddUserToPage(user.toJson(true),page.toJson(true));
         http_client.sendAddNodeToPage(node.toJson(true),page.toJson(true));
         ClassNode cn = nodeFactory.buildNode("classnodes",0,0,30,40);
+        cn.set("id",999);
+
+        FolderNode fn = nodeFactory.buildNode("foldernodes",40,40,30,40);
+
+        fn.set("id",998);
         http_client.sendAddNodeToPage(cn.toJson(true),page.toJson(true));
+
+        http_client.sendAddNodeToPage(fn.toJson(true),page.toJson(true));
+
+        NormalEdge edge = factory.buildEdge("normaledges",999,"classnodes",998,"foldernodes");
+
+        TextBoxNode tn = nodeFactory.buildNode("textboxnodes",40,2,100,90);
+        tn.set("name", "name");
+        tn.set("description", "ark barky ardvark bark");
+
+        http_client.sendAddNodeToPage(tn.toJson(true),page.toJson(true));
+
+        try {
+            http_client.sendNodeCreateRequest(node.toJson(true));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            http_client.sendEdgeCreateRequest(edge.toJson(true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        try {
+            http_client.sendEdgeCreateRequest("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        http_client.tryGetPage(page.toJson(true));
+
+        http_client.sendLoadPage(page.toJson(true));
+        http_client.sendGetPageIdByName("1234");
+
+
         try {
             http_client.getUserPages(user.toJson(true));
         } catch (URISyntaxException e) {
@@ -75,13 +122,22 @@ public class RequestControllerTest extends DBSpec {
         String s = "hellworld";
         http_client.sendAddNodeToPage(s,page.toJson(true));
 
+
+
         http_client.sendCreateUser(null);
         http_client.sendRemoveNodeFromPage(node.toJson(true),page.toJson(true));
 
-        http_client.sendDeletePage(page.toJson(true));
+        http_client.sendDeleteUser(user.toJson(true));
+
+       http_client.sendDeletePage(page.toJson(true));
+
+
+        //NormalEdge edge = factory.buildEdge();
+
 
 
     }
+
 
 
 }

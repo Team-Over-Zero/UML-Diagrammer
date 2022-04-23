@@ -53,9 +53,11 @@ public class HTTP_ClientTest {
 
     @Test
     public void testTryLoginUser() {
-        assertEquals("FAILED TO LOGIN", client.tryLoginUser());
-    }
+        String testUser = "{name:\"httpclient\",password:\"password123\"}";
+        String retStr = client.sendCreateUser(testUser);
 
+        assertNotEquals("ERROR: USER NOT FOUND",client.sendLoginUser(testUser));
+    }
     /**
      * test try getPage, for now not useful
      */

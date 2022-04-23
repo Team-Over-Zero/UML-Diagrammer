@@ -5,7 +5,7 @@
     </h1>
     <div>
       <button v-on:click="vparseJsonFromDiagram()">Save</button>
-      <button v-on:click="vloadPage()">Load</button>
+      <button onclick="loadPage(1)">Load</button>
       <button>Export</button>
       <select name="left-arrow" id="left-arrow">
         <option value="<--"><--</option>

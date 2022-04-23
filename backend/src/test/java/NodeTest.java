@@ -167,4 +167,5 @@ public class NodeTest extends DBSpec {
         assertTrue(aList.get(1) instanceof UIClassNode);
 
     }
+
     }
