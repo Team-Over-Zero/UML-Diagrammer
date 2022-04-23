@@ -87,10 +87,6 @@ public class WebServer {
             ctx.result(svgString);
         });
 
-        client.get("/node/{id}", ctx -> {
-           ctx.result("{\"description\":\"Default Description\",\"height\":201,\"width\":201,\"x_coord\":640.8970099667774,\"y_coord\":197.74834437086093,\"name\":\"This is to see if I have this \",\"svg_image\":\"Note.svg\",\"type\":\"note_nodes\",\"id\":-1}");
-        });
-
         client.get("/createNode/{node}/{page}", ctx -> {
 
             String node = ctx.pathParam("node");

@@ -354,7 +354,6 @@ function loadPage(pageId){
       },
 
       vloadNode: function(){
-        //let n = {description:"Default Description",height:152,width:152,x_coord:363.82059800664456,y_coord:191.78807947019868,name:"A very good text",svg_image:"TextBox_Square_Interface.svg",type:"text_box_nodes",id:-1};
 
         fetch('/node/1')
             .then(result => result.text())
