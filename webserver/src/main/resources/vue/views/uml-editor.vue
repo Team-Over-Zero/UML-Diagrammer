@@ -232,6 +232,30 @@
   }
 
   function removeCurrentNode(){
+
+    let object = canvas.getActiveObject()
+
+    let n = {
+      description: "Default Description",
+      height: Math.floor(object.height),
+      width: Math.floor(object.height),
+      x_coord: Math.floor(object.left),
+      y_coord: Math.floor(object.top),
+      name: object._objects[1].text,
+      svg_image: object._objects[2].text,
+      type: object._objects[3].text,
+      id: parseInt(object._objects[4].text),
+      page_id: currentPage,
+    };
+
+    let nodejson = JSON.stringify(n)
+    let pagejson = JSON.stringify({id:currentPage});
+    fetch('/deleteNode/' + nodejson + '/' + pagejson)
+        .then(result => result.text())
+        .then((output) => {
+          console.log('Output: ', output);
+        }).catch(err => console.error(err));
+
     canvas.remove(canvas.getActiveObject());
   }
 
@@ -376,7 +400,9 @@ function loadPage(pageId){
 
 
   document.addEventListener('keyup', (e) => {
-    if (e.code === "Delete")        removeCurrentNode();
+    if (e.code === "Delete"){
+      removeCurrentNode();
+    }
   });
 
 </script>

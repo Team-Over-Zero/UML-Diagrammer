@@ -106,6 +106,13 @@ public class WebServer {
             ctx.result(response);
         });
 
+        client.get("/deleteNode/{node}/{page}", ctx -> {
+            String node = ctx.pathParam("node");
+            String page = ctx.pathParam("page");
+            String response = http_client.sendRemoveNodeFromPage(node, page);
+            ctx.result(response);
+        });
+
         client.get("/createPage/{pagejson}", ctx -> {
             String pageJson = ctx.pathParam("pagejson");
             String response = http_client.sendCreatePage(pageJson);
