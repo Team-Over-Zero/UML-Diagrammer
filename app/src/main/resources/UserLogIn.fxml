@@ -30,6 +30,7 @@
             <TextField fx:id="newPageNameTextField" layoutX="64.0" layoutY="45.0" promptText="New page name" />
             <Label fx:id="errorLabelNewPage" layoutY="7.0" prefHeight="38.0" prefWidth="298.0" text="Page name can't be blank or contain numbers" textFill="RED" visible="false" wrapText="true" />
             <MenuButton fx:id="loadSession" layoutX="107.0" layoutY="101.0" mnemonicParsing="false" text="Load" />
+            <Label layoutX="180.0" layoutY="101.0" prefHeight="93.0" prefWidth="108.0" text="If loading a page, be sure to hit &quot;refresh&quot; to load the elements" wrapText="true" />
          </children>
       </Pane>
    </children>
