@@ -23,6 +23,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.HTTP_Client;
+import UML.Diagrammer.backend.objects.Page;
 import UML.Diagrammer.backend.objects.UIEdge.UIDefaultEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
 import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
@@ -48,6 +49,7 @@ import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -402,6 +404,51 @@ public class ObjectRequester {
         dbConnection.removeEdgeFromPage(edge, currentPage);
     }
 
+    public String inviteUserToPage(String username){
+        String retString = dbConnection.findUserViaName(username);
+        if (retString.equals("ERROR: USER NOT FOUND")){
+            return "fail";
+        }
+        UIUser foundUser = makeUserViaString(retString);
+        dbConnection.addUserToPage(foundUser, currentPage);
+        return "success";
+    }
+
+    /**
+     * Yet another gross regex to parse the user/id and make a UIUser with it
+     * @param user The json string of a user
+     * @return a user object with the properties of the json string.
+     */
+    private UIUser makeUserViaString(String user){
+        // nee just id/name
+        // have {"id":26,"name":"user","password":"password"}
+        Pattern pattern = Pattern.compile("id\":[0-9]+|name\":\"[a-z]+");
+        Matcher matcher = pattern.matcher(user);
+        ArrayList<String> idAndName = new ArrayList<>();
+        while (matcher.find()) {
+            idAndName.add(matcher.group());
+            System.out.println("added "+ matcher.group());
+        }
+
+        ArrayList<String> parsedList = new ArrayList<>();
+
+        Pattern pat = Pattern.compile("[0-9]+");
+        Matcher mat = pat.matcher(idAndName.get(0));
+        while (mat.find()) {
+            String id = mat.group();
+            parsedList.add(id);
+        }
+
+        Pattern p = Pattern.compile("[^\"]*$");
+        Matcher m = p.matcher(idAndName.get(1));
+        while (m.find()) {
+            String userName = m.group();
+            parsedList.add(userName);
+        }
+
+        return new UIUser(Integer.parseInt(parsedList.get(0)), parsedList.get(1));
+    }
+
     /**
      * Gets the list of pages from the db and parses the returned string into a map of id/name pairs of pages.
      * @return
@@ -456,7 +503,10 @@ public class ObjectRequester {
      * @param currentPane The current pane that all the elemnts reside
      * @param page The id of the page you are loading from the db.
      */
-    public void loadPagesFromDB(Pane currentPane, UIPage page){
+    public void loadPageFromDB(Pane currentPane, UIPage page){
+        if (page == null){
+            page = currentPage;
+        }
         String retObject = dbConnection.loadPageElements(page.getPageIdAsJSon());
 
         Gson gson  = new Gson();

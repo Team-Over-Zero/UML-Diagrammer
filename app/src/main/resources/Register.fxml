@@ -17,16 +17,17 @@
       <Text layoutX="78.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Confirm Password" />
       <Button layoutX="286.0" layoutY="299.0" mnemonicParsing="false" onAction="#registerButtonPressed" text="Register" />
       <Button layoutX="526.0" layoutY="14.0" mnemonicParsing="false" onAction="#exitAppPressed" text="Exit" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#registerCancelButtonPressed" text="Cancel" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#registerCancelButtonPressed" text="Log In" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <Label fx:id="registerErrorLabel" layoutX="193.0" layoutY="89.0" textAlignment="CENTER" textFill="RED" visible="false">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="registerSuccessLabel" layoutX="203.0" layoutY="99.0" prefHeight="20.0" prefWidth="182.0" text="Success! Please login" textAlignment="CENTER" textFill="#02eb0a" visible="false">
+      <Label fx:id="registerSuccessLabel" layoutX="209.0" layoutY="89.0" prefHeight="20.0" prefWidth="182.0" text="Success! Please login" textAlignment="CENTER" textFill="#058609e3" visible="false">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
+      <Label layoutX="120.0" layoutY="16.0" text="Please only use alphabet characters for your username" />
    </children>
 </AnchorPane>

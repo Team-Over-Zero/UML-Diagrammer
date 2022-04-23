@@ -271,7 +271,7 @@ public class FXMLController extends App implements PropertyChangeListener{
                 newItem.setOnAction(a -> {
                     UIPage page = new UIPage(curPage.getKey(), curPage.getValue());
                     canvasPane.getChildren().clear();
-                    objectRequesterObservable.loadPagesFromDB(canvasPane, page);
+                    objectRequesterObservable.loadPageFromDB(canvasPane, page);
                     objectRequesterObservable.setCurrentPage(page);
                     currentPageLabel.setText(page.getName());
                 });
@@ -282,11 +282,63 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * On press of a button a user can hit the refresh button, and it will allow for collaborate work and
+     * loading in from the UI.
+     */
+    @FXML private void refresh(){
+        canvasPane.getChildren().clear();
+        objectRequesterObservable.loadPageFromDB(canvasPane, null);
+    }
+
+    /**
+     * Adds a user from their username given a username from the user.
+     */
+    @FXML private void sharePageButtonPressed(){
+        Popup popUp = new Popup();
+        popUp.setHeight(100);
+        popUp.setWidth(100);
+        popUp.setX((int)App.primaryStage.getX());
+        popUp.setY((int)App.primaryStage.getY());
+        Label label = new Label("Enter a name of a user you'd like to invite");
+        TextField textField = new TextField("User to invite");
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(50);
+        Button button = new Button("Confirm");
+
+        button.setOnAction(e -> {
+            String userText = textField.getText();
+            if (userText.equals("") | userText.matches("[0-9]")){
+                label.setText("User can't be blank or contain numbers");
+            }
+            else {
+                String addedUserSuccess = objectRequesterObservable.inviteUserToPage(userText);
+                if (addedUserSuccess.equals("fail")){
+                    label.setText("User doesn't exist");
+                }
+                else{
+                    label.setText("Successfully invited "+ userText +" , invite another?");
+                }
+            }
+        });
+
+        StackPane sp = new StackPane();
+        StackPane.setAlignment(textField, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
+
+        sp.getChildren().addAll(textField, label, button);
+        popUp.getContent().add(sp);
+        popUp.show(App.primaryStage);
+        button.setDefaultButton(true);
+        popUp.setAutoHide(true);
+    }
+
+    /**
      * Just a quick function to check if the item we are adding to the list is already present
      * @param value The name of the item you are adding
      * @return If that item already exists.
      */
-    public Boolean containsPage(String value){
+    private Boolean containsPage(String value){
         for (MenuItem curItem: loadMenuButton.getItems()) {
             if(value.equals(curItem.getText())){
                 return true;

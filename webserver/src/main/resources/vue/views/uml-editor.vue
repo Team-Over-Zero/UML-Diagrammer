@@ -5,7 +5,8 @@
     </h1>
     <div>
       <button v-on:click="vparseJsonFromDiagram()">Save</button>
-      <button onclick="loadPage(1)">Load</button>
+      <button v-on:click="vloadPage()">Load</button>
+      <button v-on:click="vcreatePage()">New</button>
       <button>Export</button>
       <select name="left-arrow" id="left-arrow">
         <option value="<--"><--</option>
@@ -200,6 +201,7 @@
     });
 
     canvas.add(group);
+    console.log(group);
 
     if(id == -1){
       let n = {
@@ -230,6 +232,30 @@
   }
 
   function removeCurrentNode(){
+
+    let object = canvas.getActiveObject()
+
+    let n = {
+      description: "Default Description",
+      height: Math.floor(object.height),
+      width: Math.floor(object.height),
+      x_coord: Math.floor(object.left),
+      y_coord: Math.floor(object.top),
+      name: object._objects[1].text,
+      svg_image: object._objects[2].text,
+      type: object._objects[3].text,
+      id: parseInt(object._objects[4].text),
+      page_id: currentPage,
+    };
+
+    let nodejson = JSON.stringify(n)
+    let pagejson = JSON.stringify({id:currentPage});
+    fetch('/deleteNode/' + nodejson + '/' + pagejson)
+        .then(result => result.text())
+        .then((output) => {
+          console.log('Output: ', output);
+        }).catch(err => console.error(err));
+
     canvas.remove(canvas.getActiveObject());
   }
 
@@ -239,10 +265,10 @@
       console.log(object);
       let n = {
         description: "Default Description",
-        height: object.height,
-        width: object.height,
-        x_coord: object.left,
-        y_coord: object.top,
+        height: Math.floor(object.height),
+        width: Math.floor(object.height),
+        x_coord: Math.floor(object.left),
+        y_coord: Math.floor(object.top),
         name: object._objects[1].text,
         svg_image: object._objects[2].text,
         type: object._objects[3].text,
@@ -251,19 +277,49 @@
       };
       json = JSON.stringify(n)
       console.log(json);
+      fetch('/updateNode/' + json)
+          .then(result => result.text())
+          .then((output) => {
+            console.log(output);
+          }).catch(err => console.error(err));
 
       return json;
     })
   }
 
+function createPage(){
+  fetch('/createPage/[{id:-1},{1}]')
+      .then(result => result.text())
+      .then((output) => {
+        console.log(output);
+      }).catch(err => console.error(err));
+}
 
 function loadPage(pageId){
+  canvas.clear();
   //let jsonId = JSON.stringify({pageid:currentPage});
   let jsonId = "{\"id\":\"" + 1 + "\"}";
   fetch('/loadPage/' + jsonId)
-      .then(result => result.text())
+      .then(result => result.json())
       .then((output) => {
-        console.log('Output: ', output);
+
+        let strings = output[0];
+
+        console.log('Output: ', strings);
+
+        strings.forEach((string) => {
+          let n = JSON.parse(string);
+          console.log(n);
+
+          fetch('/svg/' + n.svg_image)
+              .then(result => result.text())
+              .then((output) => {
+                addNode(output, n.svg_image, n.type, n.name, parseInt(n.x_coord), parseInt(n.y_coord), n.id);
+
+              }).catch(err => console.error(err));
+
+        });
+
       }).catch(err => console.error(err));
 }
 
@@ -298,7 +354,6 @@ function loadPage(pageId){
       },
 
       vloadNode: function(){
-        //let n = {description:"Default Description",height:152,width:152,x_coord:363.82059800664456,y_coord:191.78807947019868,name:"A very good text",svg_image:"TextBox_Square_Interface.svg",type:"text_box_nodes",id:-1};
 
         fetch('/node/1')
             .then(result => result.text())
@@ -323,6 +378,10 @@ function loadPage(pageId){
         parseJsonFromDiagram();
       },
 
+      vcreatePage: function(){
+        createPage();
+      },
+
       vcreateNode: function(json){
         fetch('/createNode/' + json)
             .then(result => result.json())
@@ -340,7 +399,9 @@ function loadPage(pageId){
 
 
   document.addEventListener('keyup', (e) => {
-    if (e.code === "Delete")        removeCurrentNode();
+    if (e.code === "Delete"){
+      removeCurrentNode();
+    }
   });
 
 </script>

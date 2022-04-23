@@ -158,7 +158,7 @@ public class DatabaseConnection {
 
     /**
      * Gets a list of all the pages associated with a given user
-     * @return
+     * @return A json string of all the pages that the user has associated with them.
      */
     public String getUserPages(UIUser user){
         try {
@@ -168,11 +168,27 @@ public class DatabaseConnection {
         return null;
     }
 
+    /**
+     * Gets a json string of all the element of a page
+     * @param page The page that you'd like the elements for
+     * @return json string of all the elements in a page
+     */
     public String loadPageElements(String page){
-        return HTTPClient.sendLoadPage(page);
+        String retString = HTTPClient.sendLoadPage(page);
+        System.out.println("RETURN STRING "+retString);
+        return retString;
     }
 
     public String loginUser(String user){
         return HTTPClient.sendLoginUser(user);
+    }
+
+    /**
+     * Gets a user based on their username
+     * @param username the name of the user you are trying to add
+     * @return a json string of the user you are querying for or ERROR: USER NOT FOUND otherwise.
+     */
+    public String findUserViaName(String username){
+        return HTTPClient.sendFindUserByName("{\"name\":\"" + username + "\"}");
     }
 }
