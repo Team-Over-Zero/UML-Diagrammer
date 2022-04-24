@@ -139,6 +139,11 @@ public class WebServer {
             ctx.result(http_client.sendCreateUser(user));
         });
 
+        client.get("/deletePage/{page}", ctx -> {
+            String pagejson = ctx.pathParam("page");
+            ctx.result(http_client.sendDeletePage(pagejson));
+        });
+
     }
 
     private String sendNodeCreateRequest(String node){

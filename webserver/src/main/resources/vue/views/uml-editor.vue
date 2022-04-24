@@ -7,7 +7,8 @@
       <div>
         <button v-on:click="vparseJsonFromDiagram()">Save</button>
         <button v-on:click="vloadPage()">Load</button>
-        <button v-on:click="vcreatePage()">New</button>
+        <button v-on:click="vdeletePage()">Delete Page</button>
+        <button v-on:click="vreturnToHome()">Return to Home</button>
         <button>Export</button>
         <select name="left-arrow" id="left-arrow">
           <option value="<--"><--</option>
@@ -41,11 +42,13 @@
       <label for="password">Last name:</label>
       <input type="text" id="password" name="password"><br><br>
       <button v-on:click="vtryUserLogin()">login</button>
-      <button v-on:click="vmakeNewUser()">Make New User</button>
+      <button v-on:click="vmakeNewUser()">Make New User</button><br><br>
+      <label for="newPage">New Page Name:</label>
+      <input type="text" id="newPage" name="newPage"><br><br>
       <button v-on:click="vcreatePage()">Make New Page</button>
       <div id="loadPageButtons">
         <li v-for="(btn, index) in pageBtns">
-          <button  @click="vchangeCurrentPage(btn.name)" type="text"> {{ btn.name}}</button>
+          <button  @click="vchangeCurrentPage(btn.id)" type="text"> {{ btn.name}}</button>
         </li>
       </div>
     </div>
@@ -393,7 +396,7 @@ function loadPage(pageId){
 
       vcreatePage: function(){
         let userjson = JSON.stringify(currentUser);
-        let pagejson = JSON.stringify({id:-1, name:"newPage"})
+        let pagejson = JSON.stringify({id:-1, name:$('#newPage').val()})
         fetch('/createPage/' + pagejson + '/' + userjson)
             .then(result => result.text())
             .then((output) => {
@@ -422,7 +425,10 @@ function loadPage(pageId){
               console.log('Output: ', output);
               currentUser = output;
               this.vgetUserPages();
-            }).catch(err => console.error(err));
+            }).catch(err => {
+              console.error(err)
+              alert("invalid login")
+            });
       },
 
       vgetUserPages: function(){
@@ -434,9 +440,9 @@ function loadPage(pageId){
               console.log('Output: ', output);
               output.forEach((out) => {
                 let page = JSON.parse(out);
-                //$('#loadPageButtons').append("<button v-on:click=\"vchangeCurrentPage(" + page.id + ")\">" + page.id + '</button><br>');
                 this.pageBtns.push({
-                  name: page.id
+                  name: page.name,
+                  id: page.id
                 });
               });
             }).catch(err => console.error(err));
@@ -464,6 +470,23 @@ function loadPage(pageId){
             }).catch(err => console.error(err));
 
       },
+
+      vdeletePage: function(){
+        let pagejson = JSON.stringify({id:currentPage});
+        fetch('/deletePage/' + pagejson)
+            .then(result => result.text())
+            .then((output) => {
+              console.log('Output: ', output);
+              this.vgetUserPages();
+              $('.editor').css("display", "none");
+              $('.login').css("display", "block");
+            }).catch(err => console.error(err));
+      },
+
+      vreturnToHome: function(){
+        $('.editor').css("display", "none");
+        $('.login').css("display", "block");
+      }
 
 
 
