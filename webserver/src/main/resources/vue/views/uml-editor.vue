@@ -41,6 +41,8 @@
       <label for="password">Last name:</label>
       <input type="text" id="password" name="password"><br><br>
       <button v-on:click="vtryUserLogin()">login</button>
+      <button v-on:click="vmakeNewUser()">Make New User</button>
+      <button v-on:click="vcreatePage()">Make New Page</button>
       <div id="loadPageButtons">
         <li v-for="(btn, index) in pageBtns">
           <button  @click="vchangeCurrentPage(btn.name)" type="text"> {{ btn.name}}</button>
@@ -302,11 +304,7 @@
   }
 
 function createPage(){
-  fetch('/createPage/[{id:-1},{1}]')
-      .then(result => result.text())
-      .then((output) => {
-        console.log(output);
-      }).catch(err => console.error(err));
+
 }
 
 function loadPage(pageId){
@@ -394,7 +392,14 @@ function loadPage(pageId){
       },
 
       vcreatePage: function(){
-        createPage();
+        let userjson = JSON.stringify(currentUser);
+        let pagejson = JSON.stringify({id:-1, name:"newPage"})
+        fetch('/createPage/' + pagejson + '/' + userjson)
+            .then(result => result.text())
+            .then((output) => {
+              console.log(output);
+              this.vgetUserPages();
+            }).catch(err => console.error(err));
       },
 
       vcreateNode: function(json){
@@ -421,6 +426,7 @@ function loadPage(pageId){
       },
 
       vgetUserPages: function(){
+        this.pageBtns = [];
         let userjson = JSON.stringify(currentUser);
         fetch('/getUserPages/' + userjson)
             .then(result => result.json())
@@ -444,6 +450,21 @@ function loadPage(pageId){
         currentPage = newPage;
         loadPage(currentPage);
       },
+
+      vmakeNewUser: function(){
+        let username = $('#username').val();
+        let password = $('#password').val();
+        let userjson = "{\"id\":\"" + -1 + "\"" + ",\"name\":\"" + username + "\"" + ",\"password\":\"" + password + "\"}";
+        fetch('/createUser/' + userjson)
+            .then(result => result.json())
+            .then((output) => {
+              console.log('Output: ', output);
+              currentUser = output;
+              this.vgetUserPages();
+            }).catch(err => console.error(err));
+
+      },
+
 
 
     },
