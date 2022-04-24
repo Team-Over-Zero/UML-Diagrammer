@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - 2022-04-23
+## [1.0.0] - 2022-04-24
 ### Added
  - User login with username and password for both database and UI.
  - Sharing documents with other users by adding someone to a page.
@@ -10,7 +10,7 @@
  - User registration with a new username and password.
  - More tests for the backend, webserver, and UI.
  - Minor refactoring of the factory classes to work with ActiveJDBC.
- - Full connection of app UI and web UI to communiate with the backend to allow for saving, loading, and sharing of pages.
+ - Full connection of app UI and web UI to communicate with the backend to allow for saving, loading, and sharing of pages.
  - Unhappy path testing.
 
 ## [0.3.0] - 2022-04-10
