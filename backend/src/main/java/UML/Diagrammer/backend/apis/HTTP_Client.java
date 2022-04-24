@@ -251,7 +251,7 @@ public class HTTP_Client {
     public String sendDeletePage(String pageJson) {
         String returnString = "";
         try {
-            returnString = genericPostRequestOneParam("/deletepage/", "page", pageJson);
+            returnString = genericPostRequestOneParam("/deletepage/", "pageid", pageJson);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
