@@ -138,8 +138,6 @@ class AppTest extends DBSpec {
         robo.clickOn("Load");
         robo.clickOn("Load");
 
-<<<<<<< HEAD
-=======
 
         robo.clickOn("Invite");
         robo.write("personWhoDoesntExist");
@@ -147,6 +145,6 @@ class AppTest extends DBSpec {
         robo.sleep(1000);
         robo.press(KeyCode.ESCAPE);
         robo.clickOn("Log Out");
->>>>>>> 737fec776fc8b3dacd426ef5e5b875a47bd3911f
+
     }
 }
