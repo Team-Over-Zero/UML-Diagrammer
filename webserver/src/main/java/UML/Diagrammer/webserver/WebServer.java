@@ -109,9 +109,10 @@ public class WebServer {
             ctx.result(response);
         });
 
-        client.get("/createPage/{pagejson}", ctx -> {
+        client.get("/createPage/{pagejson}/{userjson}", ctx -> {
             String pageJson = ctx.pathParam("pagejson");
-            String response = http_client.sendCreatePage(pageJson); //ALEX NOTE. sendCreatePage was poorly written, use pageCreateRequest instead
+            String userJson = ctx.pathParam("userjson");
+            String response = http_client.pageCreateRequest(pageJson, userJson); //ALEX NOTE. sendCreatePage was poorly written, use pageCreateRequest instead
             System.out.println(response);
             ctx.result(response);
         });
@@ -131,6 +132,11 @@ public class WebServer {
         client.get("/getUserPages/{user}", ctx -> {
             String user = ctx.pathParam("user");
             ctx.result(http_client.getUserPages(user));
+        });
+
+        client.get("/createUser/{user}", ctx -> {
+            String user = ctx.pathParam("user");
+            ctx.result(http_client.sendCreateUser(user));
         });
 
     }
