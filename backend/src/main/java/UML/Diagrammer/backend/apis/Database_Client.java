@@ -32,6 +32,7 @@ import lombok.Setter;
 import org.javalite.activejdbc.Base;
 import io.javalin.Javalin;
 import UML.Diagrammer.backend.objects.*;
+import org.javalite.activejdbc.DB;
 import org.javalite.activejdbc.connection_config.DBConfiguration;
 
 import java.util.List;
@@ -70,69 +71,68 @@ public class Database_Client {
         databaseUser = userName;
         databasePassword = password;
         javalinPort = port;
-
        // Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
     }
 
+
     /**
-     * This method initializes activeJDBC and our javalin server.
+     * Initializes activeJDBC and our javalin server.
      */
     public void spinUp(){
+        httpServer = Javalin.create(config ->
+        {config.enableDevLogging();}).start(javalinPort);
 
-            DBConfiguration.loadConfiguration("/database.properties");
-
-           // Base.open();
-            httpServer = Javalin.create(config ->
-            {config.enableDevLogging();}).start(javalinPort);
-
-            //initializes javalin listeners
-
-            //dev listeners
-            devGetParamInit();
-            devGetDefaultNode();
-            devGetAnyNode();
-            devGetAnyEdge();
-            devTryCreateNode();
-            devTryCreateEdge();
-            devUpdateNode();
-            devPostStatusCodeInit();
-            devTestCreateNode();
-            devGetObjectsAsMap();
-
-            //page listeners
-            createPage();
-            deletePage();
-            loadPageElements();
-            getPageIdByName();
-
-            //page object listeners
-            createEdgeOnPage();
-            deleteEdgeFromPage();
-            createNodeOnPage();
-            deleteNodeFromPage();
-            updateNodeOnPage();
-
-            //user listeners
-            createUser();
-            deleteUser();
-            loginUser();
-            findUserByName();
-            getUserPages();
-            addUserToPage();
-            removeUserFromPage();
-
-
+        //spins up listeners.
+        initalizeListeners();
         //This handler will run before every single request handler. This will ensure
         //that our database
         httpServer.before(ctx -> {
             // calls before("/*", handler)
-            DBConfiguration.loadConfiguration("/database.properties");
-            Base.open();
+            Base.open("com.mysql.cj.jdbc.Driver",databaseURL,databaseUser,databasePassword);
+
         });
         httpServer.after(ctx -> {
             Base.close();
         });
 
+    }
+
+    private void initalizeListeners(){
+        //initializes javalin listeners
+
+        //dev listeners
+        devGetParamInit();
+        devGetDefaultNode();
+        devGetAnyNode();
+        devGetAnyEdge();
+        devTryCreateNode();
+        devTryCreateEdge();
+        devUpdateNode();
+        devPostStatusCodeInit();
+        devTestCreateNode();
+        devGetObjectsAsMap();
+
+        //page listeners
+        createPage();
+        deletePage();
+        loadPageElements();
+        getPageIdByName();
+
+        //page object listeners
+        createEdgeOnPage();
+        deleteEdgeFromPage();
+        createNodeOnPage();
+        deleteNodeFromPage();
+        updateNodeOnPage();
+
+        //user listeners
+        createUser();
+        deleteUser();
+        loginUser();
+        findUserByName();
+        getUserPages();
+        addUserToPage();
+        removeUserFromPage();
     }
 
     /**

@@ -4,6 +4,7 @@
 package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.Database_Client;
+import UML.Diagrammer.backend.apis.HTTP_Client;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -24,6 +25,8 @@ import static org.testfx.api.FxAssert.verifyThat;
 class AppTest extends DBSpec {
     private FxRobot robo;
     private Database_Client dbClient;
+    private HTTP_Client http_helper;
+    private String testUser;
     @BeforeEach
     public void setRobo() throws Exception{
         ApplicationTest.launch(App.class);
@@ -34,6 +37,8 @@ class AppTest extends DBSpec {
         String databasePassword = "TeamOverZero";
         int javalinPort = 8888;
         dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
+        http_helper = new HTTP_Client();
+        testUser = http_helper.sendCreateUser("{name:\"junittest\",password:\"password\"}");
         dbClient.spinUp();
 
     }
@@ -43,6 +48,7 @@ class AppTest extends DBSpec {
         FxToolkit.hideStage();
         robo.release(new KeyCode[]{});
         robo.release(new MouseButton[]{});
+        http_helper.sendDeleteUser(testUser);
         dbClient.spinDown();
     }
 
@@ -53,11 +59,11 @@ class AppTest extends DBSpec {
         robo.clickOn("Register New Account");
 
         // Not sure how we can test registration if we need unique usernames
-        /*robo.clickOn("#registerUserName").write("junittest");
-        robo.clickOn("#registerNewPassword").write("password");
-        robo.clickOn("#registerConfirmPassword").write("password");
+//        /*robo.clickOn("#registerUserName").write("junittest");
+//        robo.clickOn("#registerNewPassword").write("password");
+//        robo.clickOn("#registerConfirmPassword").write("password");
 
-        robo.clickOn("Register");*/
+      //  robo.clickOn("Register");
         robo.clickOn("Log In");
 
         robo.clickOn("#UserNameTextField").write("junittest");
@@ -122,5 +128,6 @@ class AppTest extends DBSpec {
 
         robo.clickOn("Load");
         robo.clickOn("Load");
+
     }
 }

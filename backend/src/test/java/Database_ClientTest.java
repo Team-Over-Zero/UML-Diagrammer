@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * IN ALL CAPS AS THIS MAY BE CRITICAL
  *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Database_ClientTest extends DBSpec {
     private EdgeFactory factory;
     private NodeFactory nodeFactory;
@@ -35,7 +35,7 @@ public class Database_ClientTest extends DBSpec {
     private Database_Client dbClient;
 
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
         factory = new EdgeFactory();
         nodeFactory = new NodeFactory();
@@ -48,6 +48,10 @@ public class Database_ClientTest extends DBSpec {
         dbClient.spinUp();
 
     }
+    @AfterEach
+    public void tearDown(){
+        dbClient.spinDown();
+    }
 
     @Test
 
@@ -59,7 +63,7 @@ public class Database_ClientTest extends DBSpec {
         try {
             http_client.sendCreateUser(userJ);
             s = "SUCCESS";
-
+            user.deleteCascade();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,11 +79,12 @@ public class Database_ClientTest extends DBSpec {
 
         try {
            http_client.sendCreateUser(userJ);
+           http_client.sendDeleteUser(userJ);
 
 
         } catch (Exception e){
 
-           assertEquals(IllegalArgumentException.class,e.getClass());
+           assertEquals(IllegalArgumentException.class,e.getClass()); //what
         }
 
 
@@ -95,6 +100,7 @@ public class Database_ClientTest extends DBSpec {
 
         try {
             http_client.sendCreateUser(s);
+            http_client.sendDeleteUser(s);
 
 
         } catch (Exception e){
@@ -112,6 +118,7 @@ public class Database_ClientTest extends DBSpec {
     public void testCreatePageC1True() {
         Page page = new Page();
         page.set("name","hellworld");
+        page.saveIt();
         String pageJ = page.toJson(true);
         String s = "";
         try
@@ -129,14 +136,15 @@ public class Database_ClientTest extends DBSpec {
 
     @Test
     public void testCreateC1False() {
-        User page = new User();
+        User user = new User();
 
-        String pageJ = page.toJson(true);
+        String userJ = user.toJson(true);
 
         try
 
         {
-            http_client.sendCreatePage(pageJ);
+            http_client.sendCreateUser(userJ);
+            http_client.sendDeleteUser(userJ);
 
         } catch(
                 Exception e)
@@ -232,6 +240,7 @@ public class Database_ClientTest extends DBSpec {
         User user = new User();
         user.set("id",100);
         user.set("name","AHHHH");
+        user.saveIt();
         String userJ = user.toJson(true);
         String pageJ = page.toJson(true);
         try
@@ -404,7 +413,7 @@ public class Database_ClientTest extends DBSpec {
 
         {
             http_client.sendRemoveUserFromPage(userJ,"no");
-
+            http_client.sendDeleteUser(userJ);
 
         } catch(
                 Exception e)
@@ -448,10 +457,7 @@ public class Database_ClientTest extends DBSpec {
 
     }
 
-    @Test
-    public void wtf() {
 
-    }
 
 
 

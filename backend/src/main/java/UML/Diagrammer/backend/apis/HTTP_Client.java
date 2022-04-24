@@ -157,6 +157,7 @@ public class HTTP_Client {
     public String getUserPages(String userId) throws URISyntaxException, IOException {
         String returnString = genericGetRequestOneParam("/getuserpages/", "userid", userId);
         return returnString;
+
     }
 
     public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException {
@@ -363,6 +364,11 @@ public class HTTP_Client {
         return returnString;
     }
 
+    /**
+     * Attempts to login a user (return a user string with an id
+     * @param userJson
+     * @return
+     */
     public String sendLoginUser(String userJson){
         String returnString = "";
         try {

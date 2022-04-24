@@ -48,7 +48,8 @@ public class RequestControllerTest extends DBSpec {
         User user = new User();
         user.set("name","test");
         user.set("id",999);
-        http_client.sendCreateUser(user.toJson(true));
+        user.saveIt();
+        String userJ = http_client.sendCreateUser(user.toJson(true));
         http_client.sendCreatePage(page.toJson(true));
         http_client.sendAddUserToPage(user.toJson(true),page.toJson(true));
         http_client.sendAddNodeToPage(node.toJson(true),page.toJson(true));
@@ -123,6 +124,8 @@ public class RequestControllerTest extends DBSpec {
         http_client.sendAddNodeToPage(s,page.toJson(true));
 
 
+        //delete instantiated user for cleanup
+        http_client.sendDeleteUser(userJ);
 
         http_client.sendCreateUser(null);
         http_client.sendRemoveNodeFromPage(node.toJson(true),page.toJson(true));

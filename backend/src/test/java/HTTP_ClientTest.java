@@ -1,23 +1,62 @@
+import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.javalite.activejdbc.test.DBSpec;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 /**
+ * This class tests HTTP Client methods. Note that since it does not extend dbspec, we have to manually define the
+ * connected database and
+ *
  * Will need to revise these as example methods are removed, page David when its time to change stuff(if you decide not
  * to )
  */
-public class HTTP_ClientTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class HTTP_ClientTest extends DBSpec {
     private HTTP_Client client;
+    private Database_Client dbClient;
+    String testUser;
+    final String jUnitUrl = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/junit?useSSL=false";
+    final String databaseUser = "root";
+    final String databasePassword = "TeamOverZero";
+    final int javalinPort = 8888;
 
-    @BeforeEach
-    public void setUp() throws Exception {
+
+    @BeforeAll
+    public void setUp(){
+        String testUser = "{name:\"HTTPCLIENTTEST\",password:\"CLIENT\"}";
         client = new HTTP_Client();
     }
+    @AfterAll
+    public void tearDown(){
 
+    }
+
+
+    @BeforeEach
+
+    /**
+     * Sets up a test user and httpClient.
+     * @author Last changed by Alex:
+     */
+    public void openConnection() throws Exception {
+        dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
+        dbClient.spinUp();
+
+    }
+    @AfterEach
+
+    /**
+     * deletes user for consistent database state between runs.
+     * @author Alex
+     */
+    public void closeConnection() {
+        dbClient.spinDown();
+    }
 
     @Test
     public void test() {
@@ -52,11 +91,12 @@ public class HTTP_ClientTest {
      */
 
     @Test
-    public void testTryLoginUser() {
-        String testUser = "{name:\"httpclient\",password:\"password123\"}";
-        String retStr = client.sendCreateUser(testUser);
+    public void testSendLoginUser() {
+        String loginTestUser = "{name:\"httpclient\",password:\"password123\"}";
+        String retStr = client.sendCreateUser(loginTestUser);
 
-        assertNotEquals("ERROR: USER NOT FOUND",client.sendLoginUser(testUser));
+        assertNotEquals("ERROR: USER NOT FOUND",client.sendLoginUser(loginTestUser));
+        client.sendDeleteUser(retStr);
     }
     /**
      * test try getPage, for now not useful
@@ -75,6 +115,21 @@ public class HTTP_ClientTest {
         assertEquals(String.class, client.getUserPages("{\"id\":\"1\"}").getClass());
     }
 
+    @Test
+    /**
+     * Even though we added a beforeEach and an aftereach that should deal with creation and deletion of test users,
+     * I have a custom user for emphasis. This tests creates, attempts to find by name, then deletes a user.
+     * @author Alex
+     */
+    public void testGetUserByName(){
+        String tUser = "{name:\"userbyname\",password:\"foobar\"}";
+        String createUser = client.sendCreateUser(tUser);
+        String foundUser = client.sendFindUserByName("{name:\"userbyname\"}");
+        System.out.println(foundUser);
+        assertNotEquals("ERROR: USER NOT FOUND",foundUser);
+        client.sendDeleteUser(createUser);
+
+    }
 
 }
 

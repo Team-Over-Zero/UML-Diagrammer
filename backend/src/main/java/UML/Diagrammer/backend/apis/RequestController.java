@@ -870,8 +870,8 @@ public final class RequestController {
 
     /**
      * Attaches to the /loginuser/ post request
-     * Given a passed in user query param in json form (no id), attempts to find that user in the database and sends back that
-     * user's id.
+     * Given a passed in user query param in json form (no id but a name, password), attempts to find that user in the database and sends back that
+     * user with an id
      *
      * @param context
      */
