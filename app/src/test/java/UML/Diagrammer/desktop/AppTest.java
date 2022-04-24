@@ -16,6 +16,9 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
 import static org.testfx.api.FxAssert.verifyThat;
@@ -24,6 +27,9 @@ import static org.testfx.api.FxAssert.verifyThat;
 class AppTest extends DBSpec {
     private FxRobot robo;
     private Database_Client dbClient;
+    private String userName;
+    private String password;
+    private String pageName;
     @BeforeEach
     public void setRobo() throws Exception{
         ApplicationTest.launch(App.class);
@@ -36,6 +42,25 @@ class AppTest extends DBSpec {
         dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
         dbClient.spinUp();
 
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+
+        userName = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        password = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        pageName = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 
     @AfterEach
@@ -52,23 +77,25 @@ class AppTest extends DBSpec {
 
         robo.clickOn("Register New Account");
 
-        // Not sure how we can test registration if we need unique usernames
-        /*robo.clickOn("#registerUserName").write("junittest");
-        robo.clickOn("#registerNewPassword").write("password");
-        robo.clickOn("#registerConfirmPassword").write("password");
+        robo.clickOn("#registerUserName").write(userName);
+        robo.clickOn("#registerNewPassword").write(password);
+        robo.clickOn("#registerConfirmPassword").write("");
 
-        robo.clickOn("Register");*/
-        robo.clickOn("Log In");
-
-        robo.clickOn("#UserNameTextField").write("junittest");
-        robo.clickOn("#PasswordTextField").write("password");
+        robo.clickOn("Register");
+        robo.clickOn("#registerConfirmPassword").write(password);
+        robo.clickOn("Register");
 
         robo.clickOn("Log In");
 
-        robo.clickOn("#newPageNameTextField").write("page");
+        robo.clickOn("#UserNameTextField").write(userName);
+        robo.clickOn("#PasswordTextField").write("wrongpassword");
+        robo.clickOn("Log In");
+
+        robo.doubleClickOn("#PasswordTextField").write(password);
+        robo.clickOn("Log In");
+
+        robo.clickOn("#newPageNameTextField").write(pageName);
         robo.clickOn("Create new");
-
-        robo.clickOn("Class");
 
 
         verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
@@ -76,51 +103,41 @@ class AppTest extends DBSpec {
         verifyThat(robo.lookup("Delete"), (Button b) -> b.isVisible());
         verifyThat("Load", org.testfx.matcher.control.LabeledMatchers.hasText("Load"));
 
+        robo.clickOn("Class");
         robo.rightClickOn("Class Name");
-
         robo.clickOn("Edit name");
-
         robo.type(KeyCode.S);
-
         robo.clickOn("Confirm");
 
         robo.clickOn("s");
-
         robo.clickOn("Delete");
 
         robo.clickOn("Oval");
 
-        robo.clickOn("Edit");
-
-        robo.type(KeyCode.E);
-
-        robo.clickOn("Confirm");
-
-        robo.clickOn("Delete");
-
-        robo.clickOn("Line");
-
-        robo.clickOn("Note");
-
-        robo.clickOn("Folder");
-
-        robo.clickOn("Life Line");
-
-        robo.clickOn("Square");
-
         robo.clickOn("Stick Figure");
 
+        robo.clickOn("Line");
         robo.clickOn("Stick Figure Name");
+        robo.clickOn("Oval Name");
 
+        robo.clickOn("Folder");
+        robo.clickOn("Life Line");
+        robo.clickOn("Square");
         robo.clickOn("Text Box");
-
         robo.clickOn("Loop");
+        robo.clickOn("Note");
 
         robo.clickOn("Export");
-
-        //robo.clickOn("SVG");
-
+        robo.clickOn("Refresh");
         robo.clickOn("Load");
         robo.clickOn("Load");
+
+
+        robo.clickOn("Invite");
+        robo.write("personWhoDoesntExist");
+        robo.clickOn("Confirm");
+        robo.sleep(1000);
+        robo.press(KeyCode.ESCAPE);
+        robo.clickOn("Log Out");
     }
 }
