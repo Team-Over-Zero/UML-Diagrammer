@@ -113,7 +113,7 @@ class AppTest extends DBSpec {
         robo.clickOn("Delete");
 
         robo.clickOn("Oval");
-
+        
         robo.clickOn("Stick Figure");
 
         robo.clickOn("Line");
