@@ -1,7 +1,17 @@
 # Changelog
 
-
-## [Unreleased]
+## [1.0.0] - 2022-04-23
+### Added
+ - User login with username and password for both database and UI.
+ - Sharing documents with other users by adding someone to a page.
+ - Minor UI tweaks to improve user experience.
+ - UIUser and UIPage objects for creation of the UI.
+ - Loading a document that was previously worked on.
+ - User registration with a new username and password.
+ - More tests for the backend, webserver, and UI.
+ - Minor refactoring of the factory classes to work with ActiveJDBC.
+ - Full connection of app UI and web UI to communiate with the backend to allow for saving, loading, and sharing of pages.
+ - Unhappy path testing.
 
 ## [0.3.0] - 2022-04-10
 ### Added
@@ -45,7 +55,7 @@ For every Object in our backend, there is now a UI copy of it that doesn't imple
 
  - An working AWS database to save objects
 
- - >70% backend and Javafx testing
+ - 70% backend and Javafx testing
 
  - Updates to backend object instation(factory)
 
@@ -67,6 +77,3 @@ For every Object in our backend, there is now a UI copy of it that doesn't imple
 -Testing with Jacoco and JUNIT
 
 -Class Diagram and basic use cases
-
-### Changed
-### Removed
