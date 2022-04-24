@@ -24,7 +24,6 @@ public class FolderNode extends AbstractNode {
     public FolderNode(){
         super();
         set("type","foldernodes");
-        saveIt();
     }
     public FolderNode(int x, int y, int w, int h){
         super("Folder Name","foldernodes",null, "FOLDER_SVG", x, y, w, h);
