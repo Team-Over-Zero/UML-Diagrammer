@@ -15,6 +15,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 /** RequestController.java
  *
  * This class deals with the bodies of the Database_Client's get and post request listener handlers.
+ *
+ * I wish I had time to document better, but I have done what I can in Database_Client and in method headers.
  * @author Alex
  */
 
@@ -129,7 +131,7 @@ public final class RequestController {
     }
 
     /**
-     * This method attaches to the /getanynode/ get request. It tries to find a node with the id {objectid} and the table name {type}
+     * This method attaches to the /getanyedge/ get request. It tries to find a edge with the id {objectid} and the table name {type}
      *
      * @param context implicitly passed in context
      */
@@ -393,7 +395,7 @@ public final class RequestController {
 
 
     /**
-     * Attaches to the /createpage/ post request. looks for the userId and page query paramters and creates a new page with
+     * Attaches to the /createpage/ post request. looks for the userId and page query parameters and creates a new page with
      * the passed in attributes of page attached to the user with the passed in id.
      *
      * @param context
@@ -452,6 +454,7 @@ public final class RequestController {
         try {
             Page foundPage = Page.findById(id);
             foundPage.delete(true);//cascading delete
+            context.result(successMsg);
         } catch (Exception e) {
             e.printStackTrace();
             context.status(500);
@@ -891,7 +894,7 @@ public final class RequestController {
                     context.result(userJson);
                 }
                 else{
-                    context.result("INVALID CREDENTIALS");
+                    context.result("INVALID CREDENTIALS"); //should change this to "ERROR: INVALID CREDENTIALS" at some point.
                 }
             }
             catch (Exception e){

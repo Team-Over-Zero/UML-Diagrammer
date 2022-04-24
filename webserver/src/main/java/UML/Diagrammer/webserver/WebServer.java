@@ -111,7 +111,8 @@ public class WebServer {
 
         client.get("/createPage/{pagejson}", ctx -> {
             String pageJson = ctx.pathParam("pagejson");
-            String response = http_client.sendCreatePage(pageJson);
+            String response = http_client.sendCreatePage(pageJson); //ALEX NOTE. sendCreatePage was poorly written, use pageCreateRequest instead
+            System.out.println(response);
             ctx.result(response);
         });
 

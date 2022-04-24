@@ -160,10 +160,6 @@ public class HTTP_Client {
 
     }
 
-    public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException {
-        String returnString = genericPostRequestTwoParams("/createpage/", "page", pageJson, "userid", userId);
-        return returnString;
-    }
 
 
 
@@ -195,20 +191,49 @@ public class HTTP_Client {
         return returnString;
     }
 
-    //Dev Edge requests.
+    //Dev Edge Requests
+
+    /**
+     *
+     * @param edgeJson Edge in json format
+     * @return A pageless edge with an id
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public String sendEdgeCreateRequest(String edgeJson) throws IOException, URISyntaxException {
         String paramName = "edge";
         String returnString = genericPostRequestOneParam(("/trycreateedge/"), paramName, edgeJson);
         return returnString;
     }
 
+
     //Page Requests
 
 
+    /**
+     *
+     * @param pageJson Page in json format
+     * @param userId user in json format where only id is used.
+     * @return A created page if successful, otherwise an error code string.
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    public String pageCreateRequest(String pageJson, String userId) throws URISyntaxException, IOException {
+        String returnString = genericPostRequestTwoParams("/createpage/", "page", pageJson, "userid", userId);
+        return returnString;
+    }
+
+
+    /**
+     * Poorly written, product of shotgun code. DO NOT USE.
+     * @deprecated
+     * @param pageJson
+     * @return
+     */
     public String sendCreatePage(String pageJson) {
         String returnString = "";
         try {
-            returnString = genericPostRequestOneParam("/createpage/", "page", pageJson);
+            returnString = genericPostRequestOneParam("/createpage/", "page", pageJson); //
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -220,7 +245,7 @@ public class HTTP_Client {
     /**
      * Deletes Page
      *
-     * @param pageJson
+     * @param pageJson json of page to delete
      * @return
      */
     public String sendDeletePage(String pageJson) {
@@ -236,6 +261,12 @@ public class HTTP_Client {
         return "";
     }
 
+    /**
+     * Attempts to load all the nodes and edges from a page as a 2d json list with
+     * position 0 being a node list and 1 being an edge list.
+     * @param pageIdJson Page in the form {id:\"10\"}
+     * @return
+     */
     public String sendLoadPage(String pageIdJson){
         String returnString = "";
         try {
@@ -271,6 +302,12 @@ public class HTTP_Client {
         return returnString;
     }
 
+    /**
+     *
+     * @param nodeJson Node to attempt to add to database (json format)
+     * @param pageIdJson page to add node to (json format, only id needed)
+     * @return
+     */
     public String sendAddNodeToPage(String nodeJson, String pageIdJson) {
         String returnString = "";
         try {
@@ -283,6 +320,12 @@ public class HTTP_Client {
         return returnString;
     }
 
+    /**
+     * Attempts to remove a node from a page
+     * @param nodeJson node to remove (and delete) in json format
+     * @param pageIdJson page which contains removed node in json format (only id needed)
+     * @return
+     */
     public String sendRemoveNodeFromPage(String nodeJson, String pageIdJson) {
         String returnString = "";
 
@@ -296,6 +339,12 @@ public class HTTP_Client {
         return returnString;
     }
 
+    /**
+     * Attempts to add an edge to a page.
+     * @param edgeJson edge to attempt to add to database on the page in json format (id will be created by database)
+     * @param pageIdJson Page to attempt to add edge to in json format, (only id needed).
+     * @return
+     */
     public String sendAddEdgeToPage(String edgeJson, String pageIdJson) {
         String returnString = "";
 
@@ -309,6 +358,12 @@ public class HTTP_Client {
         return returnString;
     }
 
+    /**
+     *
+     * @param edgeJson edge in json format to remove from page and delete
+     * @param pageIdJson page to remove edge from in json format (only id needed)
+     * @return
+     */
     public String sendRemoveEdgeFromPage(String edgeJson, String pageIdJson) {
         String returnString = "";
         try {
@@ -321,6 +376,12 @@ public class HTTP_Client {
         return returnString;
     }
 
+    /**
+     *
+     * @param userJson Json of user
+     * @param pageIdJson Json of page (only id needed)
+     * @return
+     */
     public String sendAddUserToPage(String userJson, String pageIdJson) {
         String returnString = "";
 
@@ -352,6 +413,12 @@ public class HTTP_Client {
     }
 
     //User Requests
+
+    /**
+     * Attempts to create a user and assign an id given attributes like name and password.
+     * @param userJson json of user object
+     * @return
+     */
     public String sendCreateUser(String userJson) {
         String returnString = "";
         try {
