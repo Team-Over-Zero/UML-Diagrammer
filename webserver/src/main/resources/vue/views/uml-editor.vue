@@ -3,37 +3,50 @@
     <h1>
       UML Diagrammer
     </h1>
-    <div>
-      <button v-on:click="vparseJsonFromDiagram()">Save</button>
-      <button v-on:click="vloadPage()">Load</button>
-      <button v-on:click="vcreatePage()">New</button>
-      <button>Export</button>
-      <select name="left-arrow" id="left-arrow">
-        <option value="<--"><--</option>
-        <option value="---">---</option>
-      </select>
-      <select name="right-arrow" id="right-arrow">
-        <option value="-->">--></option>
-        <option value="---">---</option>
-      </select>
-      <select name="line-type" id="line-type">
-        <option value="-----">-----</option>
-        <option value="- - -">- - -</option>
-      </select>
-    </div>
-    <div>
-      <button v-on:click="vaddNode('Class', 'classnodes')">Class</button>
-      <button v-on:click="vaddNode('Note', 'notenodes')">Note</button>
-      <button v-on:click="vaddNode('Folder', 'foldernodes')">Folder</button>
-      <button v-on:click="vaddNode('TextBox_Square_Interface', 'textboxnodes')">Text Box</button>
-      <button v-on:click="vaddNode('LifeLine', 'lifelinenodes')">Lifeline</button>
-      <button v-on:click="vaddNode('Loop', 'loopnodes')">Loop</button>
-      <button v-on:click="vaddNode('StickFigure', 'stickfigurenodes')">User</button>
-      <button v-on:click="vaddNode('Oval_UseCase', 'ovalnodes')">Oval</button>
+    <div class="editor">
+      <div>
+        <button v-on:click="vparseJsonFromDiagram()">Save</button>
+        <button v-on:click="vloadPage()">Load</button>
+        <button v-on:click="vcreatePage()">New</button>
+        <button>Export</button>
+        <select name="left-arrow" id="left-arrow">
+          <option value="<--"><--</option>
+          <option value="---">---</option>
+        </select>
+        <select name="right-arrow" id="right-arrow">
+          <option value="-->">--></option>
+          <option value="---">---</option>
+        </select>
+        <select name="line-type" id="line-type">
+          <option value="-----">-----</option>
+          <option value="- - -">- - -</option>
+        </select>
+      </div>
+      <div>
+        <button v-on:click="vaddNode('Class', 'classnodes')">Class</button>
+        <button v-on:click="vaddNode('Note', 'notenodes')">Note</button>
+        <button v-on:click="vaddNode('Folder', 'foldernodes')">Folder</button>
+        <button v-on:click="vaddNode('TextBox_Square_Interface', 'textboxnodes')">Text Box</button>
+        <button v-on:click="vaddNode('LifeLine', 'lifelinenodes')">Lifeline</button>
+        <button v-on:click="vaddNode('Loop', 'loopnodes')">Loop</button>
+        <button v-on:click="vaddNode('StickFigure', 'stickfigurenodes')">User</button>
+        <button v-on:click="vaddNode('Oval_UseCase', 'ovalnodes')">Oval</button>
 
+      </div>
+      <canvas id="c" width ="1200px" height="600px" class="display-canvas"></canvas>
     </div>
-    <canvas id="c" width ="1200px" height="600px" class="display-canvas"></canvas>
-
+    <div class="login">
+      <label for="username">First name:</label>
+      <input type="text" id="username" name="username"><br><br>
+      <label for="password">Last name:</label>
+      <input type="text" id="password" name="password"><br><br>
+      <button v-on:click="vtryUserLogin()">login</button>
+      <div id="loadPageButtons">
+        <li v-for="(btn, index) in pageBtns">
+          <button  @click="vchangeCurrentPage(btn.name)" type="text"> {{ btn.name}}</button>
+        </li>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -50,6 +63,7 @@
   let nodes = [];
 
   let currentPage = 1;
+  let currentUser = {};
 
   let defaultNode = {
     description: "a loop",
@@ -298,7 +312,7 @@ function createPage(){
 function loadPage(pageId){
   canvas.clear();
   //let jsonId = JSON.stringify({pageid:currentPage});
-  let jsonId = "{\"id\":\"" + 1 + "\"}";
+  let jsonId = "{\"id\":\"" + pageId + "\"}";
   fetch('/loadPage/' + jsonId)
       .then(result => result.json())
       .then((output) => {
@@ -336,6 +350,7 @@ function loadPage(pageId){
     data() {
       return {
         nodes: [],
+        pageBtns: [],
       };
     },
 
@@ -389,7 +404,46 @@ function loadPage(pageId){
               console.log('Output: ', output);
             }).catch(err => console.error(err));
 
-      }
+      },
+
+      vtryUserLogin: function(){
+        let username = $('#username').val();
+        let password = $('#password').val();
+        let userjson = "{\"id\":\"" + -1 + "\"" + ",\"name\":\"" + username + "\"" + ",\"password\":\"" + password + "\"}";
+        console.log(userjson);
+        fetch('/loginUser/' + userjson)
+            .then(result => result.json())
+            .then((output) => {
+              console.log('Output: ', output);
+              currentUser = output;
+              this.vgetUserPages();
+            }).catch(err => console.error(err));
+      },
+
+      vgetUserPages: function(){
+        let userjson = JSON.stringify(currentUser);
+        fetch('/getUserPages/' + userjson)
+            .then(result => result.json())
+            .then((output) => {
+              console.log('Output: ', output);
+              output.forEach((out) => {
+                let page = JSON.parse(out);
+                //$('#loadPageButtons').append("<button v-on:click=\"vchangeCurrentPage(" + page.id + ")\">" + page.id + '</button><br>');
+                this.pageBtns.push({
+                  name: page.id
+                });
+              });
+            }).catch(err => console.error(err));
+
+      },
+
+      vchangeCurrentPage: function(newPage){
+        console.log(newPage);
+        $('.editor').css("display", "block");
+        $('.login').css("display", "none");
+        currentPage = newPage;
+        loadPage(currentPage);
+      },
 
 
     },
@@ -420,4 +474,13 @@ function loadPage(pageId){
   border: 2px solid black;
   margin: 1rem;
 }
+
+.editor{
+  display: none;
+}
+
+.login{
+  display: block;
+}
+
 </style>
