@@ -107,10 +107,6 @@ public class ActionHandler {
         StackPane nodeUIObject = (StackPane) t.getSource();
         support.firePropertyChange("finishedDragUpdateEdges", null, nodeUIObject);
         UINode associatedNode = (UINode) nodeUIObject.getUserData();
-        //ARE NODES UNIQUE EVEN ACROSS PAGES? If so, then calling dbconnection.updateNode(Node) would be okay,
-        // because it doesn't need a page reference. If it is, then I need to have objectRequest be the middle man and
-        // take the node from action handler get the current page and send it to the dbConnection.
-        // ASSUMING NODES ARE VERY UNIQUE.
         updateNode(associatedNode);
     }
 
