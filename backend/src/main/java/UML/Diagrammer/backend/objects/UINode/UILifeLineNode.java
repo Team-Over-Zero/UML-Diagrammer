@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UILifeLineNode extends UINode{
     public UILifeLineNode(int x, int y, int w, int h){
-        super("", "lifelinenodes",null, "LIFE_LINE_SVG", x, y, w, h);
+        super("", "lifelinenodes",null, "LifeLine.svg", x, y, w, h);
     }
 }

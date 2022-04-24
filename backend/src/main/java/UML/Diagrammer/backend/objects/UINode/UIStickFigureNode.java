@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UIStickFigureNode extends UINode{
     public UIStickFigureNode(int x, int y, int w, int h){
-        super("Stick Figure Name","stickfigurenodes", null, "STICK_FIGURE_SVG", x, y, w, h);
+        super("Stick Figure Name","stickfigurenodes", null, "StickFigure.svg", x, y, w, h);
     }
 }

@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UITextBoxNode extends UINode{
     public UITextBoxNode(int x, int y, int w, int h){
-        super("Textbox Name","textboxnodes", "Text Box Description", "TEXT_BOX_SVG", x, y, w, h);
+        super("Textbox Name","textboxnodes", "Text Box Description", "TextBox_Square_Interface.svg", x, y, w, h);
     }
 }
