@@ -453,7 +453,7 @@ public final class RequestController {
         String id =jsonHelper.getObjId(pageJson);
         try {
             Page foundPage = Page.findById(id);
-            foundPage.delete(true);//cascading delete
+            foundPage.delete(false);//no cascade delete
             context.result(successMsg);
         } catch (Exception e) {
             e.printStackTrace();
