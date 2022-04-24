@@ -122,6 +122,15 @@ public class WebServer {
            ctx.result(http_client.sendLoadPage(id));
         });
 
+        client.get("/loginUser/{user}", ctx -> {
+            String user = ctx.pathParam("user");
+            ctx.result(http_client.sendLoginUser(user));
+        });
+
+        client.get("/getUserPages/{user}", ctx -> {
+            String user = ctx.pathParam("user");
+            ctx.result(http_client.getUserPages(user));
+        });
 
     }
 
