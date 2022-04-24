@@ -12,7 +12,8 @@
  - Minor refactoring of the factory classes to work with ActiveJDBC.
  - Full connection of app UI and web UI to communicate with the backend to allow for saving, loading, and sharing of pages.
  - Unhappy path testing.
- - App UI "live" updating with the database
+ - App UI "live" updating with the database.
+ - Project now dockerized.
 
 ## [0.3.0] - 2022-04-10
 ### Added
