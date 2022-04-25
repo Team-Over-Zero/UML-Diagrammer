@@ -43,9 +43,13 @@
       <input type="text" id="password" name="password"><br><br>
       <button v-on:click="vtryUserLogin()">login</button>
       <button v-on:click="vmakeNewUser()">Make New User</button><br><br>
-      <label for="newPage">New Page Name:</label>
-      <input type="text" id="newPage" name="newPage"><br><br>
-      <button v-on:click="vcreatePage()">Make New Page</button>
+      <div id="addPageDiv" style="display: none">
+        <label for="newPage">New Page Name:</label>
+        <input type="text" id="newPage" name="newPage"><br><br>
+        <button v-on:click="vcreatePage()">Make New Page</button><br>
+        <h2>Load page</h2>
+      </div>
+
       <div id="loadPageButtons">
         <li v-for="(btn, index) in pageBtns">
           <button  @click="vchangeCurrentPage(btn.id)" type="text"> {{ btn.name}}</button>
@@ -156,21 +160,7 @@
 
   }
 
-  /*function loadNode(jsonString){
-    //let n = JSON.parse(jsonString);
-  let n=jsonString;
-    fetch('/svg/' + n.svg_image)
-        .then(result => result.text())
-        .then((output) => {
-          addNode(output, n.svg_image, n.type, n.name, n.x_coord, n.y_coord);
-        }).catch(err => console.error(err));
-
-    addNode()
-
-
-  }*/
-
-
+  
 
 
   function addNode(path, svg_image, type, name = "name", xCoord = 10, yCoord = 10, id = -1){
@@ -437,6 +427,7 @@ function loadPage(pageId){
         fetch('/getUserPages/' + userjson)
             .then(result => result.json())
             .then((output) => {
+              $('#addPageDiv').css('display', 'block');
               console.log('Output: ', output);
               output.forEach((out) => {
                 let page = JSON.parse(out);
@@ -484,6 +475,7 @@ function loadPage(pageId){
       },
 
       vreturnToHome: function(){
+        this.vparseJsonFromDiagram();
         $('.editor').css("display", "none");
         $('.login').css("display", "block");
       }
