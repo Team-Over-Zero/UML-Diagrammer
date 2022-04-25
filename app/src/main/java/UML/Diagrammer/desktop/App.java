@@ -25,18 +25,33 @@ package UML.Diagrammer.desktop;
 
 import UML.Diagrammer.backend.apis.Database_Client;
 import UML.Diagrammer.backend.apis.HTTP_Client;
+import UML.Diagrammer.backend.objects.UINode.*;
+import UML.Diagrammer.backend.objects.UIUser;
+import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.checkerframework.checker.units.qual.A;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class App extends Application{
 
     public static final DatabaseConnection database = new DatabaseConnection();
     public static Stage primaryStage;
-    public Database_Client dbConnect;
 
 
     public String getGreeting() {
@@ -44,11 +59,6 @@ public class App extends Application{
     }
 
     public static void main(String[] args) {
-    	//SvgImageLoaderFactory.install();
-    	//App.launch();
-        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-        //testing database_client
-
         App.launch();
     }
 
@@ -57,28 +67,11 @@ public class App extends Application{
      * @param stage current main stage of the application
      */
     public void start(Stage stage) throws Exception {
-        //database.openConnection(); //This should be deprecated when ObjectRequester can start sending http_requests in favor of dbConnect.
-//        dbConnect = new Database_Client();
-//        dbConnect.spinUp();
-
-
-        Parent root = FXMLLoader.load(getClass().getResource("/Board.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
         stage.setTitle("UML Diagrammer");
-        stage.setScene(new Scene(root, 1000, 800));
+        stage.setScene(new Scene(root, 600, 400));
         stage.show();
         primaryStage = stage;
-        primaryStage.setAlwaysOnTop(true);
+        //primaryStage.setAlwaysOnTop(true);
     }
-
-    /**
-     * This is what happens on app exit, can also call this via Platform.exit()
-     * Just closes out the database before the app closes.
-     */
-    @Override
-    public void stop(){
-        System.out.println("Stage is closing");
-        //dbConnect.spinDown();
-        //database.closeConnection();
-    }
-
 }

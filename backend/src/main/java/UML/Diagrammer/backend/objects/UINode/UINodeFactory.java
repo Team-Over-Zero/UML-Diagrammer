@@ -21,15 +21,15 @@ public class UINodeFactory {
     public <genericNode extends UINode> genericNode
     buildNode(String type, int x, int y, int w, int h){
         switch(type){
-            case "class_nodes" -> {return (genericNode) new UIClassNode(x, y, w, h);}
-            case "text_box_nodes" -> {return (genericNode) new UITextBoxNode(x, y, w, h);}
-            case "note_nodes" -> {return (genericNode) new UINoteNode(x, y, w, h);}
-            case "folder_nodes" -> {return (genericNode) new UIFolderNode(x, y, w, h);}
-            case "square_nodes" -> {return (genericNode) new UISquareNode(x, y, w, h);}
-            case "stick_figure_nodes" -> {return (genericNode) new UIStickFigureNode(x, y, w, h);}
-            case "oval_nodes" -> {return (genericNode) new UIOvalNode(x, y, w, h);}
-            case "life_line_nodes" -> {return (genericNode) new UILifeLineNode(x, y, w, h);}
-            case "loop_nodes" -> {return (genericNode) new UILoopNode(x, y, w, h);}
+            case "classnodes" -> {return (genericNode) new UIClassNode(x, y, w, h);}
+            case "textboxnodes" -> {return (genericNode) new UITextBoxNode(x, y, w, h);}
+            case "notenodes" -> {return (genericNode) new UINoteNode(x, y, w, h);}
+            case "foldernodes" -> {return (genericNode) new UIFolderNode(x, y, w, h);}
+            case "squarenodes" -> {return (genericNode) new UISquareNode(x, y, w, h);}
+            case "stickfigurenodes" -> {return (genericNode) new UIStickFigureNode(x, y, w, h);}
+            case "ovalnodes" -> {return (genericNode) new UIOvalNode(x, y, w, h);}
+            case "lifelinenodes" -> {return (genericNode) new UILifeLineNode(x, y, w, h);}
+            case "loopnodes" -> {return (genericNode) new UILoopNode(x, y, w, h);}
             default -> {return (genericNode) new UIDefaultNode();}
         }
     }

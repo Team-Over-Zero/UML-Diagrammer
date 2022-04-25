@@ -9,6 +9,10 @@ import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
 import UML.Diagrammer.backend.objects.NodeFactory.DefaultNode;
 import UML.Diagrammer.backend.objects.NodeFactory.NodeFactory;
+import UML.Diagrammer.backend.objects.UINode.UIClassNode;
+import UML.Diagrammer.backend.objects.UINode.UIDefaultNode;
+import UML.Diagrammer.backend.objects.UINode.UINode;
+import UML.Diagrammer.backend.objects.UINode.UINodeFactory;
 import UML.Diagrammer.backend.objects.tools.NodeTypeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,6 +36,9 @@ public class NodeTest extends DBSpec {
      * dbspec test works. This does NOT use the junit database for its calls but instead the dev database. This means that data can
      * persist. Additional work would have to be done by the tester to remove created rows. Should deprecate this soon, as we dont want test data being
      * stored in the same place as user data.
+     * 4/15 DBSpec added a while back now, David updating tests on 4/15
+     * Conditions are either true or false(valid or invalid, ie true means the test uses valid values, etc)
+     * C1: coords, C2: Id
      */
     @BeforeEach
     public void setup(){
@@ -52,7 +59,7 @@ public class NodeTest extends DBSpec {
     }*/
     /*Node test for setCoords method*/
     @Test
-    public void setCoords() {
+    public void testSetCoordsC1True() {
         node.setCoords(1,1);
         node.setCoords(123,123);
         node.saveIt();
@@ -60,18 +67,36 @@ public class NodeTest extends DBSpec {
         assertEquals(123,node.get("y_coord"));
     }
 
+    @Test
+    public void testSetCoordsC1False(){
+        Integer j = null;
+        assertThrows(NullPointerException.class,()->{node.setCoords(j,j);});
+
+
+
+    }
+
     /**
      * Test for the getID method
      * Alex Note: be careful setting ID's. Probably should check if a row exists first.
      */
     @Test
-    public void getID() {
+    public void getIDC1True() {
         node.setId(1000);
         node.setId(9999);
         node.saveIt();
 
         assertEquals(9999,node.getId());
     }
+
+    /**
+     * issue with lombok setter?
+     */
+    @Test
+    public void setIDC1False() {
+        //assertThrows(Exception.class,node.setId("a"));
+    }
+
 
     /*Testing for the getDescription method*/
     @Test
@@ -83,6 +108,9 @@ public class NodeTest extends DBSpec {
         assertEquals("This should be gettable",s);
     }
 
+
+
+
     /*Test Node's hashCode method*/
     @Test
     public void testHashCode() {
@@ -91,17 +119,22 @@ public class NodeTest extends DBSpec {
 
     @Test
     /**
+     * Test UI Node Hydration.
      * Based off of : https://www.baeldung.com/gson-list
      * @Author Alex
-     * ALEX NOTE: Can someone figure out how to do TypeTokens of a list? ie. TypeToken<List<AbstractNode>>
      */
-    public void nodeHydrationTest(){
+    public void UInodeHydrationTest(){
         //node.set("id",1);
-        node.saveIt();
-        System.out.println("id="+node.getId());
-        String gsonStrDefNode = node.toJson(true);
-        ClassNode classNode = factory.buildNode("class_nodes",2,1,1,1);
-        String gsonStrClassNode = classNode.toJson(false);
+       // node.saveIt();
+        UINodeFactory uiNodeFactory = new UINodeFactory();
+        UIDefaultNode uiNode =uiNodeFactory.buildNode();
+        Gson gson = new Gson();
+        System.out.println("id="+uiNode.getId());
+        String gsonStrDefNode = gson.toJson(uiNode);
+        UIClassNode uiClassNode = uiNodeFactory.buildNode("classnodes",2,1,8,1);
+        String gsonStrClassNode = gson.toJson(uiClassNode);
+
+        System.out.println(gsonStrDefNode);
 
         List<String> gsonStrList = new ArrayList<String>();
         gsonStrList.add(gsonStrDefNode);
@@ -109,24 +142,30 @@ public class NodeTest extends DBSpec {
 
         NodeTypeDeserializer customNodeDeserializer = new NodeTypeDeserializer("type");
 
-        customNodeDeserializer.registerSubtype( "default_nodes",DefaultNode.class);
-        customNodeDeserializer.registerSubtype( "class_nodes", ClassNode.class);
+        customNodeDeserializer.registerSubtype( "defaultnodes",UIDefaultNode.class);
+        customNodeDeserializer.registerSubtype( "classnodes", UIClassNode.class);
 
         Gson gBuilder = new GsonBuilder()
-                .registerTypeAdapter(AbstractNode.class,customNodeDeserializer)
+                .registerTypeAdapter(UINode.class,customNodeDeserializer)
                 .create();
 
 
-        List<AbstractNode> aList= new ArrayList<>();
+        List<UINode> aList= new ArrayList<>();
 
         for (String n : gsonStrList) {
-            aList.add(gBuilder.fromJson(n, new TypeToken<AbstractNode>(){}.getType())); //adds a hydrated string to our list
             System.out.println(n.toString());
+
+            aList.add(gBuilder.fromJson(n, new TypeToken<UINode>(){}.getType())); //adds a hydrated string to our list
+        }
+
+        for (UINode node : aList){
+            System.out.println(node);
         }
                 //gBuilder.fromJson(arrStr, new TypeToken<AbstractNode>(){}.getType());
        // assertEquals("{}",gsonStrDefNode);
-        assertTrue(aList.get(0) instanceof DefaultNode);
-        assertTrue(aList.get(1) instanceof ClassNode);
+        assertTrue(aList.get(0) instanceof UIDefaultNode);
+        assertTrue(aList.get(1) instanceof UIClassNode);
 
     }
+
     }

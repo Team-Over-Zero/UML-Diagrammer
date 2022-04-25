@@ -13,6 +13,13 @@ import org.junit.jupiter.api.TestInstance;
 import org.javalite.activejdbc.connection_config.DBConfiguration;
 
 
+/**
+ * C1:valid n1,C2:valid n2
+ * I'm using all caps because I hate using the shift key    -David
+ * Impossible to make either C1 or C2 invalid?
+ */
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -24,24 +31,14 @@ public class EdgeTest extends DBSpec{
     @BeforeEach
     public void setup(){
 
-//        //Base.open("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost/test?serverTimezone=America/Denver", "root", "secret");
-//        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/test";
-//        String databaseUser = "root";
-//        String databasePassword = "TeamOverZero";
-//        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
         factory = new NodeFactory();
         edgey = new EdgeFactory();
-        //DBConfiguration.loadConfiguration("/database.properties");
-        //Base.open();
+
     }
-    /*@AfterEach
-    public void takeDown(){
-        Base.close();
-    }*/
 
     /*Testing for setNode method*/
     @Test
-    public void testBasicEdge() {
+    public void testBasicEdgeC1TRUEC2TRUE() {
         DefaultNode nodeOne = factory.buildNode();
         nodeOne.set("name","TESTONE");
         nodeOne.saveIt();
@@ -60,6 +57,8 @@ public class EdgeTest extends DBSpec{
 
 
     }
+
+
 
     /*EdgeTest testing for getID method*/
     @Test

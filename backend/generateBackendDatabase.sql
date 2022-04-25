@@ -185,7 +185,8 @@ CREATE TABLE pages(
 
 CREATE TABLE users(
                             id                      INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                            name                    VARCHAR(30)
+                            name                    VARCHAR(30),
+                            password                VARCHAR(30)
 );
 
 CREATE TABLE users_pages(

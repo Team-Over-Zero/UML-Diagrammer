@@ -8,7 +8,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GraphTest extends DBSpec {
+public class GraphTest {
 
     /*Tests the Graph's addNode method in this function*/
     @Test
@@ -23,6 +23,7 @@ public class GraphTest extends DBSpec {
     /*Tests the Graph's addEdge method in this function*/
     @Test
     public void addEdge() {
+        assertTrue(true);
     }
 
     /*Tests the Graph's removeEdge method in this function*/

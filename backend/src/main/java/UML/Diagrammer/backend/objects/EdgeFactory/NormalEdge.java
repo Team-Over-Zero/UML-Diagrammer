@@ -22,10 +22,10 @@ import UML.Diagrammer.backend.objects.AbstractNode;
 public class NormalEdge extends AbstractEdge {
     public NormalEdge(){
         super();
-        set("type","normal_edges");
+        set("type","normaledges");
     }
     public NormalEdge(int fromId,String fromType,int toId,String toType){
         super(fromId,fromType,toId,toType);
-        set("type","normal_edges");
+        set("type","normaledges");
     }
 }

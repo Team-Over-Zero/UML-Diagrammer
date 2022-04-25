@@ -44,15 +44,15 @@ public class NodeFactory{
     buildNode(String tableName, int x, int y, int w, int h){
 
         switch(tableName){
-            case "class_nodes" -> {return (genericNode) new ClassNode(x, y, w, h);}
-            case "text_box_nodes" -> {return (genericNode) new TextBoxNode(x, y, w, h);}
-            case "note_nodes" -> {return (genericNode) new NoteNode(x, y, w, h);}
-            case "folder_nodes" -> {return (genericNode) new FolderNode(x, y, w, h);}
-            case "square_nodes" -> {return (genericNode) new SquareNode(x, y, w, h);}
-            case "stick_figure_nodes" -> {return (genericNode) new StickFigureNode(x, y, w, h);}
-            case "oval_nodes" -> {return (genericNode) new OvalNode(x, y, w, h);}
-            case "life_line_nodes" -> {return (genericNode) new LifeLineNode(x, y, w, h);}
-            case "loop_nodes" -> {return (genericNode) new LoopNode(x, y, w, h);}
+            case "classnodes" -> {return (genericNode) new ClassNode(x, y, w, h);}
+            case "textboxnodes" -> {return (genericNode) new TextBoxNode(x, y, w, h);}
+            case "notenodes" -> {return (genericNode) new NoteNode(x, y, w, h);}
+            case "foldernodes" -> {return (genericNode) new FolderNode(x, y, w, h);}
+            case "squarenodes" -> {return (genericNode) new SquareNode(x, y, w, h);}
+            case "stickfigurenodes" -> {return (genericNode) new StickFigureNode(x, y, w, h);}
+            case "ovalnodes" -> {return (genericNode) new OvalNode(x, y, w, h);}
+            case "lifelinenodes" -> {return (genericNode) new LifeLineNode(x, y, w, h);}
+            case "loopnodes" -> {return (genericNode) new LoopNode(x, y, w, h);}
             default -> {return (genericNode) new DefaultNode();}
         }
     }

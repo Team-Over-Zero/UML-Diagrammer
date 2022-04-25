@@ -29,6 +29,18 @@ To run the JavaFX, run the command: `gradle app:run` while the aforementioned se
 
 To run the webserver, navigate to: `http://localhost:7777/` in your preferred webbrowser
 
+Alternatively, the backend of this server is hosted as a docker image.
+You can run:
+`docker run -p 8888:8888 -p 7777:7777 comicallynormal/overzero:0.1` to run the latest release
+or    
+`docker run -p 8888:8888 -p 7777:7777 comicallynormal/overzero:0.2` to run the latest code in the dev branch
+
+If you are running a docker image, you will still have to use 'gradle app:run' to run the javafx frontend
+but you should be able to open the webpage the same with the docker as if you were running with gradle.
+
+Note that user creation and page creation is only supported on the javafx client, but all other features
+are mostly consistent. 
+
 ## Credit
 This project is created by:
  - Alex Diviney

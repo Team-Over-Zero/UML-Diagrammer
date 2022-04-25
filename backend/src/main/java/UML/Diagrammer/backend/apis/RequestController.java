@@ -15,6 +15,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 /** RequestController.java
  *
  * This class deals with the bodies of the Database_Client's get and post request listener handlers.
+ *
+ * I wish I had time to document better, but I have done what I can in Database_Client and in method headers.
  * @author Alex
  */
 
@@ -28,6 +30,7 @@ import UML.Diagrammer.backend.objects.NodeFactory.*;
 import UML.Diagrammer.backend.objects.*;
 import UML.Diagrammer.backend.objects.tools.CustomJsonHelper;
 import com.google.gson.*;
+import kotlin.Lazy;
 import org.javalite.activejdbc.Base;
 
 import java.util.*;
@@ -35,13 +38,13 @@ import java.util.*;
 import io.javalin.http.Context;
 import org.javalite.activejdbc.LazyList;
 import org.javalite.activejdbc.associations.NotAssociatedException;
-import org.javalite.common.JsonHelper;
 
 public final class RequestController {
     public static final String nullParams = "ERROR: NULL PARAMETERS";
     public static final String genericException = "GENERIC EXCEPTION";
     public static final String successMsg = "SUCCESS";
     public static final String nodeNotFoundErr = "ERROR: NODE NOT FOUND";
+    public static final String userNotFoundErr = "ERROR: USER NOT FOUND";
     private RequestController() {
     }
 
@@ -128,7 +131,7 @@ public final class RequestController {
     }
 
     /**
-     * This method attaches to the /getanynode/ get request. It tries to find a node with the id {objectid} and the table name {type}
+     * This method attaches to the /getanyedge/ get request. It tries to find a edge with the id {objectid} and the table name {type}
      *
      * @param context implicitly passed in context
      */
@@ -210,9 +213,6 @@ public final class RequestController {
         }
     }
 
-
-
-
     /**
      * Given a query param of the form /trycreateedge/?edge={"json"} returns an id of an initialized edge or "-1" if bad input.
      *
@@ -227,10 +227,7 @@ public final class RequestController {
             context.status(499);
             context.result(nullParams);
         }
-
     }
-
-
 
     /**
      * Given a query param of the form edge = "json", attempts to delete that edge
@@ -239,7 +236,6 @@ public final class RequestController {
      * @param context
      */
     public static void deleteEdge(Context context) {
-
         String edgeJson = context.queryParam("edge");
         JsonObject jsonObject = new Gson().fromJson(edgeJson, JsonObject.class);
         String fromId = jsonObject.get("id").getAsString();
@@ -251,7 +247,6 @@ public final class RequestController {
             case "normal_edges" -> NormalEdge.where("id = ?", fromId);
             default -> DefaultEdge.where("id = ?", fromId);
         };
-
         try {
             if (dfList.size() == 0) {
                 context.result("NOT FOUND");
@@ -269,7 +264,8 @@ public final class RequestController {
      * Given a query param of the form node = "json", attempts to update an existing node with all the attributes in the passed in node.
      * Takes queries in the form /updatenode/?node={}
      * <p>
-     * Alex Note: This Method currently has a bunch of junk code, but I can't remove it until I figure out how reflection actually works.
+     * Alex Note: This Method currently has a bunch of junk code. I should update this to the standard method of deserializing that I use
+     * but I have better things to do.
      *
      * @param context
      */
@@ -277,18 +273,14 @@ public final class RequestController {
         String nodeJson = context.queryParam("node"); //query param
         CustomJsonHelper testDeser = new CustomJsonHelper();
         //System.out.println(testDeser.outputObjNoId(nodeJson));
-
         try {
             //deserializes our gson as a json object rather than a direct object
             JsonObject jsonObject = new Gson().fromJson(nodeJson, JsonObject.class);
             //A set of key value pairs of attributes and attribute values from the json object.
             Set<Map.Entry<String, JsonElement>> testEntrySet = jsonObject.entrySet();
-
             //Since Activejdbc doesn't like serializing with objects we can cheat and get id directly from the json object.
             String fromId = jsonObject.get("id").getAsString(); //gets the id of the passed in object
             String nodeType = jsonObject.get("type").getAsString();
-
-            //private String[] nodeTableArr = {"default_nodes","class_nodes","folder_nodes","life_line_nodes","loop_nodes","note_nodes","oval_nodes","square_nodes","stick_figure_nodes","text_box_nodes"};
 
             System.out.println("Passed in edit request node: " + nodeJson);
 
@@ -358,14 +350,13 @@ public final class RequestController {
     }
 
     /**
-     * DEPRECATED
      *
      * Given a two param object get request with id and table name as parameters, attempts to send back an object.
      * attaches to the /getobject/ get request. unlike the path params {} this takes implicit user defined params.
      * These would be structured in the url like : .../getobject/?objectid=foo&objecttable=bar in this method.
      * <p>
      * Note that this will actually return a list of maps not an object.
-     *
+     * @deprecated
      * @param context
      */
     public static void getObjsAsMapWithIdandTable(Context context) {
@@ -385,7 +376,6 @@ public final class RequestController {
             context.result(rezStr);
         } catch (NullPointerException np) {
             np.printStackTrace();
-            //System.out.println("No node found");
         }
     }
 
@@ -405,7 +395,7 @@ public final class RequestController {
 
 
     /**
-     * Attaches to the /createpage/ post request. looks for the userId and page query paramters and creates a new page with
+     * Attaches to the /createpage/ post request. looks for the userId and page query parameters and creates a new page with
      * the passed in attributes of page attached to the user with the passed in id.
      *
      * @param context
@@ -414,9 +404,15 @@ public final class RequestController {
         String userIdJson = context.queryParam("userid");
         String pageJson = context.queryParam("page");
         CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        Gson gson = new Gson();
 
         if(userIdJson!=null && pageJson!=null) {
             try {
+                JsonObject pJson = gson.fromJson(pageJson,JsonObject.class);
+                if(pJson.has("id")) {
+                    pJson.remove("id");
+                }
+                pageJson = pJson.toString();
                 String userIdStr = jsonHelper.getObjId(userIdJson);
                 int userIdInt = Integer.parseInt(userIdStr);
                 User foundUser = User.findById(userIdInt);
@@ -446,16 +442,122 @@ public final class RequestController {
 
     }
 
-    //I need to put a little bit of thought into this before implementing due to cascading deletion issues.
-
     /**
-     * NOT IMPLEMENTED
+     * Cascade Deletes a page given a pageid json query param.
      * @param context
-     * @implNote NOT IMPLEMENTED
      */
     public static void deletePage(Context context) {
-        String userId = context.queryParam("userid");
-        String pageJson = context.queryParam("page");
+        //String userId = context.queryParam("userid");
+        String pageJson = context.queryParam("pageid");
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        String id =jsonHelper.getObjId(pageJson);
+        try {
+            Page foundPage = Page.findById(id);
+            foundPage.delete(false);//no cascade delete
+            context.result(successMsg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            context.status(500);
+            context.result(genericException);
+        }
+    }
+
+    /**
+     * Searches DB and sends first Page matching the passed in query "name" param. Lazy, possible name conflicts.
+     */
+    public static void getPageIdByName(Context context){
+        String pageName = context.queryParam("pagename");
+        Page foundPage = Page.findFirst("name = ?",pageName);
+        if (foundPage!=null){
+            try {
+                String foundId = foundPage.getString("id");
+                JsonObject jObj = new JsonObject();
+                jObj.addProperty("id",foundId); //makes the json object.
+                String totalStr = jObj.toString();
+                context.result(totalStr); //returns object.
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.status(500);
+                context.result(genericException);
+            }
+        }
+    };
+
+    /**
+     * Sends a json list of strings where every string is the name of a page associated with a user.
+     * Takes a userid param where userid is an object with an id attribute.
+     */
+    public static void getUserPages(Context context){
+        String userIdParam = context.queryParam("userid");
+        CustomJsonHelper customJsonHelper = new CustomJsonHelper();
+        String userId = customJsonHelper.getObjId(userIdParam);
+        try {
+            User foundUser = User.findById(userId);
+            LazyList<Page> uPages = foundUser.getAll(Page.class);
+            ArrayList<String> lStr = new ArrayList<>();
+            for (Page p:uPages) {
+                lStr.add(p.toJson(true));
+            }
+            Gson gson = new Gson();
+            String pListJson = gson.toJson(lStr);
+
+            context.result(pListJson);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.result(genericException);
+            }
+    }
+
+
+
+    /**
+     * Attaches to the /loadpage/ post request
+     * Given a pageid param, gets a json (2d arr) of nodes and edges.
+     */
+    public static void loadPageElements(Context context){
+        String pageIdParam = context.queryParam("pageid");
+        CustomJsonHelper jsonHelper = new CustomJsonHelper();
+        try {
+            String pageId = jsonHelper.getObjId(pageIdParam);
+            Page foundPage = Page.findById(pageId);
+            LazyList<TextBoxNode> tboxes = foundPage.getAll(TextBoxNode.class);
+            for (TextBoxNode t:tboxes
+                 ) {
+                System.out.println(t.toJson(true));
+            }
+            ArrayList<String> nList = new ArrayList<>();
+            ArrayList<LazyList<? extends AbstractNode>> listOfNodeLists = foundPage.getNodes();
+            for (LazyList<? extends AbstractNode> lazyL: listOfNodeLists //for every node table in page
+                 ) {
+                for(AbstractNode n:lazyL){
+                    String tempNode = n.toJson(false); //add an individual node to our node list.
+                    nList.add(tempNode);
+                    System.out.println(n.toJson(true));
+                }
+
+            }
+            ArrayList<String> eList = new ArrayList<>();
+
+            ArrayList<LazyList<? extends AbstractEdge>> listOfEdgeLists = foundPage.getEdges();
+            for (LazyList<? extends AbstractEdge> lazyL: listOfEdgeLists //for every node table in page
+            ) {
+                for(AbstractEdge e:lazyL){
+                    String tempNode = e.toJson(false); //add an individual node to our node list.
+                    eList.add(tempNode);
+                }
+            }
+
+            ArrayList<ArrayList<String>> pList = new ArrayList<>();
+            pList.add(nList);
+            pList.add(eList);
+            Gson gson = new Gson();
+            String resultStr = gson.toJson(pList);
+            context.result(resultStr); //result
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -478,20 +580,27 @@ public final class RequestController {
                // int nodeIdInt = Integer.parseInt(nodeId);
                 String newNodeId = jsonHelper.getObjId(createdNodeJson); // id of database node.
                 String nodeType = jsonHelper.getObjType(createdNodeJson);
-
+                System.out.println("Created node type is: "+ nodeType);
 
                 LazyList<? extends AbstractNode> foundNodeList = nodeListByIdType(newNodeId,nodeType);
                 AbstractNode foundNode = foundNodeList.get(0);
                 Page page = Page.findById(pageIdInt);
                 page.add(foundNode);
+                page.saveIt();
+                foundNode.saveIt();
                 String jsonSuccess = "{\"id\":\"" + foundNode.getId() + "\"}";
 
                 context.result(jsonSuccess); //result is the id of the instantiated node as a json object.
-            } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
+            }
+            catch(IndexOutOfBoundsException notFoundEx){
+                notFoundEx.printStackTrace();
+                context.result(nodeNotFoundErr);
+            }
+            catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
                 context.status(500);
 
-                context.result("GENERIC EXCEPTION");
+                context.result(genericException);
             }
         }
         else{
@@ -566,7 +675,7 @@ public final class RequestController {
             } catch (Exception e) { //should implement throwing some specific exceptions in CustomJsonHelper.
                 e.printStackTrace();
                 context.status(500);
-                context.result("GENERIC EXCEPTION");
+                context.result(genericException);
             }
         }
         else{
@@ -580,7 +689,7 @@ public final class RequestController {
     /**
      * NOT TESTED
      *
-     * Attaches to the /pageremoveedge/ post request. Given the query params page and edge where page is a page object.
+     * Attaches to the /pageremoveedge/ post request. Given the query params pageid and edge where pageid is a page object.
      * edge is a passed in edge object, this removes that edge and returns a context result regarding the success of the operation.
      * @param context
      */
@@ -601,10 +710,10 @@ public final class RequestController {
                 queriedPage.remove(queriedEdge); //removes edge from page. Should automatically delete from database.
                // queriedEdge.delete(); //deletes edge from database.
                 queriedPage.saveIt();
-                context.result("SUCCESS");
+                context.result(successMsg);
             } catch (Exception e) {
                 e.printStackTrace();
-                context.result("GENERIC EXCEPTION");
+                context.result(genericException);
             }
         }
         else{
@@ -613,7 +722,38 @@ public final class RequestController {
     }
 
     /**
-     * Attachhes to the /createuser/ post request.
+     * Attaches to the /pageupdatenode/ post request. Given the query params pageid and node where pageid
+     * is a jsoned page id and node is a passed in already created node, updates the node in the database
+     * to match all values contained in the passed in node. Note that if you pass in a node that
+     * does not exist, will throw exception.
+     * @param context
+     */
+    public static void updateNodeOnPage(Context context){
+        String pageJson = context.queryParam("pageid");
+        String nodeJson = context.queryParam("node");
+
+        CustomJsonHelper jHelper = new CustomJsonHelper();
+
+        try {
+            String pageId = jHelper.getObjId(pageJson);
+            String nodeId = jHelper.getObjId(nodeJson);
+            String nodeType = jHelper.getObjType(nodeJson);
+            Iterator<Map.Entry<String, JsonElement>> iterator = jHelper.getIterator(nodeJson);
+            Page foundPage = Page.findById(pageId);
+            LazyList<? extends AbstractNode> foundNodes = nodeListByIdType(nodeId,nodeType);
+            AbstractNode foundNode = foundNodes.get(0); //finds the database node
+            while(iterator.hasNext()){
+                Map.Entry currKVP = iterator.next();
+                foundNode.set(currKVP.getKey(),currKVP.getValue().toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Attaches to the /createuser/ post request.
      * Given a json string of user attributes, attempts to create a User in the backend.
      * @param context
      */
@@ -654,13 +794,40 @@ public final class RequestController {
     }
 
     /**
+     * Attaches to the /deleteuser/ post request.
+     * Cascade deletes a user and all of its associated objects. BE CAREFUL USING THIS.
+     */
+    public static void deleteUser(Context context){
+        String userJson = context.queryParam("user");
+        CustomJsonHelper jHelper = new CustomJsonHelper();
+        if(userJson!=null) {
+            try {
+                String userId = jHelper.getObjId(userJson);
+                User user = User.findById(userId);
+                user.deleteCascade(); //deletes user and ALL associated objects.
+                context.result(successMsg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.result(genericException);
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+
+
+    }
+
+
+
+    /**
      * Attaches to the /removeuserfrompage/ post request.
-     * removes a user from a page. Does not delete the user.
+     * removes a user from a page. does not delete the user since the user to page relationship is many to many.
      * @param context
      */
     public static void removeUserFromPage(Context context) {
         String userJson = context.queryParam("user");
-        String pageJson = context.queryParam("page");
+        String pageJson = context.queryParam("pageid");
         try {
             if(userJson!=null && pageJson!=null) {
                 CustomJsonHelper jHelper = new CustomJsonHelper();
@@ -683,9 +850,14 @@ public final class RequestController {
 
     }
 
+    /**
+     * Attaches to the /addusertopage/ post request
+     * Adds a passed in user json to a passed in pageid in json format.
+     * @param context
+     */
     public static void addUserToPage(Context context) {
         String userJson = context.queryParam("user");
-        String pageJson = context.queryParam("page");
+        String pageJson = context.queryParam("pageid");
         if(userJson!=null && pageJson!=null){
             CustomJsonHelper jHelper = new CustomJsonHelper();
             String userId = jHelper.getObjId(userJson);
@@ -699,11 +871,79 @@ public final class RequestController {
         }
     }
 
+    /**
+     * Attaches to the /loginuser/ post request
+     * Given a passed in user query param in json form (no id but a name, password), attempts to find that user in the database and sends back that
+     * user with an id
+     *
+     * @param context
+     */
+    public static void loginUser(Context context){
+        String userParam = context.queryParam("user");
+        Gson gson = new Gson();
+        if(userParam!=null) {
+            try {
+                JsonObject jObj = gson.fromJson(userParam, JsonObject.class);
+                String userName = jObj.get("name").getAsString();
+                String password = jObj.get("password").getAsString();
+
+                User foundUser = User.findFirst("name = ? and password = ?", userName, password);
+                String userJson = "";
+                if (foundUser!=null){
+                    userJson =foundUser.toJson(false);
+                    context.result(userJson);
+                }
+                else{
+                    context.result("INVALID CREDENTIALS"); //should change this to "ERROR: INVALID CREDENTIALS" at some point.
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                context.result(genericException);
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+    }
+
+    /**
+     * Given a passed in user name query param in json format, attempts to return the first found user. Otherwise gives a user not found error.
+     *
+     * @param context
+     */
+    public static void findUserByName(Context context){
+        String userParam = context.queryParam("username");
+        Gson gson = new Gson();
+        if(userParam!=null) {
+            try {
+                JsonObject jObj = gson.fromJson(userParam, JsonObject.class);
+                String userName = jObj.get("name").getAsString();
+                User foundUser = User.findFirst("name = ?", userName);
+                String userJson = "";
+                if (foundUser!=null){
+                    userJson =foundUser.toJson(false);
+                    context.result(userJson);
+                }
+                else{
+                    context.result(userNotFoundErr);
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                context.result(genericException);
+            }
+        }
+        else{
+            context.result(nullParams);
+        }
+    }
+
+
+
 
 
     //Helper Methods:
-
-
     /**
      * This method is a helper method. A developer may not need access to this so its private and used by other methods in
      * RequestController currently. Gets a list (of 0 or 1) nodes matching the given id and type.
@@ -714,16 +954,16 @@ public final class RequestController {
      */
     private static LazyList<? extends AbstractNode> nodeListByIdType(String nodeId, String nodeType) throws Exception{
         LazyList<? extends AbstractNode> dfList = switch (nodeType) {
-            case "default_nodes" -> DefaultNode.where("id = ?", nodeId);
-            case "folder_nodes" -> FolderNode.where("id = ?", nodeId);
-            case "class_nodes" -> ClassNode.where("id = ?", nodeId);
-            case "life_line_nodes" -> LifeLineNode.where("id = ?", nodeId);
-            case "loop_nodes" -> LoopNode.where("id = ?", nodeId);
-            case "note_nodes" -> NoteNode.where("id = ?", nodeId);
-            case "oval_nodes" -> OvalNode.where("id = ?", nodeId);
-            case "square_nodes" -> SquareNode.where("id = ?", nodeId);
-            case "stick_figure_nodes" -> StickFigureNode.where("id = ?", nodeId);
-            case "text_box_nodes" -> TextBoxNode.where("id = ?", nodeId);
+            case "defaultnodes" -> DefaultNode.where("id = ?", nodeId);
+            case "foldernodes" -> FolderNode.where("id = ?", nodeId);
+            case "classnodes" -> ClassNode.where("id = ?", nodeId);
+            case "lifelinenodes" -> LifeLineNode.where("id = ?", nodeId);
+            case "loopnodes" -> LoopNode.where("id = ?", nodeId);
+            case "notenodes" -> NoteNode.where("id = ?", nodeId);
+            case "ovalnodes" -> OvalNode.where("id = ?", nodeId);
+            case "squarenodes" -> SquareNode.where("id = ?", nodeId);
+            case "stickfigurenodes" -> StickFigureNode.where("id = ?", nodeId);
+            case "textboxnodes" -> TextBoxNode.where("id = ?", nodeId);
             default -> DefaultNode.where("id = ?", nodeId); //just the default list type.
             //There has to be a better way to specify Class type right?
         };
@@ -909,5 +1149,7 @@ public final class RequestController {
         }
         return finalJson;
     }
+
+
 
 }

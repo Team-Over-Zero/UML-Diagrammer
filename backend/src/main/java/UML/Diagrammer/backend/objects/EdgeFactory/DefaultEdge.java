@@ -22,10 +22,10 @@ import UML.Diagrammer.backend.objects.AbstractEdge;
 public class DefaultEdge extends AbstractEdge {
     public DefaultEdge(){
         super();
-        set("type","default_edges");
+        set("type","defaultedges");
     }
     public DefaultEdge(int fromId,String fromType, int toId,String toType){
         super(fromId,fromType,toId,toType);
-        set("type","default_edges");
+        set("type","defaultedges");
     }
 }

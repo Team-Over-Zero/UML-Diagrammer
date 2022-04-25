@@ -28,11 +28,18 @@ import io.javalin.plugin.rendering.vue.VueComponent;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.connection_config.DBConfiguration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
 
 
 public class WebServer {
@@ -48,13 +55,14 @@ public class WebServer {
 
         http_client = new HTTP_Client();
         Database_Client db = new Database_Client();
+        System.out.println("DB CLIENT SPINNING UP");
         db.spinUp();
 
-        String testNode ="{\"description\":\"DEFAULT DESCRIPTION\",\"height\":3,\"id\":1,\"name\":\"GET SHREKED\",\"svg_image\":\"DEFAULT IMAGE\",\"type\":\"default_nodes\",\"width\":3,\"x_coord\":0,\"y_coord\":0}";
+        //String testNode ="{\"description\":\"DEFAULT DESCRIPTION\",\"height\":3,\"id\":1,\"name\":\"GET SHREKED\",\"svg_image\":\"DEFAULT IMAGE\",\"type\":\"default_nodes\",\"width\":3,\"x_coord\":0,\"y_coord\":0}";
         try {
             String response1 = http_client.exampleGetRequest();
            // System.out.println("example get response: "+response1);
-           String response2 = http_client.sendNodeUpdateRequest(testNode);
+           //String response2 = http_client.sendNodeUpdateRequest(testNode);
             //System.out.println("Response: "+response2);
 
 
@@ -62,27 +70,80 @@ public class WebServer {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
         }
 
         System.out.println("web client started");
         client = Javalin.create(config ->
         {config.enableWebjars();}).start(7777);
 
-        client.get("/testGetRequest", ctx -> {
-            ctx.result(http_client.exampleGetRequest());
-        });
         client.get("/", new VueComponent("uml-editor"));
-        client.get("/api/nodeCreate", ctx -> {
-            ctx.result("Slow Hello World");
+
+        client.get("/svg/{file}", ctx -> {
+
+            Path filePath = Paths.get("src/main/resources/Images/" + ctx.pathParam("file"));
+            Path absPath = filePath.toAbsolutePath();
+            String svgString = Files.readString(absPath);
+
+            ctx.result(svgString);
         });
+
+        client.get("/createNode/{node}/{page}", ctx -> {
+
+            String node = ctx.pathParam("node");
+            String page = ctx.pathParam("page");
+            String response = http_client.sendAddNodeToPage(node, page);
+            ctx.result(response);
+
+        });
+
+        client.get("/updateNode/{node}", ctx -> {
+            String node = ctx.pathParam("node");
+            String response = http_client.sendNodeUpdateRequest(node);
+            ctx.result(response);
+        });
+
+        client.get("/deleteNode/{node}/{page}", ctx -> {
+            String node = ctx.pathParam("node");
+            String page = ctx.pathParam("page");
+            String response = http_client.sendRemoveNodeFromPage(node, page);
+            ctx.result(response);
+        });
+
+        client.get("/createPage/{pagejson}/{userjson}", ctx -> {
+            String pageJson = ctx.pathParam("pagejson");
+            String userJson = ctx.pathParam("userjson");
+            String response = http_client.pageCreateRequest(pageJson, userJson); //ALEX NOTE. sendCreatePage was poorly written, use pageCreateRequest instead
+            System.out.println(response);
+            ctx.result(response);
+        });
+
+
+
+        client.get("/loadPage/{id}", ctx -> {
+           String id = ctx.pathParam("id");
+           ctx.result(http_client.sendLoadPage(id));
+        });
+
+        client.get("/loginUser/{user}", ctx -> {
+            String user = ctx.pathParam("user");
+            ctx.result(http_client.sendLoginUser(user));
+        });
+
+        client.get("/getUserPages/{user}", ctx -> {
+            String user = ctx.pathParam("user");
+            ctx.result(http_client.getUserPages(user));
+        });
+
+        client.get("/createUser/{user}", ctx -> {
+            String user = ctx.pathParam("user");
+            ctx.result(http_client.sendCreateUser(user));
+        });
+
+        client.get("/deletePage/{page}", ctx -> {
+            String pagejson = ctx.pathParam("page");
+            ctx.result(http_client.sendDeletePage(pagejson));
+        });
+
     }
 
     private String sendNodeCreateRequest(String node){

@@ -16,7 +16,7 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UIFolderNode extends UINode{
     public UIFolderNode(int x, int y, int w, int h){
-        super("Folder Name","folder_nodes",null, "FOLDER_SVG", x, y, w, h);
+        super("Folder Name","foldernodes",null, "Folder.svg", x, y, w, h);
     }
 
 }

@@ -23,8 +23,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * For most tests, C1 is that you have given a valid choice of object
+ * MAY NEED TO PROVIDE REAL DATA IN ORDER TO INCREASE COVERAGE, IE TRY NOT USING JUST DEFAULT VALUES MADE BY CONSTRUCTORS
+ * IN ALL CAPS AS THIS MAY BE CRITICAL
+ *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Database_ClientTest extends DBSpec {
     private EdgeFactory factory;
     private NodeFactory nodeFactory;
@@ -32,7 +35,7 @@ public class Database_ClientTest extends DBSpec {
     private Database_Client dbClient;
 
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() {
         factory = new EdgeFactory();
         nodeFactory = new NodeFactory();
@@ -45,6 +48,10 @@ public class Database_ClientTest extends DBSpec {
         dbClient.spinUp();
 
     }
+    @AfterEach
+    public void tearDown(){
+        dbClient.spinDown();
+    }
 
     @Test
 
@@ -56,7 +63,7 @@ public class Database_ClientTest extends DBSpec {
         try {
             http_client.sendCreateUser(userJ);
             s = "SUCCESS";
-
+            user.deleteCascade();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,26 +71,54 @@ public class Database_ClientTest extends DBSpec {
         assertEquals("SUCCESS", s);
 
     }
-    /*@Test
+    @Test
     public void testCreateUserC1False() throws IOException, URISyntaxException, InterruptedException {
 
         DefaultNode node = nodeFactory.buildNode();
         String userJ = node.toJson(true);
-        String s = "";
-        try {
-            http_client.sendCreateUser(userJ);
-            s = "SUCCESS";
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        //assert that the attempt failed
-        fail();
 
-    }*/
+        try {
+           http_client.sendCreateUser(userJ);
+           http_client.sendDeleteUser(userJ);
+
+
+        } catch (Exception e){
+
+           assertEquals(IllegalArgumentException.class,e.getClass()); //what
+        }
+
+
+
+
+
+    }
+
+    @Test
+    public void testCreateUserC1Null() throws IOException, URISyntaxException, InterruptedException {
+
+        String s = null;
+
+        try {
+            http_client.sendCreateUser(s);
+            http_client.sendDeleteUser(s);
+
+
+        } catch (Exception e){
+
+
+        }
+
+
+
+
+
+    }
 
     @Test
     public void testCreatePageC1True() {
         Page page = new Page();
+        page.set("name","hellworld");
+        page.saveIt();
         String pageJ = page.toJson(true);
         String s = "";
         try
@@ -99,27 +134,47 @@ public class Database_ClientTest extends DBSpec {
         assertEquals("SUCCESS",s);
     }
 
-    /*@Test
+    @Test
     public void testCreateC1False() {
-        User page = new User();
-        String pageJ = page.toJson(true);
-        String s = "";
+        User user = new User();
+
+        String userJ = user.toJson(true);
+
         try
 
         {
-            http_client.sendCreatePage(pageJ);
-            s = "SUCCESS";
+            http_client.sendCreateUser(userJ);
+            http_client.sendDeleteUser(userJ);
+
         } catch(
                 Exception e)
         {
-            e.printStackTrace();
+           assertEquals(IllegalArgumentException.class,e.getClass());
         }
-        //assert that the attempt failed
-    }*/
+
+    }
+
+    @Test
+    public void testCreateC1Null() {
+        String s = null;
+
+        try
+
+        {
+            http_client.sendCreatePage(s);
+
+        } catch(
+                Exception e)
+        {
+            //assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+    }
 
     @Test
     public void testDeletePageC1True(){
         Page page = new Page();
+        page.set("name","hellworld");
         String pageJ = page.toJson(true);
         try
 
@@ -135,7 +190,7 @@ public class Database_ClientTest extends DBSpec {
         try
 
         {
-            http_client.sendRemovePage(pageJ);
+            http_client.sendDeletePage(pageJ);
             success = true;
 
         } catch(
@@ -146,9 +201,11 @@ public class Database_ClientTest extends DBSpec {
         assertTrue(success);
     }
 
-   /* @Test
+    @Test
     public void testDeletePageC1False(){
-        String shouldntWork = "This should throw an exeption"
+        String shouldntWork = "This should throw an exeption";
+        Page page = new Page("test");
+        String pageJ = page.toJson(true);
 
         try
 
@@ -165,21 +222,25 @@ public class Database_ClientTest extends DBSpec {
         try
 
         {
-            http_client.sendRemovePage(pageJ);
+            http_client.sendDeletePage(shouldntWork);
             success = true;
 
         } catch(
                 Exception e)
         {
-            e.printStackTrace();
+            assertEquals(IllegalArgumentException.class,e.getClass());
         }
-        fail();
-    }*/
+
+    }
 
     @Test
     public void testAddUserToPageC1True(){
         Page page = new Page();
+        page.set("name","hellworld");
         User user = new User();
+        user.set("id",100);
+        user.set("name","AHHHH");
+        user.saveIt();
         String userJ = user.toJson(true);
         String pageJ = page.toJson(true);
         try
@@ -207,11 +268,10 @@ public class Database_ClientTest extends DBSpec {
         assertTrue(success);
     }
 
-    /*@Test
+    @Test
     public void testAddUserToPageC1False(){
         Page page = new Page();
-        User user = new User();
-        String userJ = user.toJson(true);
+
         String pageJ = page.toJson(true);
         try
 
@@ -227,16 +287,18 @@ public class Database_ClientTest extends DBSpec {
         try
 
         {
-            http_client.sendAddUserToPage(pageJ,pageJ);
-            //assert that this throws an exception
+            http_client.sendAddUserToPage("no",pageJ);
+
 
         } catch(
                 Exception e)
         {
             e.printStackTrace();
+            assertEquals(IllegalArgumentException.class,e.getClass());
         }
-        fail();
-    }*/
+
+
+    }
 
 
     @Test
@@ -283,8 +345,9 @@ public class Database_ClientTest extends DBSpec {
 
     }
 
-    /*@Test
-    public void testRemoveUserFromPageC1False(){
+
+    @Test
+    public void testRemoveUserFromPageC1FalseC2TRUE(){
         Page page = new Page();
         DefaultNode user = nodeFactory.buildNode();
         String userJ = user.toJson(true);
@@ -308,14 +371,37 @@ public class Database_ClientTest extends DBSpec {
 
         } catch(
                 Exception e)
+
         {
-            e.printStackTrace();
+            assertEquals(IllegalArgumentException.class,e.getClass());
         }
+
+
+
+
+    }
+
+    @Test
+    public void testRemoveUserFromPageC1TrueC2TrueThenFalse(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
         try
 
         {
-            http_client.sendRemoveUserFromPage(userJ,pageJ);
-            //assert that this throws an exception
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,pageJ);
 
 
         } catch(
@@ -323,9 +409,57 @@ public class Database_ClientTest extends DBSpec {
         {
             e.printStackTrace();
         }
-        assertTrue(success);
+        try
 
-    }*/
+        {
+            http_client.sendRemoveUserFromPage(userJ,"no");
+            http_client.sendDeleteUser(userJ);
+
+        } catch(
+                Exception e)
+        {
+            assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+
+    }
+
+    @Test
+    public void testRemoveUserFromPageC1TrueC2False(){
+        Page page = new Page();
+        User user = new User();
+        String userJ = user.toJson(true);
+        String pageJ = page.toJson(true);
+        try
+
+        {
+            http_client.sendCreatePage(pageJ);
+
+        } catch(
+                Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+
+        {
+            http_client.sendAddUserToPage(userJ,"no");
+
+
+        } catch(
+                Exception e)
+        {
+            assertEquals(IllegalArgumentException.class,e.getClass());
+        }
+
+
+
+    }
+
+
+
+
 
 
 

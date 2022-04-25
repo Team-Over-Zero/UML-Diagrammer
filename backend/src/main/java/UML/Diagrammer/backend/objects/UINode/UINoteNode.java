@@ -15,7 +15,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 package UML.Diagrammer.backend.objects.UINode;
 
 public class UINoteNode extends UINode{
-    UINoteNode(int x, int y, int w, int h){
-        super("Note Name","note_nodes", "Note Description", "NOTE_SVG", x, y, w, h);
+    public UINoteNode(int x, int y, int w, int h){
+        super("Note Name","notenodes", "Note Description", "Note.svg", x, y, w, h);
     }
 }

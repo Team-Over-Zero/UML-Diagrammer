@@ -3,39 +3,69 @@
  */
 package UML.Diagrammer.desktop;
 
-import UML.Diagrammer.backend.objects.NodeFactory.ClassNode;
-import javafx.scene.layout.StackPane;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
-
+import UML.Diagrammer.backend.apis.Database_Client;
+import UML.Diagrammer.backend.apis.HTTP_Client;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
-
+import org.javalite.activejdbc.test.DBSpec;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.testfx.api.FxRobot;
-
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.control.ListViewMatchers;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxRobot.*;
-import static org.testfx.assertions.api.Assertions.assertThat;
 
-class AppTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class AppTest extends DBSpec {
     private FxRobot robo;
+    private Database_Client dbClient;
+    private HTTP_Client http_helper;
+    //private String testUser;
+    private String userName;
+    private String password;
+    private String pageName;
     @BeforeEach
     public void setRobo() throws Exception{
         ApplicationTest.launch(App.class);
         robo = new FxRobot();
+
+        String jUnitUrl = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/junit?useSSL=false";
+        String databaseUser = "root";
+        String databasePassword = "TeamOverZero";
+        int javalinPort = 8888;
+        dbClient = new Database_Client(jUnitUrl, databaseUser, databasePassword, javalinPort);
+        http_helper = new HTTP_Client();
+       // testUser = http_helper.sendCreateUser("{name:\"junittest\",password:\"password\"}"); //Alex here: way to instantiate user
+        dbClient.spinUp();
+
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+
+        userName = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        password = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        pageName = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 
     @AfterEach
@@ -43,68 +73,78 @@ class AppTest {
         FxToolkit.hideStage();
         robo.release(new KeyCode[]{});
         robo.release(new MouseButton[]{});
+        //http_helper.sendDeleteUser(testUser);
+        dbClient.spinDown();
     }
 
 
     @Test
     public void largeTest() {
 
-        verifyThat(robo.lookup("Save"), (Button b) -> b.isVisible());
+        robo.clickOn("Register New Account");
+
+        robo.clickOn("#registerUserName").write(userName);
+        robo.clickOn("#registerNewPassword").write(password);
+        robo.clickOn("#registerConfirmPassword").write("");
+
+        robo.clickOn("Register");
+        robo.clickOn("#registerConfirmPassword").write(password);
+        robo.clickOn("Register");
+
+        robo.clickOn("Log In");
+
+        robo.clickOn("#UserNameTextField").write(userName);
+        robo.clickOn("#PasswordTextField").write("wrongpassword");
+        robo.clickOn("Log In");
+
+        robo.doubleClickOn("#PasswordTextField").write(password);
+        robo.clickOn("Log In");
+
+        robo.clickOn("#newPageNameTextField").write(pageName);
+        robo.clickOn("Create new");
+
+
+        verifyThat(robo.lookup("Log Out"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Edit"), (Button b) -> b.isVisible());
         verifyThat(robo.lookup("Delete"), (Button b) -> b.isVisible());
         verifyThat("Load", org.testfx.matcher.control.LabeledMatchers.hasText("Load"));
 
         robo.clickOn("Class");
-
-        robo.doubleClickOn("Class Name");
-
+        robo.rightClickOn("Class Name");
+        robo.clickOn("Edit name");
         robo.type(KeyCode.S);
-
         robo.clickOn("Confirm");
 
+        robo.clickOn("s");
         robo.clickOn("Delete");
 
         robo.clickOn("Oval");
-
-        robo.doubleClickOn("Oval Name");
-
-
-        robo.type(KeyCode.E);
-
-        robo.clickOn("Confirm");
-
-        robo.clickOn("e");
-
-        robo.clickOn("Delete");
-
-        robo.clickOn("Line");
-
-        robo.clickOn("Note");
-
-        robo.clickOn("Folder");
-
-        robo.clickOn("Life Line");
-
-        robo.clickOn("Square");
-
+        
         robo.clickOn("Stick Figure");
 
+        robo.clickOn("Line");
         robo.clickOn("Stick Figure Name");
+        robo.clickOn("Oval Name");
 
+        robo.clickOn("Folder");
+        robo.clickOn("Life Line");
+        robo.clickOn("Square");
         robo.clickOn("Text Box");
-
         robo.clickOn("Loop");
+        robo.clickOn("Note");
 
         robo.clickOn("Export");
+        robo.clickOn("Refresh");
+        robo.clickOn("Load");
+        robo.clickOn("Load");
 
-        robo.clickOn("SVG");
 
+        robo.clickOn("Invite");
+        robo.write("personWhoDoesntExist");
+        robo.clickOn("Confirm");
+        robo.sleep(1000);
+        robo.press(KeyCode.ESCAPE);
+        robo.clickOn("Log Out");
 
     }
-
-
-
-
-
-
 }

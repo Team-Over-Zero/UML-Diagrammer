@@ -23,20 +23,31 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
+import UML.Diagrammer.backend.objects.UINode.UINode;
+import UML.Diagrammer.backend.objects.UIPage;
+import UML.Diagrammer.backend.objects.UIUser;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.batik.transcoder.TranscoderException;
+import org.checkerframework.checker.guieffect.qual.UI;
 
 import javax.imageio.ImageIO;
 import java.awt.image.RenderedImage;
@@ -44,6 +55,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 
 public class FXMLController extends App implements PropertyChangeListener{
@@ -63,34 +75,49 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * Function is called when the board is launched via FXMLLoginController to set up the current user and page
+     * in the ObjectRequester, so the requester knows what to reference for db - client connection.
+     * @param user The user who logged in
+     * @param page The page they are going to use(first page in db or a brand new one if no page is made yet.)
+     */
+    public static void setUpUserPage(UIUser user, UIPage page){
+        objectRequesterObservable.setCurrentUser(user);
+        objectRequesterObservable.setCurrentPage(page);
+    }
+
+    /**
      * This is the function that is called by ObjectRequester(or any observable) to update the UI
-     * newNodeCreation should deal with any of it's subtype of nodes.
+     * newNodeCreation should deal with any of its subtype of nodes.
      * newNodeCreation will require the UI Object (Shape) because the shape has the data(node) associated with it already.
      * @param event The event that was changed that needs to be reflected in the UI.
      */
     public void propertyChange(PropertyChangeEvent event){
-    	switch(event.getPropertyName()) {
-    	case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
-    	case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
-    	case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
-    	case "clearLineCreationActions" -> this.clearLineCreationActions();
-    	case "finishedDragUpdateEdges" -> this.updateEdgesAfterDrag((StackPane) event.getNewValue());
+        switch(event.getPropertyName()) {
+            case "newNodeCreation" -> this.updateUINewNode((StackPane) event.getNewValue());
+            case "newEdgeCreation" -> this.updateUINewEdge((Line) event.getNewValue());
+            case "setMouseActions" -> this.setMouseActions((StackPane) event.getNewValue());
+            case "clearLineCreationActions" -> this.clearLineCreationActions();
+            case "finishedDragUpdateEdges" -> this.updateEdgesAfterDrag((StackPane) event.getNewValue());
         }
     }
 
     /**
-     * Label for the UI to display object changes
+     * Various ui elements for the UI to display object changes
      */
     @FXML private Label ActionLabel;
     @FXML public Label noElementSelectedErrorLabel;
+    @FXML public Label currentPageLabel;
     @FXML public Pane canvasPane;
+    @FXML public MenuButton loadMenuButton;
+    @FXML public Button dummyLoadButton;
+    @FXML public static Label saveFailedError;
 
     /**
      * These functions are what is executed on the press of the UML object button(oval, class etc.).
      * Sends a request to ObjectRequester to make a UML object(Just a node right now).
      * ObjectRequester then turns around after making the object and calls updateUIFunction with said object for UI display
      */
-    @FXML private void ovalButtonPressed() throws TranscoderException, IOException {
+    @FXML private void ovalButtonPressed() {
         objectRequesterObservable.makeOvalRequest(-1, -1, null, null);}
     @FXML private void classButtonPressed() {
         objectRequesterObservable.makeClassRequest(-1, -1, null, null, null);}
@@ -124,7 +151,7 @@ public class FXMLController extends App implements PropertyChangeListener{
         action.deleteObject(null, canvasPane);
     }
     @FXML private void editButtonPressed(){
-        action.makePopUpEditTextBox(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
+        action.editNamePopUp(null, (int)App.primaryStage.getX(), (int)App.primaryStage.getY());
     }
 
     /**
@@ -137,11 +164,11 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
-     * Just displays the edge's info to the screen via a label for now.
+     * Added the given line to the Pane to display it to the user.
      */
     private void updateUINewEdge(Line newLine){
         canvasPane.getChildren().add(newLine);
-        newLine.setOnContextMenuRequested(e ->
+        newLine.setOnContextMenuRequested(e -> // Right click for deletion on line
                 action.makeEdgeContextMenu(newLine, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
 
@@ -154,6 +181,7 @@ public class FXMLController extends App implements PropertyChangeListener{
         fxObject.setOnMousePressed(nodeOnMouseGrabEventHandler);
         fxObject.setOnMouseDragged(nodeOnMouseDragEventHandler);
         fxObject.setOnMouseReleased(nodeOnMouseReleased);
+        //fxObject.setOnMouseDragReleased(nodeOnMouseReleased);
         fxObject.setOnContextMenuRequested(e -> // Right click
                 action.makeContextMenu(fxObject, canvasPane, (int)e.getScreenX(), (int)e.getScreenY()));
     }
@@ -176,14 +204,20 @@ public class FXMLController extends App implements PropertyChangeListener{
      * @param movedElement The UI Element that was moved
      */
     private void updateEdgesAfterDrag(StackPane movedElement){
+        UINode movedElementNode = (UINode) movedElement.getUserData();
+        int movedElementId = movedElementNode.getId();
         for (Object obj: canvasPane.getChildren()) {
             if (obj instanceof Line curLine) {
-                StackPane[] curLineConnectedNodes = (StackPane[]) curLine.getUserData();
-                if(curLineConnectedNodes[0] == movedElement){
+                UIEdge curEdge = (UIEdge) curLine.getUserData();
+                UINode n1 = (UINode) curEdge.getN1();
+                UINode n2 = (UINode) curEdge.getN2();
+                int n1Id = n1.getId();
+                int n2Id = n2.getId();
+                if(n1Id == movedElementId){
                     curLine.setStartX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
                     curLine.setStartY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
                 }
-                else if(curLineConnectedNodes[1] == movedElement){
+                else if(n2Id == movedElementId){
                     curLine.setEndX(movedElement.getTranslateX() + movedElement.getWidth() / 2);
                     curLine.setEndY(movedElement.getTranslateY() + movedElement.getHeight() / 2);
                 }
@@ -221,9 +255,157 @@ public class FXMLController extends App implements PropertyChangeListener{
     }
 
     /**
+     * On press of the "load" button it populates it with the current pages that the user has.
+     * On click of an item it fetches that page from the db and loads it into the UI.
+     * On the UI startup/login there is a button that just says "Load", this populates the menubutton items on press
+     * and disappears the normal menuButton can be shown. This is because the FXMLController needs to be created
+     * before the button can be populated, but the button can't be populated until something is clicked because I can't
+     * send parameters to the javafx initalize() function without significant refactoring.
+     * Very janky but it works for the mvp.
+     */
+    @FXML private void populateLoadButtons(){
+        Map<Integer, String> pages = objectRequesterObservable.getUserPages();
+        for (Map.Entry<Integer, String> curPage : pages.entrySet()){
+            if (!containsPage(curPage.getValue())) {
+                MenuItem newItem = new MenuItem(curPage.getValue());
+                newItem.setOnAction(a -> {
+                    UIPage page = new UIPage(curPage.getKey(), curPage.getValue());
+                    canvasPane.getChildren().clear();
+                    objectRequesterObservable.loadPageFromDB(canvasPane, page);
+                    objectRequesterObservable.setCurrentPage(page);
+                    currentPageLabel.setText(page.getName());
+                });
+                loadMenuButton.getItems().add(newItem);
+            }
+        }
+        dummyLoadButton.setVisible(false);
+    }
+
+    /**
+     * On press of a button a user can hit the refresh button, and it will allow for collaborate work and
+     * loading in from the UI.
+     */
+    @FXML private void refresh(){
+        canvasPane.getChildren().clear();
+        objectRequesterObservable.loadPageFromDB(canvasPane, null);
+    }
+
+    /**
+     * Adds a user from their username given a username from the user.
+     */
+    @FXML private void sharePageButtonPressed(){
+        Popup popUp = new Popup();
+        popUp.setHeight(100);
+        popUp.setWidth(100);
+        popUp.setX((int)App.primaryStage.getX());
+        popUp.setY((int)App.primaryStage.getY());
+        Label label = new Label("Enter a name of a user you'd like to invite");
+        TextField textField = new TextField("User to invite");
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(50);
+        Button button = new Button("Confirm");
+
+        button.setOnAction(e -> {
+            String userText = textField.getText();
+            if (userText.equals("") | userText.matches("[0-9]")){
+                label.setText("User can't be blank or contain numbers");
+            }
+            else {
+                String addedUserSuccess = objectRequesterObservable.inviteUserToPage(userText);
+                if (addedUserSuccess.equals("fail")){
+                    label.setText("User doesn't exist");
+                }
+                else{
+                    label.setText("Successfully invited "+ userText +" , invite another?");
+                }
+            }
+        });
+
+        StackPane sp = new StackPane();
+        StackPane.setAlignment(textField, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
+
+        sp.getChildren().addAll(textField, label, button);
+        popUp.getContent().add(sp);
+        popUp.show(App.primaryStage);
+        button.setDefaultButton(true);
+        popUp.setAutoHide(true);
+    }
+
+    /**
+     * Just a quick function to check if the item we are adding to the list is already present
+     * @param value The name of the item you are adding
+     * @return If that item already exists.
+     */
+    private Boolean containsPage(String value){
+        for (MenuItem curItem: loadMenuButton.getItems()) {
+            if(value.equals(curItem.getText())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Makes a popup for the user to name the new page they are creating.
+     * It then creates the page in the db, and clears the scene for the new page.
+     */
+    @FXML private void makeNewPageMenuItemPressed(){
+        Popup popUp = new Popup();
+        popUp.setHeight(100);
+        popUp.setWidth(100);
+        popUp.setX((int)App.primaryStage.getX());
+        popUp.setY((int)App.primaryStage.getY());
+        Label label = new Label("Enter a new name");
+        TextField textField = new TextField("New Page");
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(50);
+        Button button = new Button("Confirm");
+        button.setOnAction(e -> {
+            if (textField.getText().equals("") || textField.getText().matches(".*\\d.*")) {
+                label.setText("Page name can't be empty or include numbers");
+                label.setWrapText(true);
+            }
+            else{
+                UIPage newPage = objectRequesterObservable.createNewPage(textField.getText());
+                canvasPane.getChildren().clear();
+                objectRequesterObservable.setCurrentPage(newPage);
+                currentPageLabel.setText(newPage.getName());
+                popUp.hide();
+                populateLoadButtons();
+            }
+        });
+
+        StackPane sp = new StackPane();
+        StackPane.setAlignment(textField, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_RIGHT);
+
+        sp.getChildren().addAll(textField, label, button);
+        popUp.getContent().add(sp);
+        popUp.show(App.primaryStage);
+        button.setDefaultButton(true);
+        popUp.setAutoHide(true);
+    }
+
+    /**
+     * When the user hits the log out button it sends them back to the log in page
+     * and clears the canvas and current user/page.
+     * @throws IOException
+     */
+    @FXML private void logOutButtonPressed() throws IOException {
+        canvasPane.getChildren().removeAll();
+        objectRequesterObservable.setCurrentPage(null);
+        objectRequesterObservable.setCurrentUser(null);
+        Parent login = FXMLLoader.load(getClass().getResource("/UserLogIn.fxml"));
+        App.primaryStage.setScene(new Scene(login, 600, 400));
+    }
+
+    /**
      * Double click event handler for editing text on a node.
      * Might break this up for specific types of nodes since some will only need name, or name + desc etc.
-\     */
+     \     */
     EventHandler<MouseEvent> clickNodeEventHandler =
             action::clickObject;
 
@@ -237,4 +419,5 @@ public class FXMLController extends App implements PropertyChangeListener{
 
     EventHandler<MouseEvent> nodeOnMouseReleased =
             action::releaseObject;
+
 }

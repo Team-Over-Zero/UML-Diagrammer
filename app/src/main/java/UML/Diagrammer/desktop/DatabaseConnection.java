@@ -14,19 +14,181 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER I
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*/
 package UML.Diagrammer.desktop;
 
+import UML.Diagrammer.backend.apis.HTTP_Client;
+import UML.Diagrammer.backend.objects.UIEdge.UIEdge;
+import UML.Diagrammer.backend.objects.UIEdge.UIEdgeFactory;
+import UML.Diagrammer.backend.objects.UIEdge.UINormalEdge;
+import UML.Diagrammer.backend.objects.UINode.*;
+import UML.Diagrammer.backend.objects.UIPage;
+import UML.Diagrammer.backend.objects.UIUser;
+import com.google.gson.Gson;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import org.javalite.activejdbc.Base;
 
+import java.util.ArrayList;
+
+/**
+ * A class that's responsible to communicate with the database.
+ */
 public class DatabaseConnection {
 
-    public void openConnection(){
-        String databaseURL = "jdbc:mysql://ls-a9db0e6496e5430883b43e690a26b7676cf9d7af.cuirr4jp1g1o.us-west-2.rds.amazonaws.com/dev?useSSL=false";
-        String databaseUser = "root";
-        String databasePassword = "TeamOverZero";
+    // The current instance of the object requester and factories
+    HTTP_Client HTTPClient = new HTTP_Client();
 
-        Base.open("com.mysql.cj.jdbc.Driver", databaseURL, databaseUser, databasePassword);
+    // Putting either of these strings in postman work properly
+    // http://127.0.0.1:8888/createuser/?user={"id":"-1","name":"newName"}
+    // http://127.0.0.1:8888/createpage/?page={"name":"TESTPAGE"}&userid={"id":"1"}
+    /**
+     * Creates a new user and gets their ID from the database
+     * @param name name of the user
+     */
+    public UIUser createNewUser(String name, String pw){
+        try {
+            UIUser newUser = new UIUser(-1, name);
+            String dbUserString = HTTPClient.sendCreateUser(newUser.getFullUserString(pw));
+            newUser.setId(stripNum(dbUserString));
+            System.out.println("newUserId is now: " + newUser.getId());
+            return newUser;
+        }
+        catch (Exception e){e.printStackTrace();}
+        return null;
     }
-    
-    public void closeConnection(){
-        Base.close();
+
+    /**
+     * creates a new page given an associated user.
+     * @param user The user that this page should belong to.
+     * @param pageName The name of the page that the user has specified.
+     * @return A new page for the user to add things to.
+     */
+    public UIPage createNewPage(UIUser user, String pageName){
+        try{
+            UIPage newPage = new UIPage(-1, pageName);
+            String dbPageString = HTTPClient.pageCreateRequest(newPage.getPageNameAsJSon(), user.getIDAsJson());
+            newPage.setId(stripNum(dbPageString));
+            System.out.println("newPageId is now: "+newPage.getId());
+            return newPage;
+        }
+        catch (Exception e){e.printStackTrace();}
+        return null;
+    }
+
+    /**
+     * Saves a node to the database via a page.
+     * @param node The node you'd like to save to a page.
+     * @param page The page that the user is currently on.
+     */
+    public int saveNewNodeToDB(UINode node, UIPage page) {
+        try {
+            String returnedString = HTTPClient.sendAddNodeToPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
+            node.setId(stripNum(returnedString));
+            System.out.println("Successfully saved node: " + node.getType() + "-" + node.getId() + " to page: " + page.getId());
+            return 1;
+        }
+        catch (Exception e){e.printStackTrace();System.out.println("FAILED TO SAVE"); return 0;}
+    }
+
+    /**
+     * Similar to saveNewNodeToDB.
+     * SImply saves a new edge to the db given a ege and the page.
+     * @param edge The edge you'd like to save to the db
+     * @param page The page that's associated with the page.
+     */
+    public int saveNewEdgeToDB(UIEdge edge, UIPage page){
+        try {
+            String returnedString = HTTPClient.sendAddEdgeToPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
+            edge.setId(stripNum(returnedString));
+            System.out.println("Successfully saved \"normal\" edge " + edge.getId() + " to page: " + page.getId());
+            return 1;
+        }
+        catch (Exception e){e.printStackTrace(); return 0;}
+    }
+
+    /**
+     * Strips everything but integers from a string, should be used to get an Id from a JSon string
+     * @param stringToStrip the string you'd like to strip
+     * @return the numeber in the string
+     */
+    public int stripNum(String stringToStrip){
+        return Integer.parseInt(stringToStrip.replaceAll("\\D", ""));
+    }
+
+    /**
+     * Update an existing node to the database. This is a node that is already in the db and has a real id.
+     * @param nodeToUpdate The node you'd like to update
+     */
+    public void updateNode(UINode nodeToUpdate){
+        try {
+            HTTPClient.sendNodeUpdateRequest(nodeToUpdate.getNodeAsJSon());
+            System.out.println("Successfully updated node " + nodeToUpdate.getId() + "!");
+        }
+        catch (Exception e){e.printStackTrace();}
+    }
+
+    /**
+     * Removes a given node from a page.
+     * @param node The node that exits on the page
+     * @param page The page where the node resides.
+     */
+    public void removeNodeFromPage(UINode node, UIPage page){
+        HTTPClient.sendRemoveNodeFromPage(node.getNodeAsJSon(), page.getPageIdAsJSon());
+        System.out.println("Successfully removed node " + node.getId() + " from db!");
+    }
+
+    /**
+     * Removes a given edge from a page.
+     * @param edge The edge that already exists in the db
+     * @param page The page that the edge resides in.
+     */
+    public void removeEdgeFromPage(UIEdge edge, UIPage page){
+        HTTPClient.sendRemoveEdgeFromPage(edge.getEdgeAsJSon(), page.getPageIdAsJSon());
+        System.out.println("Successfully removed edge from db!");
+    }
+
+    /**
+     * Adds a user to a page, so they may have access to it when accessing it later.
+     * @param user The user that you're adding to the page.
+     * @param page The page that you're adding the user to.
+     */
+    public void addUserToPage(UIUser user, UIPage page){
+        HTTPClient.sendAddUserToPage(user.getIDAsJson(), page.getPageIdAsJSon());
+        System.out.println("Successfully added user: "+user.getName()+ " to page: "+ page.getId());
+    }
+
+    /**
+     * Gets a list of all the pages associated with a given user
+     * @return A json string of all the pages that the user has associated with them.
+     */
+    public String getUserPages(UIUser user){
+        try {
+            return HTTPClient.getUserPages(user.getIDAsJson());
+        }
+        catch (Exception e){e.printStackTrace(); System.out.println("Failed to get user's pages");}
+        return null;
+    }
+
+    /**
+     * Gets a json string of all the element of a page
+     * @param page The page that you'd like the elements for
+     * @return json string of all the elements in a page
+     */
+    public String loadPageElements(String page){
+        String retString = HTTPClient.sendLoadPage(page);
+        System.out.println("RETURN STRING "+retString);
+        return retString;
+    }
+
+    public String loginUser(String user){
+        return HTTPClient.sendLoginUser(user);
+    }
+
+    /**
+     * Gets a user based on their username
+     * @param username the name of the user you are trying to add
+     * @return a json string of the user you are querying for or ERROR: USER NOT FOUND otherwise.
+     */
+    public String findUserViaName(String username){
+        return HTTPClient.sendFindUserByName("{\"name\":\"" + username + "\"}");
     }
 }

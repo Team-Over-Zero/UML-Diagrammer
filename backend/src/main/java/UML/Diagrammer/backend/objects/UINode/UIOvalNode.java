@@ -16,6 +16,6 @@ package UML.Diagrammer.backend.objects.UINode;
 
 public class UIOvalNode extends UINode{
     public UIOvalNode(int x, int y, int w, int h){
-        super("Oval Name","oval_nodes", null, "OVAL_SVG", x, y, w, h);
+        super("Oval Name","ovalnodes", null, "Oval_UseCase.svg", x, y, w, h);
     }
 }
