@@ -38,8 +38,6 @@ or
 If you are running a docker image, you will still have to use 'gradle app:run' to run the javafx frontend
 but you should be able to open the webpage the same with the docker as if you were running with gradle.
 
-Note that user creation and page creation is only supported on the javafx client, but all other features
-are mostly consistent. 
 
 ## Credit
 This project is created by:
