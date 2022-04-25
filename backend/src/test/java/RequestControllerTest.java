@@ -38,6 +38,9 @@ public class RequestControllerTest extends DBSpec {
         //dbClient.spinUp();
     }
 
+    /**
+     * Add real data to objects and simulate what would occur when a user is using the app.
+     */
     @Test
     public void testRealData(){
         DefaultNode node = nodeFactory.buildNode();
